@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "gethookd": {
+      "type": "http",
+      "url": "https://app.gethookd.ai/api/mcp/v1",
+      "headers": {
+        "Authorization": "Bearer gh_bMtSb1h458OJr6utOv6SiY9nqEDzH3Wt32tsupy748bb1c44"
+      }
+    }
+  }
+}
