@@ -1,0 +1,62 @@
+name: Customer comments
+
+# Runs the comment reader in CI so API keys live ONLY in GitHub Secrets
+# and never touch an interactive Claude Code session.
+#
+# Add these under: Settings -> Secrets and variables -> Actions -> New secret
+#   GORGIAS_DOMAIN, GORGIAS_EMAIL, GORGIAS_API_KEY
+#   JUDGEME_API_TOKEN, JUDGEME_SHOP_DOMAIN
+#   FACEBOOK_PAGE_ID, FACEBOOK_ACCESS_TOKEN
+#   (optional) FACEBOOK_API_VERSION
+#
+# Sources whose secrets are missing are skipped, so you can start with one.
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"   # every 6 hours (UTC). Edit to taste.
+  workflow_dispatch:        # adds a manual "Run workflow" button
+    inputs:
+      limit:
+        description: "Max comments per source"
+        required: false
+        default: "30"
+
+permissions:
+  contents: read
+
+jobs:
+  read-comments:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Read comments
+        env:
+          GORGIAS_DOMAIN: ${{ secrets.GORGIAS_DOMAIN }}
+          GORGIAS_EMAIL: ${{ secrets.GORGIAS_EMAIL }}
+          GORGIAS_API_KEY: ${{ secrets.GORGIAS_API_KEY }}
+          JUDGEME_API_TOKEN: ${{ secrets.JUDGEME_API_TOKEN }}
+          JUDGEME_SHOP_DOMAIN: ${{ secrets.JUDGEME_SHOP_DOMAIN }}
+          FACEBOOK_PAGE_ID: ${{ secrets.FACEBOOK_PAGE_ID }}
+          FACEBOOK_ACCESS_TOKEN: ${{ secrets.FACEBOOK_ACCESS_TOKEN }}
+          FACEBOOK_API_VERSION: ${{ secrets.FACEBOOK_API_VERSION }}
+        run: |
+          python -m comment_reader.main \
+            --limit "${{ github.event.inputs.limit || '30' }}" \
+            --json > comments_export.json
+          echo "Collected $(python -c 'import json,sys; print(len(json.load(open("comments_export.json"))))') comment(s)."
+
+      - name: Upload results
+        uses: actions/upload-artifact@v4
+        with:
+          name: comments
+          path: comments_export.json
+          retention-days: 7
