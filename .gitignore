@@ -1,0 +1,14 @@
+# Secrets — never commit real API keys
+.env
+.env.local
+*.env
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+
+# Output
+comments_export*.json
