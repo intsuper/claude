@@ -484,9 +484,26 @@ input:focus,button:focus-visible,.stage-item:focus-visible,.focus-opt:focus-visi
 .strat-t{font-family:"Archivo",sans-serif;font-weight:700;font-size:15px}
 .strat-s{font-size:12px;color:var(--ink-3);margin-top:2px}
 .strat-actions{display:flex;gap:8px;align-items:center;flex:none}
-.strat-paste{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:16px}
-.strat-paste textarea{width:100%;min-height:150px;resize:vertical;font-family:inherit;font-size:13px;color:var(--ink);background:var(--inset);border:1px solid var(--border);border-radius:8px;padding:10px}
-.strat-paste textarea:focus{outline:2px solid var(--accent);outline-offset:1px}
+.strat-card{margin-bottom:12px}
+.strat-lib{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px}
+.strat-item{display:flex;align-items:stretch;border:1px solid var(--border-strong);border-radius:11px;overflow:hidden;background:var(--surface)}
+.strat-item.on{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+.strat-pick{border:none;background:transparent;text-align:left;padding:8px 12px;display:flex;flex-direction:column;gap:2px;color:var(--ink)}
+.strat-pick:not(:disabled):hover{background:var(--surface-2)}
+.strat-pick:disabled{cursor:default}
+.strat-item.on .strat-pick{background:var(--accent-soft)}
+.si-name{font-family:"Archivo",sans-serif;font-weight:700;font-size:13px;line-height:1.1}
+.si-meta{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--ink-3)}
+.strat-item.on .si-meta{color:var(--accent)}
+.si-del{border:none;border-left:1px solid var(--border);background:transparent;color:var(--ink-3);width:30px;font-size:12px}
+.si-del:hover{color:var(--bad);background:var(--bad-soft)}
+.strat-upload{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:16px;display:flex;flex-direction:column;gap:10px}
+.strat-upload input[type=text]{width:100%}
+.su-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.su-picked{font-size:12px;color:var(--ink-3)}
+.strat-upload textarea{width:100%;min-height:130px;resize:vertical;font-family:inherit;font-size:13px;color:var(--ink);background:var(--inset);border:1px solid var(--border);border-radius:8px;padding:10px}
+.strat-upload textarea:focus{outline:2px solid var(--accent);outline-offset:1px}
+.su-foot{display:flex;gap:8px;justify-content:flex-end}
 .thumb-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .thumb-drop{display:inline-flex;align-items:center;gap:8px;border:1px dashed var(--border-strong);border-radius:10px;padding:10px 14px;font-size:12.5px;font-weight:600;color:var(--ink-2);cursor:pointer}
 .thumb-drop:hover{border-color:var(--accent);color:var(--accent)}
@@ -731,21 +748,30 @@ function defaultPersonasFlat(){
     "Biohacker","Longevity enthusiast","Eco-conscious 25–40"].map(n=>({id:uid(),name:n}));
 }
 function defaultLanders(){ return ["Quiz","Advertorial","Listicle","Product Page","VSL"]; }
+const DEFAULT_ANGLES=["Problem-Aware","Insecurity","Time-Saving","Science / Mechanism","Social Proof",
+  "Cost-Per-Use","Ingredient Hero","Routine / Ritual","Anti-Aging Fear","Clean / Natural",
+  "Authority / Expert","Transformation","Myth-Busting","FOMO / Trend"];
+// a saved strategy = a named doc's angles + personas, kept in the library and assignable per product
+function makeStrategy(name, angles, personas, fileName){
+  return {id:uid(), name:name||"Strategy", fileName:fileName||null, createdAt:new Date().toISOString(),
+    angles:(angles||[]).slice(),
+    personas:(personas||[]).map(n=>typeof n==="string"?{id:uid(),name:n}:{id:n.id||uid(),name:n.name})};
+}
+function defaultStrategy(){ return makeStrategy("Default (sample)", DEFAULT_ANGLES, defaultPersonasFlat(), null); }
 function defaultCreative(products){
   const landers={}; products.forEach(p=>landers[p.id]=defaultLanders());
+  const def=defaultStrategy();
+  const productStrategy={}; products.forEach(p=>productStrategy[p.id]=def.id);
   return {
     weeklyTarget:30,
-    strategy:{fileName:null,uploadedAt:null,angles:0,personas:0},
+    strategies:[def],
+    productStrategy,
     brands:[
       {id:uid(),name:"Glow Recipe",url:""},{id:uid(),name:"The Ordinary",url:""},
       {id:uid(),name:"Medik8",url:""},{id:uid(),name:"Bubble",url:""},
     ],
     editors:["Lucas","Shahaf"],
     landers,
-    angles:["Problem-Aware","Insecurity","Time-Saving","Science / Mechanism","Social Proof",
-      "Cost-Per-Use","Ingredient Hero","Routine / Ritual","Anti-Aging Fear","Clean / Natural",
-      "Authority / Expert","Transformation","Myth-Busting","FOMO / Trend"],
-    personas:defaultPersonasFlat(),
     ads:[],
     draft:freshDraft(),
   };
@@ -800,19 +826,31 @@ function migrate(s){
   const cr=s.creative;
   if(!cr.draft) cr.draft=freshDraft();
   if(!("thumb" in cr.draft)) cr.draft.thumb=null;
-  if(!cr.strategy) cr.strategy={fileName:null,uploadedAt:null,angles:0,personas:0};
   // Yotam is not an editor; ensure Lucas & Shahaf
   cr.editors=(Array.isArray(cr.editors)?cr.editors:[]).filter(e=>String(e).toLowerCase()!=="yotam");
   ["Shahaf","Lucas"].forEach(e=>{ if(!cr.editors.includes(e)) cr.editors.unshift(e); });
   if(cr.draft.editor && !cr.editors.includes(cr.draft.editor)) cr.draft.editor=null;
-  // personas: per-product object -> global flat array
-  if(cr.personas && !Array.isArray(cr.personas)){
-    const flat=[], seen=new Set();
-    Object.values(cr.personas).forEach(list=>(list||[]).forEach(p=>{ if(p&&!seen.has(p.name)){seen.add(p.name);flat.push({id:p.id||uid(),name:p.name});} }));
-    cr.personas=flat;
+  // strategies library + per-product assignment (build from any legacy global banks)
+  if(!Array.isArray(cr.strategies) || !cr.strategies.length){
+    let angles = Array.isArray(cr.angles)&&cr.angles.length ? cr.angles.slice() : DEFAULT_ANGLES.slice();
+    let personas;
+    if(Array.isArray(cr.personas)&&cr.personas.length){ personas=cr.personas.map(p=>({id:p.id||uid(),name:p.name})); }
+    else if(cr.personas && !Array.isArray(cr.personas)){
+      const flat=[],seen=new Set();
+      Object.values(cr.personas).forEach(list=>(list||[]).forEach(p=>{ if(p&&!seen.has(p.name)){seen.add(p.name);flat.push({id:p.id||uid(),name:p.name});} }));
+      personas=flat.length?flat:defaultPersonasFlat();
+    } else personas=defaultPersonasFlat();
+    const nm=(cr.strategy&&cr.strategy.fileName)?cr.strategy.fileName:"Default (sample)";
+    cr.strategies=[makeStrategy(nm, angles, personas, cr.strategy&&cr.strategy.fileName||null)];
   }
-  if(!Array.isArray(cr.personas)||!cr.personas.length) cr.personas=defaultPersonasFlat();
-  if(cr.draft.personaId && !cr.personas.find(p=>p.id===cr.draft.personaId)) cr.draft.personaId=null;
+  if(!cr.productStrategy||typeof cr.productStrategy!=="object") cr.productStrategy={};
+  s.products.forEach(p=>{ if(!cr.productStrategy[p.id] || !cr.strategies.find(st=>st.id===cr.productStrategy[p.id])) cr.productStrategy[p.id]=cr.strategies[0].id; });
+  delete cr.angles; delete cr.personas; delete cr.strategy;
+  if(cr.draft.productId){
+    const st=cr.strategies.find(x=>x.id===cr.productStrategy[cr.draft.productId])||cr.strategies[0];
+    if(cr.draft.angle && st && !st.angles.includes(cr.draft.angle)) cr.draft.angle=null;
+    if(cr.draft.personaId && st && !(st.personas||[]).find(p=>p.id===cr.draft.personaId)) cr.draft.personaId=null;
+  }
   // landers: global array -> per-product object
   if(Array.isArray(cr.landers)){
     const def=cr.landers.slice(); const obj={}; s.products.forEach(p=>obj[p.id]=def.slice()); cr.landers=obj;
@@ -1171,7 +1209,11 @@ function liveDateCode(dt=new Date()){
 }
 const C=()=>S.creative;
 const brandById=(id)=>C().brands.find(b=>b.id===id);
-const personaById=(id)=>C().personas.find(p=>p.id===id);
+const strategyById=(id)=>C().strategies.find(s=>s.id===id);
+function currentStrategy(pid){ return strategyById(C().productStrategy[pid]) || C().strategies[0] || null; }
+function anglesForProduct(pid){ const s=currentStrategy(pid); return s?s.angles:[]; }
+function personasForProduct(pid){ const s=currentStrategy(pid); return s?s.personas:[]; }
+function personaById(id){ for(const s of C().strategies){ const p=(s.personas||[]).find(x=>x.id===id); if(p)return p; } return null; }
 const productById=(id)=>S.products.find(p=>p.id===id);
 const landersFor=(pid)=>C().landers[pid]||[];
 const adById=(id)=>C().ads.find(a=>a.id===id);
@@ -1243,20 +1285,94 @@ function parseStrategy(text){
   });
   return {angles:uniqCI(out.angles),personas:uniqCI(out.personas)};
 }
-function applyStrategy(name,parsed){
+// save a parsed strategy into the library (optionally assign to the current product)
+function saveStrategy(name, parsed, fileName){
   const cr=C();
   if(!parsed.angles.length && !parsed.personas.length){ toast("No angles or personas found — check the doc format"); return; }
-  if(parsed.angles.length) cr.angles=parsed.angles.slice();
-  if(parsed.personas.length) cr.personas=parsed.personas.map(n=>({id:uid(),name:n}));
-  cr.strategy={fileName:name||"strategy",uploadedAt:new Date().toISOString(),angles:cr.angles.length,personas:cr.personas.length};
-  if(cr.draft.angle && !cr.angles.includes(cr.draft.angle)) cr.draft.angle=null;
-  if(cr.draft.personaId && !cr.personas.find(p=>p.id===cr.draft.personaId)) cr.draft.personaId=null;
-  save(); renderResearch(); toast(`Strategy loaded — ${cr.angles.length} angles · ${cr.personas.length} personas`);
+  const strat=makeStrategy(name || fileName || ("Strategy "+(cr.strategies.length+1)), parsed.angles, parsed.personas, fileName);
+  cr.strategies.push(strat);
+  const pid=cr.draft.productId;
+  if(pid){ assignStrategy(pid, strat.id); toast(`Saved “${strat.name}” — set for ${productById(pid).name}`); }
+  else { save(); renderResearch(); toast(`Saved “${strat.name}” — ${strat.angles.length} angles · ${strat.personas.length} personas`); }
 }
-function stratStatus(){
-  const st=C().strategy;
-  if(st&&st.fileName) return `Loaded from <b>${esc(st.fileName)}</b> — ${st.angles} angles · ${st.personas} personas. Re-upload to replace.`;
-  return `No strategy loaded — the angles &amp; personas below are samples. Upload the strategy doc to replace them.`;
+function assignStrategy(pid, sid){
+  const cr=C(); cr.productStrategy[pid]=sid;
+  const st=strategyById(sid);
+  if(cr.draft.productId===pid){
+    if(cr.draft.angle && st && !st.angles.includes(cr.draft.angle)) cr.draft.angle=null;
+    if(cr.draft.personaId && st && !(st.personas||[]).find(p=>p.id===cr.draft.personaId)) cr.draft.personaId=null;
+  }
+  save(); renderResearch();
+}
+function deleteStrategy(sid){
+  const cr=C();
+  if(cr.strategies.length<=1){ toast("Keep at least one strategy"); return; }
+  cr.strategies=cr.strategies.filter(s=>s.id!==sid);
+  const fallback=cr.strategies[0].id;
+  Object.keys(cr.productStrategy).forEach(pid=>{ if(cr.productStrategy[pid]===sid) cr.productStrategy[pid]=fallback; });
+  save(); renderResearch(); toast("Strategy removed");
+}
+let pendingStratText="";
+function stratCardHTML(d){
+  const cr=C(); const pid=d.productId; const prod=pid?productById(pid):null;
+  const assignedId=pid?cr.productStrategy[pid]:null;
+  let header;
+  if(prod){ const s=strategyById(assignedId);
+    header=`Strategy for <b>${esc(prod.name)}</b>: <b>${s?esc(s.name):'none set'}</b>${s?` — ${s.angles.length} angles · ${s.personas.length} personas`:''}. Pick another below or upload a new one.`;
+  } else header=`Each product uses its own strategy. Upload strategies here, then pick a product below to load its angles &amp; personas.`;
+  const lib=cr.strategies.map(s=>{
+    const on=assignedId===s.id;
+    return `<div class="strat-item ${on?'on':''}">
+      <button class="strat-pick" data-usestrat="${s.id}" ${pid?'':'disabled'} title="${pid?'Use for '+esc(prod.name):'Pick a product first'}">
+        <span class="si-name">${esc(s.name)}</span>
+        <span class="si-meta">${s.angles.length}a · ${s.personas.length}p${on?' · in use':''}</span>
+      </button>
+      <button class="si-del" data-delstrat="${s.id}" title="Delete strategy" aria-label="Delete strategy">✕</button>
+    </div>`;
+  }).join("");
+  return `
+  <div class="strat-card">
+    <div class="strat-icon">📄</div>
+    <div class="strat-main">
+      <div class="strat-t">Yoni's strategy</div>
+      <div class="strat-s">${header}</div>
+    </div>
+    <div class="strat-actions"><button class="btn" id="stratUploadBtn" style="padding:9px 15px">＋ Upload strategy</button></div>
+  </div>
+  <div class="strat-lib">${lib}</div>
+  <div class="strat-upload" id="stratUpload" hidden>
+    <input type="text" id="stratName" placeholder="Name this strategy (e.g. LuxeSkin — Q3 playbook)"/>
+    <div class="su-actions">
+      <input type="file" id="stratFile" accept=".txt,.md,.markdown,.csv,.json,.text" hidden/>
+      <button class="btn secondary" id="stratFileBtn">Choose file</button>
+      <button class="btn secondary" id="stratPasteBtn">Paste text</button>
+      <span class="su-picked" id="stratPicked"></span>
+    </div>
+    <textarea id="stratText" hidden placeholder="Paste the strategy — list angles under an 'Angles' heading and personas under a 'Personas' heading (bullets or comma-separated)."></textarea>
+    <div class="su-foot">
+      <button class="btn secondary" id="stratUploadCancel">Cancel</button>
+      <button class="btn" id="stratSave">Save to library</button>
+    </div>
+  </div>`;
+}
+function bindStratCard(){
+  const up=$("#stratUpload");
+  $("#stratUploadBtn").onclick=()=>{ if(up.hidden){ pendingStratText=""; up.hidden=false; const n=$("#stratName"); if(n)n.focus(); } else up.hidden=true; };
+  $("#stratUploadCancel").onclick=()=>{ up.hidden=true; pendingStratText=""; };
+  $("#stratFileBtn").onclick=()=>$("#stratFile").click();
+  $("#stratFile").onchange=(e)=>{ const f=e.target.files[0]; if(!f)return; const r=new FileReader();
+    r.onload=()=>{ pendingStratText=r.result; $("#stratPicked").textContent=f.name; const nm=$("#stratName"); if(nm&&!nm.value.trim()) nm.value=f.name.replace(/\.[^.]+$/,""); };
+    r.onerror=()=>toast("Couldn't read that file"); r.readAsText(f); };
+  $("#stratPasteBtn").onclick=()=>{ const t=$("#stratText"); t.hidden=!t.hidden; if(!t.hidden)t.focus(); };
+  $("#stratText").oninput=(e)=>{ pendingStratText=e.target.value; };
+  $("#stratSave").onclick=()=>{
+    const nm=($("#stratName").value||"").trim();
+    const t=$("#stratText"); const txt=(t && !t.hidden && t.value.trim()) ? t.value : pendingStratText;
+    if(!txt||!txt.trim()){ toast("Choose a file or paste the strategy text"); return; }
+    saveStrategy(nm, parseStrategy(txt), $("#stratPicked").textContent||null);
+  };
+  $$("[data-usestrat]").forEach(b=>b.onclick=()=>{ if(C().draft.productId) assignStrategy(C().draft.productId, b.dataset.usestrat); });
+  $$("[data-delstrat]").forEach(b=>b.onclick=(e)=>{ e.stopPropagation(); if(confirm("Delete this strategy from the library?")) deleteStrategy(b.dataset.delstrat); });
 }
 
 /* ---- creative thumbnail (downscaled to a small data URL) ---- */
@@ -1293,25 +1409,7 @@ function renderResearch(){
     <p>Load the strategy so the angles and hero personas come from your own playbook, then build each ad: steal a proven concept, put a fresh angle on it, aim it at one audience, cast one hero, and pick the lander. Altitude writes the script brief and the Facebook naming — then build the next one.</p>
   </div>
 
-  <div class="strat-card">
-    <div class="strat-icon">📄</div>
-    <div class="strat-main">
-      <div class="strat-t">Upload Yoni's strategy</div>
-      <div class="strat-s" id="stratStatus">${stratStatus()}</div>
-    </div>
-    <div class="strat-actions">
-      <input type="file" id="stratFile" accept=".txt,.md,.markdown,.csv,.json,.text" hidden/>
-      <button class="copybtn" id="stratPasteBtn">Paste text</button>
-      <button class="btn" id="stratPickBtn" style="padding:9px 15px">Choose file</button>
-    </div>
-  </div>
-  <div class="strat-paste" id="stratPasteBox" hidden>
-    <textarea id="stratText" placeholder="Paste the strategy here. List angles under an 'Angles' heading and personas under a 'Personas' heading — bullets, numbered, or comma-separated both work."></textarea>
-    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
-      <button class="btn secondary" id="stratCancel">Cancel</button>
-      <button class="btn" id="stratExtract">Extract angles &amp; personas</button>
-    </div>
-  </div>
+  ${stratCardHTML(d)}
 
   <div class="research-top">
     <div class="rt-figure"><span class="k">Target this week</span><input class="mono" id="wkTarget" type="number" min="1" value="${target}"/></div>
@@ -1350,9 +1448,9 @@ function renderResearch(){
         </div>
       </div>`, lockP)}
 
-    ${bstep("03","Angle","Each angle shows its real status on this product — chase fresh or proven, avoid proven losers.",`
+    ${bstep("03","Angle","From this product's strategy — each shows its real status. Chase fresh or proven, avoid proven losers.",`
       <div class="chiprow">
-        ${cr.angles.map(a=>{const st=d.productId?angleStatusFor(d.productId,a).key:"untested";const m=ANGLE_STATUS[st];
+        ${anglesForProduct(d.productId).map(a=>{const st=d.productId?angleStatusFor(d.productId,a).key:"untested";const m=ANGLE_STATUS[st];
           return `<button class="chip ${d.angle===a?'on':''}" data-pick="angle" data-v="${esc(a)}">${esc(a)}<span class="u astat-dot ${m.cls}" title="${m.label}">${m.sig}</span></button>`;}).join("")}
         ${addChip("angle")}
       </div>
@@ -1365,9 +1463,9 @@ function renderResearch(){
         </button>`).join("")}
       </div>`, lockP)}
 
-    ${bstep("05","Hero persona","Which customer are we casting as the hero of this ad?",`
+    ${bstep("05","Hero persona","From this product's strategy — who are we casting as the hero of this ad?",`
       <div class="chiprow">
-        ${cr.personas.map(p=>`<button class="chip ${d.personaId===p.id?'on':''}" data-pick="persona" data-v="${p.id}">${esc(p.name)}</button>`).join("")}
+        ${personasForProduct(d.productId).map(p=>`<button class="chip ${d.personaId===p.id?'on':''}" data-pick="persona" data-v="${p.id}">${esc(p.name)}</button>`).join("")}
         ${addChip("persona")}
       </div>`, lockP)}
 
@@ -1416,12 +1514,8 @@ function renderResearch(){
 
   updatePreview();
 
-  // strategy card
-  $("#stratPickBtn").onclick=()=>$("#stratFile").click();
-  $("#stratFile").onchange=(e)=>{const f=e.target.files[0]; if(!f)return; const r=new FileReader(); r.onload=()=>applyStrategy(f.name,parseStrategy(r.result)); r.onerror=()=>toast("Couldn't read that file"); r.readAsText(f);};
-  $("#stratPasteBtn").onclick=()=>{const b=$("#stratPasteBox"); b.hidden=!b.hidden; if(!b.hidden){const t=$("#stratText"); if(t) t.focus();}};
-  const scn=$("#stratCancel"); if(scn) scn.onclick=()=>{$("#stratPasteBox").hidden=true;};
-  const sex=$("#stratExtract"); if(sex) sex.onclick=()=>{applyStrategy("pasted text",parseStrategy($("#stratText").value));};
+  // strategy library card
+  bindStratCard();
 
   // thumbnail
   const tfl=$("#thumbFile"); if(tfl) tfl.onchange=(e)=>{fileToThumb(e.target.files[0],(url)=>{ if(url){C().draft.thumb=url;save();renderResearch();} else toast("Couldn't read that image"); });};
@@ -1430,7 +1524,11 @@ function renderResearch(){
   // picks
   $$("[data-pick]").forEach(b=>b.onclick=()=>{
     const f=b.dataset.pick, v=b.dataset.v;
-    if(f==="product"){ if(d.productId!==v){ d.productId=v; d.lander=null; } }
+    if(f==="product"){ if(d.productId!==v){ d.productId=v; d.lander=null;
+        const st=currentStrategy(v);
+        if(d.angle && st && !st.angles.includes(d.angle)) d.angle=null;
+        if(d.personaId && st && !(st.personas||[]).find(p=>p.id===d.personaId)) d.personaId=null;
+      } }
     else if(f==="brand"){ d.brandId=(d.brandId===v?null:v); }
     else d[f]=v;
     save(); renderResearch();
@@ -1562,8 +1660,8 @@ function briefRows(d){
 function addToBank(kind,val){
   const cr=C(), d=cr.draft;
   if(kind==="brand"){const id=uid();cr.brands.push({id,name:val,url:""});d.brandId=id;}
-  else if(kind==="angle"){if(!cr.angles.includes(val))cr.angles.push(val);d.angle=val;}
-  else if(kind==="persona"){cr.personas.push({id:uid(),name:val});d.personaId=cr.personas[cr.personas.length-1].id;}
+  else if(kind==="angle"){const st=currentStrategy(d.productId);if(!st)return;if(!st.angles.includes(val))st.angles.push(val);d.angle=val;}
+  else if(kind==="persona"){const st=currentStrategy(d.productId);if(!st)return;const np={id:uid(),name:val};st.personas.push(np);d.personaId=np.id;}
   else if(kind==="lander"){if(!d.productId)return;(cr.landers[d.productId]=cr.landers[d.productId]||[]);if(!cr.landers[d.productId].includes(val))cr.landers[d.productId].push(val);d.lander=val;}
   else if(kind==="editor"){if(!cr.editors.includes(val))cr.editors.push(val);d.editor=val;}
   save();renderResearch();
