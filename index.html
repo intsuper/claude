@@ -495,6 +495,89 @@ input:focus,button:focus-visible,.stage-item:focus-visible,.focus-opt:focus-visi
 .brief-thumb{width:118px;height:118px;object-fit:cover;border-radius:10px;border:1px solid var(--border);float:right;margin:0 0 10px 16px}
 .adrow .ar-thumb{width:42px;height:42px;object-fit:cover;border-radius:8px;border:1px solid var(--border);flex:none}
 
+/* acquisition split on product card */
+.pcard.clickable{cursor:pointer;transition:transform .12s,box-shadow .12s,border-color .12s}
+.pcard.clickable:hover{transform:translateY(-2px);box-shadow:var(--shadow-lift);border-color:var(--border-strong)}
+.pcard.clickable:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.acq-row{border-top:1px solid var(--border);padding-top:11px;margin-top:2px}
+.acq-head{display:flex;justify-content:space-between;font-size:11px;color:var(--ink-3);margin-bottom:6px}
+.acq-src{font-size:10px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.04em;font-weight:700;font-family:"Archivo",sans-serif}
+.acq-bar{display:flex;height:8px;border-radius:99px;overflow:hidden;background:var(--inset)}
+.acq-bar.big{height:14px;margin-top:4px}
+.acq-bar i{display:block;height:100%}
+.acq-bar .acq-new{background:var(--accent)}
+.acq-bar .acq-ret{background:color-mix(in srgb,var(--ink-3) 45%,transparent)}
+.acq-legend{display:flex;gap:14px;margin-top:7px;font-size:11px;color:var(--ink-2)}
+.acq-legend .d{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:5px;vertical-align:middle}
+.acq-legend .d.new{background:var(--accent)}
+.acq-legend .d.ret{background:color-mix(in srgb,var(--ink-3) 45%,transparent)}
+.pcard-cta{font-family:"Archivo",sans-serif;font-size:11.5px;font-weight:700;color:var(--accent);margin-top:11px;letter-spacing:.01em}
+
+/* product detail modal */
+.pm-scrim{position:fixed;inset:0;background:rgba(6,9,14,.5);z-index:70;opacity:0;pointer-events:none;transition:opacity .2s}
+.pm-scrim.open{opacity:1;pointer-events:auto}
+.pmodal{position:fixed;z-index:71;top:50%;left:50%;transform:translate(-50%,-48%) scale(.98);opacity:0;pointer-events:none;
+  width:min(640px,94vw);max-height:88vh;overflow:auto;background:var(--surface);border:1px solid var(--border);border-radius:18px;
+  box-shadow:var(--shadow-lift);transition:opacity .2s,transform .2s}
+.pmodal.open{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1)}
+.pm-close{position:absolute;top:14px;right:14px;border:1px solid var(--border-strong);background:var(--surface);color:var(--ink-2);width:32px;height:32px;border-radius:8px;font-size:14px;z-index:2}
+.pm-close:hover{background:var(--surface-2);color:var(--ink)}
+.pm-body{padding:22px 24px}
+.pm-hero{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:20px;padding-right:34px}
+.pm-name{font-family:"Archivo",sans-serif;font-weight:800;font-size:21px;letter-spacing:-.01em}
+.pm-sub{font-size:12.5px;color:var(--ink-3);margin-top:4px}
+.pm-section{margin-bottom:22px}
+.pm-h{font-family:"Archivo",sans-serif;font-weight:700;font-size:14px;display:flex;align-items:baseline;gap:10px;margin-bottom:10px}
+.pm-h .acq-src{margin-left:auto}
+.pm-legend{font-size:11.5px;color:var(--ink-3);margin-bottom:10px}
+.angle-tbl{width:100%;border-collapse:collapse;border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.angle-tbl th{font-family:"Archivo",sans-serif;text-transform:uppercase;letter-spacing:.05em;font-size:10px;color:var(--ink-3);text-align:left;padding:9px 13px;background:var(--surface-2);border-bottom:1px solid var(--border);font-weight:700}
+.angle-tbl td{padding:9px 13px;border-bottom:1px solid var(--border);font-size:13px}
+.angle-tbl tr:last-child td{border-bottom:none}
+.angle-tbl .num{text-align:right}
+.angle-tbl .mono.lo{color:var(--bad-2)}
+.astat{display:inline-flex;align-items:center;gap:5px;font-family:"Archivo",sans-serif;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;padding:3px 9px;border-radius:999px}
+.astat.winning{background:var(--good-soft);color:var(--good-2)}
+.astat.losing{background:var(--bad-soft);color:var(--bad-2)}
+.astat.testing{background:var(--warn-soft);color:var(--warn-2)}
+.astat.untested{background:var(--accent-soft);color:var(--accent)}
+.pm-foot{font-size:12px;color:var(--ink-3);border-top:1px solid var(--border);padding-top:14px;line-height:1.5}
+.pm-foot b{color:var(--warn-2)}
+
+/* angle status dot inside chips + key */
+.astat-dot{display:inline-grid;place-items:center;min-width:15px;height:15px;padding:0 3px;border-radius:5px;font-size:10px;font-weight:700;font-family:"IBM Plex Mono",monospace}
+.astat-dot.winning{background:var(--good);color:#fff}
+.astat-dot.losing{background:var(--bad);color:#fff}
+.astat-dot.testing{background:var(--warn);color:#fff}
+.astat-dot.untested{background:var(--accent-soft);color:var(--accent)}
+.chip.on .astat-dot.untested{background:rgba(255,255,255,.28);color:#fff}
+.angle-key{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:11px;font-size:11px;color:var(--ink-3)}
+.angle-key .astat-dot{margin-right:2px}
+.angle-key .sep{color:var(--border-strong);margin:0 4px}
+
+/* brief score card */
+.scorecard{display:grid;grid-template-columns:150px 1fr;gap:18px;border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin-bottom:14px;align-items:center}
+.scorecard.s-good{background:var(--good-soft);border-color:color-mix(in srgb,var(--good) 30%,transparent)}
+.scorecard.s-warn{background:var(--warn-soft);border-color:color-mix(in srgb,var(--warn) 30%,transparent)}
+.scorecard.s-bad{background:var(--bad-soft);border-color:color-mix(in srgb,var(--bad) 30%,transparent)}
+.score-num{display:flex;flex-direction:column;align-items:flex-start;line-height:1}
+.score-num .sn{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:46px;letter-spacing:-.02em}
+.s-good .score-num .sn{color:var(--good-2)}.s-warn .score-num .sn{color:var(--warn-2)}.s-bad .score-num .sn{color:var(--bad-2)}
+.score-num .sd{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--ink-3);margin-top:-4px}
+.score-num .score-label{font-family:"Archivo",sans-serif;font-weight:700;font-size:12.5px;margin-top:8px;color:var(--ink)}
+.score-factors{display:flex;flex-direction:column;gap:9px}
+.sf-h{display:flex;justify-content:space-between;font-size:11.5px;font-weight:600;color:var(--ink-2)}
+.sf-bar{height:5px;border-radius:99px;background:color-mix(in srgb,var(--ink-3) 22%,transparent);margin:4px 0 3px;overflow:hidden}
+.sf-bar i{display:block;height:100%;border-radius:99px;background:var(--ink)}
+.s-good .sf-bar i{background:var(--good)}.s-warn .sf-bar i{background:var(--warn)}.s-bad .sf-bar i{background:var(--bad)}
+.sf-n{font-size:11px;color:var(--ink-3);line-height:1.35}
+.score-empty{border:1px dashed var(--border-strong);border-radius:12px;padding:14px 16px;font-size:12.5px;color:var(--ink-3);margin-bottom:14px}
+.score-badge{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:8px;font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:14px;flex:none}
+.score-badge.s-good{background:var(--good-soft);color:var(--good-2)}
+.score-badge.s-warn{background:var(--warn-soft);color:var(--warn-2)}
+.score-badge.s-bad{background:var(--bad-soft);color:var(--bad-2)}
+@media (max-width:600px){.scorecard{grid-template-columns:1fr}}
+
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -552,6 +635,13 @@ input:focus,button:focus-visible,.stage-item:focus-visible,.focus-opt:focus-visi
     <button class="btn" id="saveData">Save</button>
   </div>
 </aside>
+
+<!-- ============ PRODUCT DETAIL MODAL ============ -->
+<div class="pm-scrim" id="pmScrim"></div>
+<div class="pmodal" id="pmodal" aria-hidden="true" role="dialog" aria-label="Product angle detail">
+  <button class="pm-close" id="pmClose" aria-label="Close">✕</button>
+  <div class="pm-body" id="pmBody"></div>
+</div>
 
 <div class="toast" id="toast"></div>
 
@@ -660,14 +750,32 @@ function defaultCreative(products){
     draft:freshDraft(),
   };
 }
+// share of WINNING spend from NEW customers (Facebook-derived — sample until connected)
+const ACQ_SPLIT={"Pink Protocol":0.66,"PDRN Booster":0.58,"Retinew":0.48,"LuxeSkin":0.61,"NAD9 Kit":0.44,"Ancestica Solid Bar":0.55};
+function applyAcq(products){ products.forEach(p=>{ if(typeof p.newPct!=="number") p.newPct=(ACQ_SPLIT[p.name]!=null?ACQ_SPLIT[p.name]:0.5); }); }
+// per-product angle performance (Facebook-derived — sample until connected). [angle, spend, roas]
+function seedAngleData(products){
+  const P={
+    "Pink Protocol":[["Insecurity",850,2.6],["Transformation",620,2.3],["Social Proof",380,1.6],["Science / Mechanism",150,1.9],["Time-Saving",70,2.1]],
+    "PDRN Booster":[["Science / Mechanism",720,2.4],["Authority / Expert",540,2.2],["FOMO / Trend",300,1.3],["Ingredient Hero",180,1.8],["Clean / Natural",90,2.0]],
+    "Retinew":[["Ingredient Hero",640,2.1],["Anti-Aging Fear",420,1.5],["Myth-Busting",260,1.7],["Routine / Ritual",140,1.9]],
+    "LuxeSkin":[["Transformation",900,2.5],["Social Proof",560,2.4],["Cost-Per-Use",300,1.6],["Clean / Natural",120,2.2]],
+    "NAD9 Kit":[["Authority / Expert",680,1.6],["Science / Mechanism",520,1.4],["Problem-Aware",240,1.8],["Transformation",110,2.3]],
+    "Ancestica Solid Bar":[["Clean / Natural",560,2.2],["Cost-Per-Use",340,1.5],["Routine / Ritual",190,1.7],["FOMO / Trend",80,1.9]],
+  };
+  const out={};
+  products.forEach(p=>{ out[p.id]={}; (P[p.name]||[]).forEach(([a,s,r])=>out[p.id][a]={spend:s,roas:r}); });
+  return out;
+}
 function defaultState(){
-  const products=buildSeed();
+  const products=buildSeed(); applyAcq(products);
   return {
-    goal:{dailyTarget:5000, roasThreshold:2.0},
+    goal:{dailyTarget:5000, roasThreshold:2.0, angleWin:100, angleLose:200},
     timeframe:"7",
     theme:"system",
     isSample:true,
     products,
+    angleData:seedAngleData(products),
     workflow:freshWorkflow(),
     creative:defaultCreative(products),
     view:1,
@@ -682,6 +790,12 @@ function load(){
 function migrate(s){
   if(!s.workflow) s.workflow=freshWorkflow();
   if(!Array.isArray(s.workflow.completed)) s.workflow.completed=[];
+  if(!s.goal) s.goal={dailyTarget:5000,roasThreshold:2.0};
+  if(s.goal.angleWin==null) s.goal.angleWin=100;
+  if(s.goal.angleLose==null) s.goal.angleLose=200;
+  applyAcq(s.products);
+  if(!s.angleData||typeof s.angleData!=="object"){ s.angleData=seedAngleData(s.products); }
+  s.products.forEach(p=>{ if(!s.angleData[p.id]) s.angleData[p.id]={}; });
   if(!s.creative) s.creative=defaultCreative(s.products);
   const cr=s.creative;
   if(!cr.draft) cr.draft=freshDraft();
@@ -754,6 +868,24 @@ function accountRollup(){
     losers:st.reduce((a,s)=>a+s.lCount,0),
   };
 }
+
+/* ---- angle intelligence: status per product from Facebook-derived spend/roas ---- */
+const ANGLE_STATUS={winning:{label:"Winning",cls:"winning",sig:"✓"},losing:{label:"Losing",cls:"losing",sig:"✕"},testing:{label:"Testing",cls:"testing",sig:"•"},untested:{label:"Untested",cls:"untested",sig:"+"}};
+function angleStatusFor(pid, angle){
+  const st=(S.angleData[pid]||{})[angle];
+  const t=thr(), wS=S.goal.angleWin||100, lS=S.goal.angleLose||200;
+  if(!st) return {key:"untested",spend:0,roas:0};
+  if(st.roas>=t && st.spend>=wS) return {key:"winning",spend:st.spend,roas:st.roas};
+  if(st.roas<t && st.spend>=lS) return {key:"losing",spend:st.spend,roas:st.roas};
+  return {key:"testing",spend:st.spend,roas:st.roas};
+}
+function angleBreakdown(pid){
+  const data=S.angleData[pid]||{};
+  const rank={winning:0,testing:1,untested:2,losing:3};
+  return Object.keys(data).map(a=>{const s=angleStatusFor(pid,a);return {angle:a,...s};})
+    .sort((x,y)=> (rank[x.key]-rank[y.key]) || (y.spend-x.spend));
+}
+function productAcq(p){ const n=typeof p.newPct==="number"?p.newPct:0.5; return {newPct:n, retPct:1-n}; }
 
 /* ---- recommendation engine: score plays, tie to product ---- */
 function buildRecommendations(){
@@ -921,13 +1053,62 @@ function renderStage1(){
     const c=+col.dataset.count; col.style.height=(22+ (c/maxCount)*(108-22))+"px";
   });
   $("#lockStage1").onclick=()=>{completeStage(1);setView(2);toast("Week locked — let's build");};
+  $$(".pcard.clickable").forEach(c=>{
+    const open=()=>openProductDetail(c.dataset.product);
+    c.onclick=open;
+    c.onkeydown=(e)=>{ if(e.key==="Enter"||e.key===" "){e.preventDefault();open();} };
+  });
   bindSampleBanner();
 }
+
+/* ---- product detail modal: angle scoreboard + acquisition split ---- */
+function openProductDetail(pid){
+  const p=productById(pid); if(!p)return;
+  const s=productStats(p); const acq=productAcq(p);
+  const newP=Math.round(acq.newPct*100);
+  const rows=angleBreakdown(pid);
+  const wS=S.goal.angleWin||100, lS=S.goal.angleLose||200, t=thr();
+  const win=rows.filter(r=>r.key==="winning").length, lose=rows.filter(r=>r.key==="losing").length, test=rows.filter(r=>r.key==="testing").length;
+  const chip=(k)=>`<span class="astat ${ANGLE_STATUS[k].cls}">${ANGLE_STATUS[k].sig} ${ANGLE_STATUS[k].label}</span>`;
+  const body=$("#pmBody");
+  body.innerHTML=`
+    <div class="pm-hero">
+      <div><div class="pm-name">${esc(p.name)}</div><div class="pm-sub">${money(s.totSpend)} spend · ${s.wCount} winners · ${s.lCount} losers · ${TF_LABEL[tf()]}</div></div>
+      <span class="verdict ${s.winRatio>=0.6?'win':s.winRatio>=0.4?'mix':'bleed'}">${s.winRatio>=0.6?'Scaling':s.winRatio>=0.4?'Mixed':'Bleeding'}</span>
+    </div>
+
+    <div class="pm-section">
+      <div class="pm-h">New vs. returning <span class="acq-src">winning spend · Facebook (sample)</span></div>
+      <div class="acq-bar big"><i class="acq-new" style="width:${newP}%"></i><i class="acq-ret" style="width:${100-newP}%"></i></div>
+      <div class="acq-legend"><span><i class="d new"></i>New customers ${newP}%</span><span><i class="d ret"></i>Returning ${100-newP}%</span></div>
+    </div>
+
+    <div class="pm-section">
+      <div class="pm-h">Angles — what's working <span class="acq-src">${win} winning · ${test} testing · ${lose} losing</span></div>
+      <div class="pm-legend">Winning = ≥ ${money(wS)} &amp; ≥ ${t.toFixed(1)} ROAS · Losing = ≥ ${money(lS)} &amp; &lt; ${t.toFixed(1)} · Testing = under ${money(lS)}</div>
+      ${rows.length? `<table class="angle-tbl">
+        <thead><tr><th>Angle</th><th class="num">Spend</th><th class="num">ROAS</th><th>Status</th></tr></thead>
+        <tbody>${rows.map(r=>`<tr>
+          <td>${esc(r.angle)}</td>
+          <td class="num mono">${money(r.spend)}</td>
+          <td class="num mono ${r.roas>=t?'':'lo'}">${r.roas.toFixed(2)}</td>
+          <td>${chip(r.key)}</td>
+        </tr>`).join("")}</tbody></table>`
+        : '<div class="empty" style="padding:24px">No angle data yet for this product. Build ads in Creative Research to start tracking angles — or connect Facebook to import real angle performance.</div>'}
+    </div>
+
+    <div class="pm-foot">Angles used in Creative Research land here as <b>Testing</b>; Facebook fills in the real spend &amp; ROAS to flip them Winning or Losing.</div>
+  `;
+  $("#pmScrim").classList.add("open"); $("#pmodal").classList.add("open"); $("#pmodal").setAttribute("aria-hidden","false");
+}
+function closeProductDetail(){ $("#pmScrim").classList.remove("open"); $("#pmodal").classList.remove("open"); $("#pmodal").setAttribute("aria-hidden","true"); }
 
 function pillarCard(s){
   const verdict = s.winRatio>=0.6?["win","Scaling"] : s.winRatio>=0.4?["mix","Mixed"] : ["bleed","Bleeding"];
   const ratio=Math.round(s.winRatio*100);
-  return `<article class="pcard">
+  const acq=productAcq(s.p); const newP=Math.round(acq.newPct*100);
+  const angleN=angleBreakdown(s.p.id).length;
+  return `<article class="pcard clickable" data-product="${s.p.id}" tabindex="0" role="button" aria-label="Open ${esc(s.p.name)} angles">
     <div class="phead">
       <div><div class="pname">${esc(s.p.name)}</div>
       <div class="pspend">${money(s.totSpend)} spend · ${TF_LABEL[tf()]}</div></div>
@@ -947,6 +1128,12 @@ function pillarCard(s){
       <span>${ratio}% profitable</span>
       <div class="ratio-bar"><i style="width:${ratio}%"></i></div>
     </div>
+    <div class="acq-row" title="Share of winning spend from new vs returning customers (from Facebook — sample)">
+      <div class="acq-head"><span>Winners come from</span><span class="acq-src">FB · sample</span></div>
+      <div class="acq-bar"><i class="acq-new" style="width:${newP}%"></i><i class="acq-ret" style="width:${100-newP}%"></i></div>
+      <div class="acq-legend"><span><i class="d new"></i>New ${newP}%</span><span><i class="d ret"></i>Returning ${100-newP}%</span></div>
+    </div>
+    <div class="pcard-cta">See ${angleN} angle${angleN===1?"":"s"} tested →</div>
   </article>`;
 }
 
@@ -1163,11 +1350,13 @@ function renderResearch(){
         </div>
       </div>`, lockP)}
 
-    ${bstep("03","Angle","Choose an angle you haven't run yet on this product — used ones are marked.",`
+    ${bstep("03","Angle","Each angle shows its real status on this product — chase fresh or proven, avoid proven losers.",`
       <div class="chiprow">
-        ${cr.angles.map(a=>`<button class="chip ${d.angle===a?'on':''} ${used.has(a)&&d.angle!==a?'used':''}" data-pick="angle" data-v="${esc(a)}">${esc(a)}${used.has(a)&&d.angle!==a?'<span class="u">used</span>':''}</button>`).join("")}
+        ${cr.angles.map(a=>{const st=d.productId?angleStatusFor(d.productId,a).key:"untested";const m=ANGLE_STATUS[st];
+          return `<button class="chip ${d.angle===a?'on':''}" data-pick="angle" data-v="${esc(a)}">${esc(a)}<span class="u astat-dot ${m.cls}" title="${m.label}">${m.sig}</span></button>`;}).join("")}
         ${addChip("angle")}
-      </div>`, lockP)}
+      </div>
+      <div class="angle-key">${["winning","untested","testing","losing"].map(k=>`<span class="astat-dot ${ANGLE_STATUS[k].cls}">${ANGLE_STATUS[k].sig}</span>${ANGLE_STATUS[k].label}`).join('<span class="sep">·</span>')}</div>`, lockP)}
 
     ${bstep("04","Audience","Who is this ad talking to?",`
       <div class="aud-grid">
@@ -1200,6 +1389,7 @@ function renderResearch(){
 
     <div class="bstep" style="grid-template-columns:1fr">
       <div class="bs-body">
+        <div id="scoreOut"></div>
         <div class="name-out">
           <div class="no-k">Facebook naming convention <button class="copybtn" id="copyName" style="margin-left:auto">Copy</button></div>
           <div class="no-v" id="nameOut"></div>
@@ -1268,8 +1458,69 @@ function renderResearch(){
 
 function bindText(id,field){const el=$("#"+id);if(!el)return;el.oninput=()=>{C().draft[field]=el.value;save();updatePreview();};}
 
+/* ---- brief score: predicted win probability, 1-10 ---- */
+function computeScore(d){
+  if(!draftComplete(d)) return null;
+  const factors=[];
+  // Angle (max 4) — tied to real performance on this product
+  const as=angleStatusFor(d.productId,d.angle);
+  let aPts,aNote;
+  if(as.key==="winning"){aPts=4;aNote="Proven winning angle — double down";}
+  else if(as.key==="untested"){aPts=3.2;aNote="Fresh angle — a new test with real upside";}
+  else if(as.key==="testing"){aPts=2.4;aNote="Angle still in testing — you're iterating on it";}
+  else {aPts=1;aNote="This angle has lost before on this product";}
+  let freshJuice=false;
+  if(as.key==="testing"||as.key==="losing"){
+    const prior=new Set(C().ads.filter(a=>a.productId===d.productId&&a.angle===d.angle&&a.id!==d.editingId).map(a=>a.brandId));
+    if(d.brandId&&!prior.has(d.brandId)){aPts=Math.min(4,aPts+0.6);freshJuice=true;aNote+=" · new inspiration brings fresh juice";}
+    else if(as.key==="losing"){aNote+=" · same inspiration as before — no fresh juice";}
+  }
+  factors.push({k:"Angle",pts:aPts,max:4,note:aNote});
+  // Audience ↔ goal fit (max 3) — matched to what the product needs on the Big Picture
+  const ps=productStats(productById(d.productId));
+  let auPts,auNote;
+  if(ps.winRatio<0.5){
+    if(d.audience==="COLD"){auPts=3;auNote="Product needs new winners — cold acquisition fits the goal";}
+    else if(d.audience==="REPEAT"){auPts=1.3;auNote="Product is bleeding — retargeting buyers won't grow it";}
+    else{auPts=2.1;auNote="Warm re-engagement — moderate fit for a struggling product";}
+  } else {
+    if(d.audience==="COLD"){auPts=2.8;auNote="Strong product — scale it with new acquisition";}
+    else if(d.audience==="REPEAT"){auPts=2.5;auNote="Healthy base — resell to existing buyers";}
+    else{auPts=2.4;auNote="Warm audience — a solid fit";}
+  }
+  factors.push({k:"Audience fit",pts:auPts,max:3,note:auNote});
+  // Craft (max 3)
+  let cPts=0; const cn=[];
+  if(d.brandId&&d.creativeUrl){cPts+=1.6;cn.push("modelled on a real creative");}
+  if(d.concept){cPts+=0.5;cn.push("format defined");}
+  if(d.thumb){cPts+=0.5;cn.push("reference attached");}
+  if(d.hook){cPts+=0.4;}
+  cPts=Math.min(3,cPts);
+  factors.push({k:"Craft",pts:cPts,max:3,note:cn.join(" · ")||"basics only"});
+  let score=Math.max(1,Math.min(10,Math.round(aPts+auPts+cPts)));
+  // a proven-losing angle can't read as a safe bet, however strong the rest is
+  if(as.key==="losing") score=Math.min(score, freshJuice?6:5);
+  const label=score>=8?"Strong bet":score>=6?"Solid — worth building":score>=4?"Speculative — test it":"Risky — reconsider";
+  const tone=score>=6?"good":score>=4?"warn":"bad";
+  return {score,label,tone,factors,angleKey:as.key};
+}
+const scoreTone=(n)=>n>=6?"good":n>=4?"warn":"bad";
+function scorePanel(d){
+  const sc=computeScore(d);
+  if(!sc) return `<div class="score-empty">Complete every step to see this brief's predicted win score.</div>`;
+  const bars=sc.factors.map(f=>`<div class="sf">
+    <div class="sf-h"><span>${f.k}</span><span class="mono">${(+f.pts.toFixed(1))}/${f.max}</span></div>
+    <div class="sf-bar"><i style="width:${Math.round(f.pts/f.max*100)}%"></i></div>
+    <div class="sf-n">${esc(f.note)}</div>
+  </div>`).join("");
+  return `<div class="scorecard s-${sc.tone}">
+    <div class="score-num"><span class="sn">${sc.score}</span><span class="sd">/10</span><span class="score-label">${sc.label}</span></div>
+    <div class="score-factors">${bars}</div>
+  </div>`;
+}
 function updatePreview(){
   const d=C().draft;
+  const so=$("#scoreOut"); if(so) so.innerHTML=scorePanel(d);
   const no=$("#nameOut"); if(no) no.innerHTML=prettyNaming(d);
   const bo=$("#briefOut"); if(bo) bo.innerHTML=briefRows(d);
   const add=$("#addAd"); if(add) add.disabled=!draftComplete(d);
@@ -1320,10 +1571,15 @@ function addToBank(kind,val){
 function commitAd(){
   const cr=C(), d=cr.draft;
   if(!draftComplete(d)){toast("Fill every step first");return;}
+  // close the loop: an angle used in a brief is now "in play" on the Big Picture (Testing until Facebook fills the numbers)
+  if(!S.angleData[d.productId]) S.angleData[d.productId]={};
+  if(!S.angleData[d.productId][d.angle]) S.angleData[d.productId][d.angle]={spend:0,roas:0,fromBrief:true};
+  const sc=computeScore(d);
   const ad={
     id:d.editingId||uid(), productId:d.productId, brandId:d.brandId, creativeUrl:d.creativeUrl, concept:d.concept, thumb:d.thumb,
     angle:d.angle, audience:d.audience, personaId:d.personaId, lander:d.lander, editor:d.editor, mediaType:d.mediaType,
-    hook:d.hook, dateCode:d.dateCode, naming:namingFor(d), brief:briefText(d), createdAt:new Date().toISOString(),
+    hook:d.hook, dateCode:d.dateCode, score:sc?sc.score:null, scoreLabel:sc?sc.label:"",
+    naming:namingFor(d), brief:briefText(d), createdAt:new Date().toISOString(),
   };
   if(d.editingId){const i=cr.ads.findIndex(a=>a.id===d.editingId);if(i>=0)cr.ads[i]=ad;toast("Ad updated");}
   else{cr.ads.push(ad);toast("Ad added — queued for Script Studio");}
@@ -1337,6 +1593,7 @@ function adRow(a){
   return `<div class="adrow">
     <div class="ar-top">
       ${a.thumb?`<img class="ar-thumb" src="${a.thumb}" alt="creative"/>`:''}
+      ${typeof a.score==="number"?`<span class="score-badge s-${scoreTone(a.score)}" title="${esc(a.scoreLabel||'')}">${a.score}</span>`:''}
       <div class="ar-name">${esc(a.naming)}</div>
       <button class="copybtn" data-adcopy="name" data-id="${a.id}">Copy name</button>
     </div>
@@ -1434,6 +1691,9 @@ $("#saveData").onclick=()=>{
 $("#openData").onclick=openDrawer;
 $("#closeDrawer").onclick=closeDrawer;
 $("#scrim").onclick=closeDrawer;
+$("#pmClose").onclick=closeProductDetail;
+$("#pmScrim").onclick=closeProductDetail;
+document.addEventListener("keydown",(e)=>{ if(e.key==="Escape"){closeProductDetail();closeDrawer();} });
 
 /* ============================================================
    CONTROLS
