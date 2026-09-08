@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Creative Altitude</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" />
+<style>
+/* ============================================================
+   CREATIVE ALTITUDE — the weekly creative operating system
+   Palette: cool deep-ink cockpit. Accent (indigo) = THE GOAL.
+   Semantic green/red/amber reserved for winner/loser/iterate.
+   ============================================================ */
+
+:root{
+  /* light theme (default, un-stamped covered by media query below) */
+  --bg:#eef1f5;
+  --surface:#ffffff;
+  --surface-2:#f4f6f9;
+  --panel:#ffffff;
+  --inset:#f0f3f7;
+  --border:#dde3ea;
+  --border-strong:#c6d0db;
+  --ink:#111821;
+  --ink-2:#46535f;
+  --ink-3:#75828f;
+  --accent:#3f57ff;
+  --accent-ink:#ffffff;
+  --accent-soft:rgba(63,87,255,.10);
+  --good:#0f9d58;
+  --good-2:#0b7c44;
+  --bad:#e0413f;
+  --bad-2:#c22f2d;
+  --warn:#c67a10;
+  --warn-2:#a86308;
+  --good-soft:rgba(15,157,88,.12);
+  --bad-soft:rgba(224,65,63,.12);
+  --warn-soft:rgba(198,122,16,.13);
+  --shadow:0 1px 2px rgba(16,24,40,.04),0 8px 24px -12px rgba(16,24,40,.18);
+  --shadow-lift:0 2px 6px rgba(16,24,40,.06),0 20px 40px -20px rgba(16,24,40,.28);
+  --rail-w:250px;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0a0d12;
+    --surface:#12171f;
+    --surface-2:#161d27;
+    --panel:#12171f;
+    --inset:#0d1219;
+    --border:#232c38;
+    --border-strong:#33404f;
+    --ink:#e9eef4;
+    --ink-2:#a3b1c0;
+    --ink-3:#6c7b8b;
+    --accent:#7089ff;
+    --accent-ink:#0a0d12;
+    --accent-soft:rgba(112,137,255,.14);
+    --good:#35c77d;
+    --good-2:#54d78f;
+    --bad:#ff5f60;
+    --bad-2:#ff7d7d;
+    --warn:#eaa63a;
+    --warn-2:#f4bc63;
+    --good-soft:rgba(53,199,125,.14);
+    --bad-soft:rgba(255,95,96,.14);
+    --warn-soft:rgba(234,166,58,.15);
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px -14px rgba(0,0,0,.6);
+    --shadow-lift:0 2px 6px rgba(0,0,0,.4),0 24px 50px -22px rgba(0,0,0,.75);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0a0d12;
+  --surface:#12171f;
+  --surface-2:#161d27;
+  --panel:#12171f;
+  --inset:#0d1219;
+  --border:#232c38;
+  --border-strong:#33404f;
+  --ink:#e9eef4;
+  --ink-2:#a3b1c0;
+  --ink-3:#6c7b8b;
+  --accent:#7089ff;
+  --accent-ink:#0a0d12;
+  --accent-soft:rgba(112,137,255,.14);
+  --good:#35c77d;
+  --good-2:#54d78f;
+  --bad:#ff5f60;
+  --bad-2:#ff7d7d;
+  --warn:#eaa63a;
+  --warn-2:#f4bc63;
+  --good-soft:rgba(53,199,125,.14);
+  --bad-soft:rgba(255,95,96,.14);
+  --warn-soft:rgba(234,166,58,.15);
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px -14px rgba(0,0,0,.6);
+  --shadow-lift:0 2px 6px rgba(0,0,0,.4),0 24px 50px -22px rgba(0,0,0,.75);
+}
+
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:"IBM Plex Sans",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  font-size:15px;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+button{font-family:inherit;cursor:pointer}
+.mono{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-variant-numeric:tabular-nums}
+h1,h2,h3,h4{font-family:"Archivo",system-ui,sans-serif;margin:0;text-wrap:balance;letter-spacing:-.01em}
+.eyebrow{font-family:"Archivo",sans-serif;text-transform:uppercase;letter-spacing:.14em;font-size:11px;font-weight:700;color:var(--ink-3)}
+[hidden]{display:none!important}
+
+/* ---------- shell ---------- */
+.app{display:grid;grid-template-columns:var(--rail-w) 1fr;min-height:100vh}
+
+/* ---------- stage rail ---------- */
+.rail{
+  border-right:1px solid var(--border);
+  background:var(--surface);
+  padding:22px 18px;
+  position:sticky;top:0;height:100vh;overflow:auto;
+  display:flex;flex-direction:column;gap:20px;
+}
+.brand{display:flex;align-items:center;gap:11px}
+.brand .mark{
+  width:34px;height:34px;border-radius:9px;flex:none;position:relative;
+  background:linear-gradient(150deg,var(--accent),color-mix(in srgb,var(--accent) 55%,#b7c4ff));
+  box-shadow:0 6px 16px -6px var(--accent);
+}
+.brand .mark::after{
+  content:"";position:absolute;inset:0;border-radius:9px;
+  background:
+    linear-gradient(to top,var(--accent-ink) 0 2px,transparent 2px) bottom/100% 100% no-repeat;
+  -webkit-mask:linear-gradient(140deg,transparent 38%,#000 38%);mask:linear-gradient(140deg,transparent 38%,#000 38%);
+  opacity:.28;
+}
+.brand h1{font-size:16px;font-weight:800;letter-spacing:-.02em;line-height:1.05}
+.brand p{margin:2px 0 0;font-size:11px;color:var(--ink-3);letter-spacing:.02em}
+
+.stages{display:flex;flex-direction:column;gap:4px;list-style:none;margin:0;padding:0}
+.stage-item{
+  display:grid;grid-template-columns:26px 1fr;gap:11px;align-items:start;
+  padding:11px 11px;border-radius:11px;border:1px solid transparent;
+  background:transparent;width:100%;text-align:left;color:var(--ink-2);
+  position:relative;transition:background .12s,border-color .12s;
+}
+.stage-item:not(:disabled):hover{background:var(--surface-2)}
+.stage-item.active{background:var(--accent-soft);border-color:color-mix(in srgb,var(--accent) 32%,transparent)}
+.stage-item:disabled{cursor:not-allowed;opacity:.55}
+.stage-item .num{
+  width:26px;height:26px;border-radius:8px;flex:none;display:grid;place-items:center;
+  font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:600;
+  background:var(--inset);border:1px solid var(--border);color:var(--ink-2);
+}
+.stage-item.active .num{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.stage-item.done .num{background:var(--good);border-color:var(--good);color:#fff}
+.stage-item.done .num::after{content:"✓";font-family:sans-serif}
+.stage-item.done .num span{display:none}
+.stage-item .body{min-width:0;padding-top:1px}
+.stage-item .t{font-family:"Archivo",sans-serif;font-weight:700;font-size:13.5px;color:var(--ink);line-height:1.2;letter-spacing:-.01em}
+.stage-item:disabled .t{color:var(--ink-2)}
+.stage-item .s{font-size:11.5px;color:var(--ink-3);margin-top:2px;line-height:1.3}
+.stage-item .lock{position:absolute;top:12px;right:11px;font-size:11px;color:var(--ink-3)}
+.rail-foot{margin-top:auto;display:flex;flex-direction:column;gap:9px}
+.rail-foot .wk{font-size:11.5px;color:var(--ink-3)}
+.ghostbtn{
+  display:inline-flex;align-items:center;gap:7px;justify-content:center;
+  border:1px solid var(--border-strong);background:var(--surface);color:var(--ink-2);
+  border-radius:9px;padding:8px 10px;font-size:12.5px;font-weight:600;
+}
+.ghostbtn:hover{background:var(--surface-2);color:var(--ink)}
+
+/* ---------- main ---------- */
+.main{min-width:0;display:flex;flex-direction:column}
+.topbar{
+  position:sticky;top:0;z-index:20;
+  display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+  padding:14px 30px;border-bottom:1px solid var(--border);
+  background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(10px);
+}
+.topbar .crumb{font-family:"Archivo",sans-serif;font-weight:700;font-size:15px}
+.topbar .crumb .idx{color:var(--ink-3);font-weight:600;margin-right:8px}
+.topbar .spacer{flex:1}
+.seg{display:inline-flex;background:var(--inset);border:1px solid var(--border);border-radius:10px;padding:3px}
+.seg button{
+  border:none;background:transparent;color:var(--ink-2);font-weight:600;font-size:12.5px;
+  padding:6px 13px;border-radius:7px;
+}
+.seg button.on{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
+.iconbtn{
+  border:1px solid var(--border-strong);background:var(--surface);color:var(--ink-2);
+  width:36px;height:36px;border-radius:9px;display:grid;place-items:center;font-size:15px;
+}
+.iconbtn:hover{background:var(--surface-2);color:var(--ink)}
+.btn{
+  display:inline-flex;align-items:center;gap:8px;justify-content:center;
+  border:1px solid var(--accent);background:var(--accent);color:var(--accent-ink);
+  border-radius:10px;padding:10px 16px;font-weight:700;font-size:13.5px;letter-spacing:.01em;
+  box-shadow:0 8px 20px -12px var(--accent);
+}
+.btn:hover{filter:brightness(1.05)}
+.btn.secondary{background:var(--surface);color:var(--ink);border-color:var(--border-strong);box-shadow:none}
+.btn.secondary:hover{background:var(--surface-2)}
+.btn:disabled{opacity:.45;cursor:not-allowed;filter:none}
+
+.canvas{padding:28px 30px 64px;max-width:1180px;width:100%}
+.stage-head{margin-bottom:22px}
+.stage-head .eyebrow{color:var(--accent)}
+.stage-head h2{font-size:27px;font-weight:800;margin-top:9px;letter-spacing:-.02em}
+.stage-head p{color:var(--ink-2);margin:8px 0 0;max-width:64ch;font-size:14.5px}
+
+.sample-banner{
+  display:flex;align-items:center;gap:11px;
+  border:1px dashed var(--border-strong);background:var(--surface-2);
+  border-radius:11px;padding:10px 14px;margin-bottom:22px;font-size:13px;color:var(--ink-2);
+}
+.sample-banner b{color:var(--ink)}
+.sample-banner button{margin-left:auto}
+
+/* ---------- goal gauge (hero) ---------- */
+.goal{
+  background:var(--panel);border:1px solid var(--border);border-radius:18px;
+  box-shadow:var(--shadow);padding:24px 26px;margin-bottom:20px;position:relative;overflow:hidden;
+}
+.goal::before{content:"";position:absolute;inset:0 auto 0 0;width:4px;background:var(--accent)}
+.goal-top{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.goal-lede .eyebrow{color:var(--accent)}
+.goal-lede h3{font-size:18px;font-weight:800;margin-top:7px}
+.goal-lede p{margin:5px 0 0;color:var(--ink-3);font-size:13px}
+.goal-figure{text-align:right}
+.goal-figure .big{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:44px;line-height:1;letter-spacing:-.02em}
+.goal-figure .sub{font-size:13px;color:var(--ink-3);margin-top:6px}
+.goal-figure .sub b{color:var(--ink);font-weight:600}
+
+.track{margin-top:28px;position:relative;height:26px;border-radius:8px;background:var(--inset);border:1px solid var(--border);overflow:visible}
+.track .fill{position:absolute;inset:0 auto 0 0;border-radius:7px 0 0 7px;
+  background:linear-gradient(90deg,color-mix(in srgb,var(--accent) 78%,#000 6%),var(--accent));
+  transition:width .5s cubic-bezier(.2,.7,.2,1)}
+.track .fill.over{background:linear-gradient(90deg,var(--good-2),var(--good))}
+.track .goalmark{position:absolute;top:-5px;bottom:-5px;width:2px;background:var(--ink);opacity:.55}
+.track .goalmark::after{content:"$5K/day goal";position:absolute;top:-19px;left:50%;transform:translateX(-50%);
+  white-space:nowrap;font-size:10.5px;font-weight:700;color:var(--ink-2);font-family:"Archivo",sans-serif;letter-spacing:.02em}
+.track-scale{display:flex;justify-content:space-between;margin-top:9px;font-size:11px;color:var(--ink-3)}
+
+.goal-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:22px;border-top:1px solid var(--border);padding-top:18px}
+.goal-stats .gs{padding:0 18px;border-left:1px solid var(--border)}
+.goal-stats .gs:first-child{padding-left:0;border-left:none}
+.goal-stats .gs .k{font-size:11.5px;color:var(--ink-3);display:flex;align-items:center;gap:6px}
+.goal-stats .gs .v{font-family:"IBM Plex Mono",monospace;font-size:23px;font-weight:600;margin-top:5px;letter-spacing:-.01em}
+.goal-stats .gs .n{font-size:12px;margin-top:3px;color:var(--ink-3)}
+.dot{width:8px;height:8px;border-radius:50%;flex:none}
+.dot.good{background:var(--good)}.dot.bad{background:var(--bad)}.dot.acc{background:var(--accent)}
+.v.good{color:var(--good-2)}.v.bad{color:var(--bad-2)}
+
+/* ---------- section titles ---------- */
+.sec-title{display:flex;align-items:baseline;gap:12px;margin:30px 2px 14px}
+.sec-title h3{font-size:16px;font-weight:800}
+.sec-title .hint{font-size:12.5px;color:var(--ink-3)}
+.sec-title .hint b{color:var(--ink-2);font-weight:600}
+
+/* ---------- product pillar cards ---------- */
+.products{display:grid;grid-template-columns:repeat(auto-fill,minmax(272px,1fr));gap:16px}
+.pcard{
+  background:var(--panel);border:1px solid var(--border);border-radius:16px;
+  box-shadow:var(--shadow);padding:18px 18px 16px;display:flex;flex-direction:column;gap:14px;
+}
+.pcard .phead{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.pcard .pname{font-family:"Archivo",sans-serif;font-weight:700;font-size:15.5px;line-height:1.15}
+.pcard .pspend{font-size:11.5px;color:var(--ink-3);margin-top:3px}
+.verdict{font-family:"Archivo",sans-serif;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
+  padding:4px 8px;border-radius:999px;white-space:nowrap;flex:none}
+.verdict.win{background:var(--good-soft);color:var(--good-2)}
+.verdict.mix{background:var(--warn-soft);color:var(--warn-2)}
+.verdict.bleed{background:var(--bad-soft);color:var(--bad-2)}
+
+.pillars{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:end;height:150px;padding-top:6px}
+.pillar{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:0}
+.pillar .col{width:100%;max-width:82px;border-radius:8px 8px 3px 3px;position:relative;display:flex;align-items:flex-start;justify-content:center;
+  min-height:20px;transition:height .5s cubic-bezier(.2,.7,.2,1)}
+.pillar .col .cnt{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:19px;color:#fff;margin-top:7px}
+.pillar.w .col{background:linear-gradient(180deg,var(--good),var(--good-2))}
+.pillar.l .col{background:linear-gradient(180deg,var(--bad),var(--bad-2))}
+.pillar .lab{margin-top:9px;text-align:center}
+.pillar .lab .n{font-family:"Archivo",sans-serif;font-weight:700;font-size:11px;letter-spacing:.03em;text-transform:uppercase}
+.pillar.w .lab .n{color:var(--good-2)}.pillar.l .lab .n{color:var(--bad-2)}
+.pillar .lab .sp{font-size:11px;color:var(--ink-3);margin-top:2px}
+.pcard .pfoot{display:flex;align-items:center;gap:8px;border-top:1px solid var(--border);padding-top:11px;font-size:11.5px;color:var(--ink-3)}
+.ratio-bar{flex:1;height:6px;border-radius:99px;background:var(--bad-soft);overflow:hidden}
+.ratio-bar i{display:block;height:100%;background:var(--good);border-radius:99px}
+
+/* ---------- recommendations ---------- */
+.recs{display:flex;flex-direction:column;gap:12px}
+.rec{
+  display:grid;grid-template-columns:44px 1fr auto;gap:16px;align-items:center;
+  background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:16px 18px;box-shadow:var(--shadow);
+  border-left:4px solid var(--pl,var(--accent));
+}
+.rec .rank{font-family:"IBM Plex Mono",monospace;font-size:22px;font-weight:600;color:var(--ink-3);text-align:center}
+.rec .rmid{min-width:0}
+.rec .rtag{display:inline-flex;align-items:center;gap:7px;font-family:"Archivo",sans-serif;font-weight:700;
+  font-size:11px;text-transform:uppercase;letter-spacing:.05em;padding:3px 9px;border-radius:999px;margin-bottom:8px}
+.rec .rtitle{font-family:"Archivo",sans-serif;font-weight:700;font-size:16px;line-height:1.25}
+.rec .rwhy{font-size:13px;color:var(--ink-2);margin-top:5px}
+.rec .rwhy b{color:var(--ink);font-weight:600}
+.rec .rimpact{text-align:right;white-space:nowrap}
+.rec .rimpact .k{font-size:10.5px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em;font-family:"Archivo",sans-serif;font-weight:700}
+.rec .rimpact .v{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:20px;margin-top:3px}
+.tag-cut{background:var(--bad-soft);color:var(--bad-2)} .b-cut{--pl:var(--bad)}
+.tag-scale{background:var(--good-soft);color:var(--good-2)} .b-scale{--pl:var(--good)}
+.tag-more{background:var(--accent-soft);color:var(--accent)} .b-more{--pl:var(--accent)}
+.tag-iterate{background:var(--warn-soft);color:var(--warn-2)} .b-iterate{--pl:var(--warn)}
+
+.stage-cta{display:flex;align-items:center;gap:14px;margin-top:28px;padding:18px 20px;border-radius:14px;
+  background:var(--surface-2);border:1px solid var(--border)}
+.stage-cta .txt{font-size:13.5px;color:var(--ink-2)}
+.stage-cta .txt b{color:var(--ink)}
+.stage-cta .spacer{flex:1}
+
+/* ---------- stage 2 focus ---------- */
+.focus-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.focus-opt{text-align:left;background:var(--panel);border:1.5px solid var(--border);border-radius:14px;padding:16px;box-shadow:var(--shadow);
+  display:flex;flex-direction:column;gap:9px;transition:border-color .12s,transform .12s}
+.focus-opt:hover{border-color:var(--border-strong);transform:translateY(-2px)}
+.focus-opt.sel{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft),var(--shadow)}
+.focus-opt .fo-top{display:flex;align-items:center;justify-content:space-between}
+.focus-opt .fo-prod{font-size:12px;color:var(--ink-3)}
+.focus-opt .fo-title{font-family:"Archivo",sans-serif;font-weight:700;font-size:16px}
+.focus-opt .fo-why{font-size:12.5px;color:var(--ink-2)}
+.focus-opt .fo-metric{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:15px}
+
+/* ---------- stage 3 decisions ---------- */
+.dtable{width:100%;border-collapse:collapse;background:var(--panel);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)}
+.dtable th{font-family:"Archivo",sans-serif;text-transform:uppercase;letter-spacing:.06em;font-size:10.5px;color:var(--ink-3);
+  text-align:left;padding:12px 16px;border-bottom:1px solid var(--border);font-weight:700;background:var(--surface-2)}
+.dtable td{padding:11px 16px;border-bottom:1px solid var(--border);font-size:13.5px;vertical-align:middle}
+.dtable tr:last-child td{border-bottom:none}
+.dtable .num{text-align:right}
+.roas-pill{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:13px;padding:3px 9px;border-radius:7px}
+.roas-pill.w{background:var(--good-soft);color:var(--good-2)}
+.roas-pill.l{background:var(--bad-soft);color:var(--bad-2)}
+.decide{display:inline-flex;gap:4px;background:var(--inset);border:1px solid var(--border);border-radius:9px;padding:3px}
+.decide button{border:none;background:transparent;color:var(--ink-3);font-weight:600;font-size:11.5px;padding:5px 9px;border-radius:6px}
+.decide button.on[data-d="scale"]{background:var(--good);color:#fff}
+.decide button.on[data-d="cut"]{background:var(--bad);color:#fff}
+.decide button.on[data-d="iterate"]{background:var(--warn);color:#fff}
+.decide button.on[data-d="keep"]{background:var(--ink-2);color:var(--surface)}
+
+/* ---------- stage 4 tasks / stage 5 commit ---------- */
+.tasklist{display:flex;flex-direction:column;gap:10px}
+.taskrow{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;
+  background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:14px 16px;box-shadow:var(--shadow)}
+.taskrow input{width:19px;height:19px;accent-color:var(--accent)}
+.taskrow .tt{font-size:14px}.taskrow.done .tt{text-decoration:line-through;color:var(--ink-3)}
+.taskrow .tk{font-family:"Archivo",sans-serif;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:3px 8px;border-radius:999px}
+.summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:22px}
+.sumcard{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:18px;box-shadow:var(--shadow)}
+.sumcard .k{font-size:11.5px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.05em;font-family:"Archivo",sans-serif;font-weight:700}
+.sumcard .v{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:28px;margin-top:8px;letter-spacing:-.01em}
+.sumcard .n{font-size:12.5px;color:var(--ink-2);margin-top:5px}
+
+.locked-panel{display:grid;place-items:center;min-height:50vh;text-align:center}
+.locked-panel .lk{width:60px;height:60px;border-radius:16px;display:grid;place-items:center;background:var(--surface-2);
+  border:1px solid var(--border);font-size:26px;margin:0 auto 18px}
+.locked-panel h2{font-size:22px}
+.locked-panel p{color:var(--ink-2);max-width:44ch;margin:10px auto 20px}
+
+/* ---------- drawer / modal ---------- */
+.scrim{position:fixed;inset:0;background:rgba(6,9,14,.5);z-index:60;opacity:0;pointer-events:none;transition:opacity .2s}
+.scrim.open{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;height:100vh;width:min(560px,94vw);background:var(--surface);
+  border-left:1px solid var(--border);z-index:61;transform:translateX(100%);transition:transform .24s cubic-bezier(.2,.7,.2,1);
+  display:flex;flex-direction:column;box-shadow:var(--shadow-lift)}
+.drawer.open{transform:none}
+.drawer .dh{display:flex;align-items:center;gap:12px;padding:18px 20px;border-bottom:1px solid var(--border)}
+.drawer .dh h3{font-size:16px;font-weight:800}.drawer .dh .spacer{flex:1}
+.drawer .db{padding:18px 20px;overflow:auto;flex:1;display:flex;flex-direction:column;gap:18px}
+.prod-edit{border:1px solid var(--border);border-radius:12px;padding:14px;background:var(--panel)}
+.prod-edit .pe-head{display:flex;gap:8px;align-items:center;margin-bottom:10px}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:11px;color:var(--ink-3);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+input[type=text],input[type=number]{
+  font-family:inherit;font-size:13.5px;color:var(--ink);background:var(--inset);
+  border:1px solid var(--border);border-radius:8px;padding:8px 10px;width:100%;
+}
+input.mono{font-family:"IBM Plex Mono",monospace}
+input:focus,button:focus-visible,.stage-item:focus-visible,.focus-opt:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.cr-row{display:grid;grid-template-columns:1fr 84px 74px 30px;gap:8px;align-items:center;margin-bottom:8px}
+.cr-row .lblrow{display:contents}
+.mini{font-size:10px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.04em;font-weight:600}
+.xbtn{border:1px solid var(--border);background:var(--surface);color:var(--ink-3);border-radius:7px;width:30px;height:32px;font-size:14px}
+.xbtn:hover{color:var(--bad);border-color:var(--bad)}
+.addlink{background:none;border:none;color:var(--accent);font-weight:600;font-size:12.5px;padding:4px 0;text-align:left}
+.drawer .df{padding:14px 20px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,20px);z-index:80;
+  background:var(--ink);color:var(--bg);padding:11px 18px;border-radius:10px;font-size:13.5px;font-weight:600;
+  box-shadow:var(--shadow-lift);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+@media (max-width:860px){
+  .app{grid-template-columns:1fr}
+  .rail{position:static;height:auto;flex-direction:column;border-right:none;border-bottom:1px solid var(--border)}
+  .stages{flex-direction:row;overflow:auto;padding-bottom:4px}
+  .stage-item{min-width:210px}
+  .rail-foot{margin-top:12px}
+  .goal-figure{text-align:left}
+  .goal-stats{grid-template-columns:1fr;gap:14px}
+  .goal-stats .gs{padding:0;border-left:none}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- ============ STAGE RAIL ============ -->
+  <aside class="rail">
+    <div class="brand">
+      <div class="mark" aria-hidden="true"></div>
+      <div>
+        <h1>Altitude</h1>
+        <p>Creative operating system</p>
+      </div>
+    </div>
+
+    <nav aria-label="Weekly stages">
+      <ul class="stages" id="stages"></ul>
+    </nav>
+
+    <div class="rail-foot">
+      <div class="wk" id="weekLabel"></div>
+      <button class="ghostbtn" id="openData">⚙︎ Manage products &amp; data</button>
+      <button class="ghostbtn" id="newWeek">↻ Start a new week</button>
+    </div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <main class="main">
+    <header class="topbar">
+      <div class="crumb"><span class="idx" id="crumbIdx">Stage 1</span><span id="crumbName">The Big Picture</span></div>
+      <div class="spacer"></div>
+      <div class="seg" id="tfSeg" role="group" aria-label="Timeframe">
+        <button data-tf="1">Today</button>
+        <button data-tf="7" class="on">7 days</button>
+        <button data-tf="30">30 days</button>
+      </div>
+      <button class="iconbtn" id="themeBtn" title="Toggle theme" aria-label="Toggle theme">◐</button>
+    </header>
+
+    <div class="canvas" id="canvas"></div>
+  </main>
+</div>
+
+<!-- ============ DATA DRAWER ============ -->
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-hidden="true" aria-label="Manage data">
+  <div class="dh">
+    <h3>Products &amp; creatives</h3>
+    <div class="spacer"></div>
+    <button class="iconbtn" id="closeDrawer" aria-label="Close">✕</button>
+  </div>
+  <div class="db" id="drawerBody"></div>
+  <div class="df">
+    <button class="btn secondary" id="addProduct">+ Add product</button>
+    <button class="btn" id="saveData">Save</button>
+  </div>
+</aside>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   STATE
+   ============================================================ */
+const STORE_KEY = "altitude.v1";
+const TF_DAYS = {"1":1,"7":7,"30":30};
+const TF_LABEL = {"1":"today","7":"last 7 days","30":"last 30 days"};
+const uid = () => Math.random().toString(36).slice(2,9);
+
+const STAGES = [
+  {n:1,t:"The Big Picture",s:"See winners, losers &amp; the goal"},
+  {n:2,t:"Pick the Battle",s:"Choose one product, one play"},
+  {n:3,t:"Call Every Creative",s:"Scale, cut, iterate or keep"},
+  {n:4,t:"Build the Action List",s:"Turn calls into tasks"},
+  {n:5,t:"Commit the Week",s:"Lock the plan &amp; the impact"},
+];
+
+/* ---- seed (SAMPLE data — clearly labelled in UI) ---- */
+function buildSeed(){
+  // base numbers are 7-day spend/roas; today & 30d derived for a realistic toggle
+  const P = (name, creatives)=>({id:uid(),name,creatives:creatives.map(c=>mkCreative(...c))});
+  function mkCreative(name, spend7, roas7){
+    const j=(x,f)=>Math.max(0,Math.round(x*f));
+    const rj=(r,d)=>Math.max(0.2,+(r+d).toFixed(2));
+    return {id:uid(),name,windows:{
+      "1":{spend:j(spend7,1/7*(0.8+Math.random()*0.5)),roas:rj(roas7,(Math.random()-0.5)*0.5)},
+      "7":{spend:spend7,roas:roas7},
+      "30":{spend:j(spend7,4.2*(0.9+Math.random()*0.25)),roas:rj(roas7,(Math.random()-0.5)*0.35)},
+    }};
+  }
+  return [
+    P("Hydra-Glow Serum",[
+      ["UGC — Testimonial (Maya)",4200,2.8],
+      ["Founder story — 45s",3100,2.3],
+      ["Before / After split",1800,3.4],
+      ["Problem-agitate hook",2600,1.6],
+      ["Static offer carousel",900,1.1],
+      ["Ingredient explainer",1400,1.9],
+    ]),
+    P("Daily Collagen",[
+      ["Morning routine UGC",2200,2.1],
+      ["Podcast clip cut-down",1600,1.4],
+      ["Meme hook — 15s",1200,0.9],
+      ["Us-vs-them comparison",2000,1.7],
+      ["Testimonial montage",1500,2.6],
+      ["Founder rant",800,1.8],
+    ]),
+    P("Reset Gut Complex",[
+      ["Educational — how it works",1900,1.5],
+      ["UGC unboxing",1300,2.2],
+      ["Symptom hook",2100,1.3],
+      ["Doctor authority",1000,1.9],
+      ["Offer stack static",700,1.2],
+    ]),
+  ];
+}
+
+function freshWorkflow(){
+  return {weekOf:new Date().toISOString(), completed:[], focus:null, decisions:{}, tasks:null, committed:false};
+}
+function defaultState(){
+  return {
+    goal:{dailyTarget:5000, roasThreshold:2.0},
+    timeframe:"7",
+    theme:"system",
+    isSample:true,
+    products:buildSeed(),
+    workflow:freshWorkflow(),
+    view:1,
+  };
+}
+let S = load();
+function load(){
+  try{const r=JSON.parse(localStorage.getItem(STORE_KEY));if(r&&r.products)return r;}catch(e){}
+  return defaultState();
+}
+function save(){try{localStorage.setItem(STORE_KEY,JSON.stringify(S));}catch(e){}}
+
+/* ============================================================
+   COMPUTE — the engine
+   ============================================================ */
+const money=(n)=>"$"+Math.round(n).toLocaleString("en-US");
+const moneyK=(n)=> n>=1000 ? "$"+(n/1000).toFixed(n>=10000?0:1)+"K" : "$"+Math.round(n);
+const tf=()=>S.timeframe;
+const days=()=>TF_DAYS[tf()];
+const thr=()=>S.goal.roasThreshold;
+
+function creativeMetric(c){const w=c.windows[tf()]||{spend:0,roas:0};return {spend:w.spend||0,roas:w.roas||0};}
+
+function productStats(p){
+  let wCount=0,lCount=0,wSpend=0,lSpend=0,wRev=0,lRev=0,near=0,nearSpend=0,scaleHead=0;
+  const list=p.creatives.map(c=>{
+    const m=creativeMetric(c); const isWin=m.roas>=thr();
+    const rev=m.spend*m.roas;
+    if(isWin){wCount++;wSpend+=m.spend;wRev+=rev; if(m.roas>=thr()+0.5) scaleHead+=m.spend*(m.roas-thr());}
+    else{lCount++;lSpend+=m.spend;lRev+=rev; if(m.roas>=thr()-0.4){near++;nearSpend+=m.spend;}}
+    return {...c,...m,rev,isWin};
+  });
+  const totSpend=wSpend+lSpend;
+  const avgWinRoas=wCount?wRev/wSpend:0;
+  return {p,list,wCount,lCount,wSpend,lSpend,wRev,lRev,totSpend,near,nearSpend,scaleHead,avgWinRoas,
+    winRatio:totSpend?wSpend/totSpend:0};
+}
+function allStats(){return S.products.map(productStats);}
+
+function accountRollup(){
+  const st=allStats();
+  const wSpend=st.reduce((a,s)=>a+s.wSpend,0);
+  const lSpend=st.reduce((a,s)=>a+s.lSpend,0);
+  const wRev=st.reduce((a,s)=>a+s.wRev,0);
+  const d=days();
+  return {
+    st,
+    profitableDaily:wSpend/d,
+    unprofitableDaily:lSpend/d,
+    totalDaily:(wSpend+lSpend)/d,
+    profitablePct:(wSpend/d)/S.goal.dailyTarget,
+    efficiency:(wSpend+lSpend)? wSpend/(wSpend+lSpend):0,
+    blendedWinRoas:wSpend?wRev/wSpend:0,
+    winners:st.reduce((a,s)=>a+s.wCount,0),
+    losers:st.reduce((a,s)=>a+s.lCount,0),
+  };
+}
+
+/* ---- recommendation engine: score plays, tie to product ---- */
+function buildRecommendations(){
+  const d=days(); const roll=accountRollup(); const opps=[];
+  roll.st.forEach(s=>{
+    if(s.totSpend<1) return;
+    // CUT losers — impact = daily unprofitable spend freed
+    if(s.lSpend>0) opps.push({
+      play:"cut", product:s.p.name, productId:s.p.id, score:s.lSpend*1.0,
+      impact:s.lSpend/d, impactLabel:"/day freed",
+      title:`Cut the losers on ${s.p.name}`,
+      why:`<b>${s.lCount} creatives</b> under ${thr().toFixed(1)} ROAS are burning <b>${money(s.lSpend/d)}/day</b>. Kill them and redeploy the budget to what already works.`
+    });
+    // SCALE winners with headroom
+    if(s.scaleHead>0) opps.push({
+      play:"scale", product:s.p.name, productId:s.p.id, score:s.scaleHead*1.15,
+      impact:s.wSpend/d, impactLabel:"winner spend now",
+      title:`Pour volume into ${s.p.name} winners`,
+      why:`Winners here run at <b>${s.avgWinRoas.toFixed(2)} ROAS</b> — well above target with room to scale. Push budget up while it holds.`
+    });
+    // MORE winners — loser-heavy / thin winner base
+    if(s.winRatio<0.5 || s.wCount<=1) opps.push({
+      play:"more", product:s.p.name, productId:s.p.id, score:(0.55-s.winRatio)*Math.max(s.totSpend,3000)*1.2 + (s.wCount<=1?4000:0),
+      impact:s.winRatio, impactLabel:"profitable spend",
+      title:`Get more winners on ${s.p.name}`,
+      why:`Only <b>${Math.round(s.winRatio*100)}%</b> of spend here is profitable (${s.wCount} winner${s.wCount===1?"":"s"}). Test fresh angles to widen the winning base.`
+    });
+    // ITERATE near-winners
+    if(s.near>0) opps.push({
+      play:"iterate", product:s.p.name, productId:s.p.id, score:s.nearSpend*0.8,
+      impact:s.nearSpend/d, impactLabel:"on the cusp",
+      title:`Iterate the near-misses on ${s.p.name}`,
+      why:`<b>${s.near} creatives</b> sit just under ${thr().toFixed(1)} ROAS — closest to flipping to winners. New hooks/edits on proven angles beat starting from scratch.`
+    });
+  });
+  opps.sort((a,b)=>b.score-a.score);
+  // de-dupe so top 3 aren't all the same product unless it dominates
+  const out=[]; const seen={};
+  for(const o of opps){seen[o.productId]=(seen[o.productId]||0); if(seen[o.productId]<2){out.push(o);seen[o.productId]++;} if(out.length>=3)break;}
+  while(out.length<3 && opps.length>out.length){for(const o of opps){if(!out.includes(o)){out.push(o);break;}}}
+  return out.slice(0,3);
+}
+const PLAY=({cut:{cls:"cut",label:"Cut losers"},scale:{cls:"scale",label:"Scale winners"},more:{cls:"more",label:"Get more winners"},iterate:{cls:"iterate",label:"Iterate"}});
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+const $=(s,r=document)=>r.querySelector(s);
+const canvas=$("#canvas");
+
+function stageUnlocked(n){return n===1 || S.workflow.completed.includes(n-1);}
+function setView(n){ if(!stageUnlocked(n)) return; S.view=n; save(); render(); }
+
+function renderRail(){
+  const ul=$("#stages"); ul.innerHTML="";
+  STAGES.forEach(st=>{
+    const done=S.workflow.completed.includes(st.n);
+    const active=S.view===st.n;
+    const unlocked=stageUnlocked(st.n);
+    const li=document.createElement("li");
+    const b=document.createElement("button");
+    b.className="stage-item"+(active?" active":"")+(done?" done":"");
+    b.disabled=!unlocked;
+    b.innerHTML=`<span class="num"><span>${st.n}</span></span>
+      <span class="body"><span class="t">${st.t}</span><span class="s">${st.s}</span></span>
+      ${!unlocked?'<span class="lock">🔒</span>':''}`;
+    b.onclick=()=>setView(st.n);
+    li.appendChild(b); ul.appendChild(li);
+  });
+  const wk=new Date(S.workflow.weekOf);
+  $("#weekLabel").textContent="Week of "+wk.toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"});
+}
+
+function render(){
+  renderRail();
+  const st=STAGES[S.view-1];
+  $("#crumbIdx").textContent="Stage "+st.n;
+  $("#crumbName").innerHTML=st.t;
+  $$("#tfSeg button").forEach(b=>b.classList.toggle("on",b.dataset.tf===S.timeframe));
+  ({1:renderStage1,2:renderStage2,3:renderStage3,4:renderStage4,5:renderStage5})[S.view]();
+}
+const $$=(s,r=document)=>[...r.querySelectorAll(s)];
+
+/* ---------------- STAGE 1 ---------------- */
+function renderStage1(){
+  const roll=accountRollup();
+  const recs=buildRecommendations();
+  const pct=Math.min(roll.profitablePct,1.35);
+  const goalPos=Math.min(100/1.35,100); // 5K sits at 74% of a track that runs to ~6.75K
+  const trackMax=S.goal.dailyTarget*1.35;
+  const fillW=Math.min(100,(roll.profitableDaily/trackMax)*100);
+  const goalMarkPos=(S.goal.dailyTarget/trackMax)*100;
+  const hit=roll.profitableDaily>=S.goal.dailyTarget;
+
+  canvas.innerHTML=`
+  ${S.isSample?sampleBanner():""}
+  <div class="stage-head">
+    <div class="eyebrow">Stage 1 · Diagnose</div>
+    <h2>Where does the account stand this week?</h2>
+    <p>Don't touch a single ad until you can see the whole board. First the goal, then the volume of winners and losers per product, then the three moves that matter most — that's the order every week.</p>
+  </div>
+
+  <!-- GOAL GAUGE -->
+  <section class="goal" aria-label="Profitable spend goal">
+    <div class="goal-top">
+      <div class="goal-lede">
+        <div class="eyebrow">The one number</div>
+        <h3>Profitable daily spend → $5,000/day</h3>
+        <p>Spend running at ${thr().toFixed(1)}+ ROAS, per day · ${TF_LABEL[tf()]}</p>
+      </div>
+      <div class="goal-figure">
+        <div class="big ${hit?'v':''}" style="${hit?'color:var(--good-2)':''}">${money(roll.profitableDaily)}</div>
+        <div class="sub"><b>${Math.round(roll.profitablePct*100)}%</b> of the $5K/day goal · ${hit?'goal cleared':money(S.goal.dailyTarget-roll.profitableDaily)+' to go'}</div>
+      </div>
+    </div>
+    <div class="track" role="img" aria-label="${Math.round(roll.profitablePct*100)} percent of goal">
+      <div class="fill ${hit?'over':''}" style="width:${fillW}%"></div>
+      <div class="goalmark" style="left:${goalMarkPos}%"></div>
+    </div>
+    <div class="track-scale"><span>$0</span><span>${moneyK(trackMax/2)}</span><span>${moneyK(trackMax)}/day</span></div>
+
+    <div class="goal-stats">
+      <div class="gs">
+        <div class="k"><span class="dot acc"></span>Profitable spend</div>
+        <div class="v">${money(roll.profitableDaily)}<span style="font-size:13px;color:var(--ink-3)">/day</span></div>
+        <div class="n">${roll.winners} winning creatives at ${roll.blendedWinRoas.toFixed(2)} blended ROAS</div>
+      </div>
+      <div class="gs">
+        <div class="k"><span class="dot bad"></span>Unprofitable spend</div>
+        <div class="v v-bad">${money(roll.unprofitableDaily)}<span style="font-size:13px;color:var(--ink-3)">/day</span></div>
+        <div class="n">${roll.losers} creatives under ${thr().toFixed(1)} ROAS bleeding budget</div>
+      </div>
+      <div class="gs">
+        <div class="k"><span class="dot good"></span>Spend efficiency</div>
+        <div class="v">${Math.round(roll.efficiency*100)}%</div>
+        <div class="n">of every dollar is landing above target</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRODUCT PILLARS -->
+  <div class="sec-title">
+    <h3>Winners vs. losers by product</h3>
+    <div class="hint">Creatives <b>above ${thr().toFixed(1)} ROAS</b> vs. <b>below</b> — the volume situation on each product</div>
+  </div>
+  <div class="products">${roll.st.map(pillarCard).join("")}</div>
+
+  <!-- RECOMMENDATIONS -->
+  <div class="sec-title">
+    <h3>Your 3 highest-impact moves right now</h3>
+    <div class="hint">80/20 — ranked by what moves the $5K goal fastest</div>
+  </div>
+  <div class="recs">${recs.map(recCard).join("")}</div>
+
+  <div class="stage-cta">
+    <div class="txt">Seen the full board? <b>Lock in this week's picture</b> to unlock Stage 2, where you pick the one product and play to attack.</div>
+    <div class="spacer"></div>
+    <button class="btn" id="lockStage1">Lock in &amp; pick the battle →</button>
+  </div>`;
+
+  // pillar heights (shared scale across all products)
+  const maxCount=Math.max(1,...roll.st.flatMap(s=>[s.wCount,s.lCount]));
+  $$(".pillar .col").forEach(col=>{
+    const c=+col.dataset.count; col.style.height=(22+ (c/maxCount)*(108-22))+"px";
+  });
+  $("#lockStage1").onclick=()=>{completeStage(1);setView(2);toast("Stage 1 locked — now pick your battle");};
+  bindSampleBanner();
+}
+
+function pillarCard(s){
+  const verdict = s.winRatio>=0.6?["win","Scaling"] : s.winRatio>=0.4?["mix","Mixed"] : ["bleed","Bleeding"];
+  const ratio=Math.round(s.winRatio*100);
+  return `<article class="pcard">
+    <div class="phead">
+      <div><div class="pname">${esc(s.p.name)}</div>
+      <div class="pspend">${money(s.totSpend)} spend · ${TF_LABEL[tf()]}</div></div>
+      <span class="verdict ${verdict[0]}">${verdict[1]}</span>
+    </div>
+    <div class="pillars">
+      <div class="pillar w">
+        <div class="col" data-count="${s.wCount}"><span class="cnt">${s.wCount}</span></div>
+        <div class="lab"><div class="n">Winners</div><div class="sp">${moneyK(s.wSpend)}</div></div>
+      </div>
+      <div class="pillar l">
+        <div class="col" data-count="${s.lCount}"><span class="cnt">${s.lCount}</span></div>
+        <div class="lab"><div class="n">Losers</div><div class="sp">${moneyK(s.lSpend)}</div></div>
+      </div>
+    </div>
+    <div class="pfoot">
+      <span>${ratio}% profitable</span>
+      <div class="ratio-bar"><i style="width:${ratio}%"></i></div>
+    </div>
+  </article>`;
+}
+
+function recCard(o,i){
+  const meta=PLAY[o.play];
+  return `<div class="rec b-${meta.cls}">
+    <div class="rank">${i+1}</div>
+    <div class="rmid">
+      <span class="rtag tag-${meta.cls}">${meta.label}</span>
+      <div class="rtitle">${esc(o.title)}</div>
+      <div class="rwhy">${o.why}</div>
+    </div>
+    <div class="rimpact">
+      <div class="k">Impact</div>
+      <div class="v">${typeof o.impact==="number" && o.impact<=1.001 && o.play==="more" ? Math.round(o.impact*100)+"%" : money(o.impact)}</div>
+    </div>
+  </div>`;
+}
+
+/* ---------------- STAGE 2 ---------------- */
+function renderStage2(){
+  const recs=buildRecommendations();
+  const sel=S.workflow.focus;
+  canvas.innerHTML=`
+  <div class="stage-head">
+    <div class="eyebrow">Stage 2 · Prioritize</div>
+    <h2>Pick one product. Pick one play.</h2>
+    <p>You can't scale everything at once — that's how focus dies. Choose the single move from Stage 1 that best closes the gap to $5K/day. Everything downstream this week serves this one choice.</p>
+  </div>
+  <div class="focus-grid">
+    ${recs.map((o)=>{
+      const meta=PLAY[o.play];const on=sel&&sel.productId===o.productId&&sel.play===o.play;
+      return `<button class="focus-opt ${on?'sel':''}" data-pid="${o.productId}" data-play="${o.play}">
+        <div class="fo-top"><span class="rtag tag-${meta.cls}">${meta.label}</span>${on?'<span class="mono" style="color:var(--accent);font-weight:600">● chosen</span>':''}</div>
+        <div class="fo-prod">${esc(o.product)}</div>
+        <div class="fo-title">${esc(o.title.replace(' on '+o.product,'').replace(o.product,'').trim())||meta.label}</div>
+        <div class="fo-why">${o.why}</div>
+      </button>`;
+    }).join("")}
+  </div>
+  <div class="stage-cta">
+    <div class="txt" id="focusTxt">${sel?`Locked on <b>${esc(sel.product)}</b> — ${PLAY[sel.play].label.toLowerCase()}.`:'Select the play that best moves the goal.'}</div>
+    <div class="spacer"></div>
+    <button class="btn secondary" onclick="setView(1)">← Back to the board</button>
+    <button class="btn" id="lockStage2" ${sel?'':'disabled'}>Confirm focus →</button>
+  </div>`;
+  $$(".focus-opt").forEach(b=>b.onclick=()=>{
+    const o=recs.find(r=>r.productId===b.dataset.pid&&r.play===b.dataset.play);
+    S.workflow.focus={productId:o.productId,product:o.product,play:o.play};save();renderStage2();renderRail();
+  });
+  const lb=$("#lockStage2"); if(lb) lb.onclick=()=>{completeStage(2);setView(3);toast("Focus set — now call every creative");};
+}
+
+/* ---------------- STAGE 3 ---------------- */
+function renderStage3(){
+  const f=S.workflow.focus;
+  const s=allStats().find(x=>x.p.id===f.productId) || allStats()[0];
+  const decided=s.list.filter(c=>S.workflow.decisions[c.id]).length;
+  const all=s.list.length;
+  canvas.innerHTML=`
+  <div class="stage-head">
+    <div class="eyebrow">Stage 3 · Decide · ${esc(s.p.name)}</div>
+    <h2>Make the call on every creative</h2>
+    <p>Focus play: <b>${PLAY[f.play].label}</b> on ${esc(f.product)}. Go line by line — no creative gets to sit in limbo. Scale what wins, cut what bleeds, iterate what's close, keep what's steady.</p>
+  </div>
+  <table class="dtable">
+    <thead><tr><th>Creative</th><th class="num">Spend</th><th class="num">ROAS</th><th>Status</th><th>This week's call</th></tr></thead>
+    <tbody>
+    ${s.list.sort((a,b)=>b.spend-a.spend).map(c=>{
+      const d=S.workflow.decisions[c.id]||"";
+      const suggest=c.isWin?(c.roas>=thr()+0.5?"scale":"keep"):(c.roas>=thr()-0.4?"iterate":"cut");
+      return `<tr>
+        <td>${esc(c.name)}</td>
+        <td class="num mono">${money(c.spend)}</td>
+        <td class="num"><span class="roas-pill ${c.isWin?'w':'l'}">${c.roas.toFixed(2)}</span></td>
+        <td>${c.isWin?'<span style="color:var(--good-2);font-weight:600">Winner</span>':'<span style="color:var(--bad-2);font-weight:600">Loser</span>'}</td>
+        <td><div class="decide" data-cid="${c.id}">
+          ${["scale","iterate","keep","cut"].map(x=>`<button data-d="${x}" class="${d===x?'on':(!d&&suggest===x?'':'')}">${x[0].toUpperCase()+x.slice(1)}</button>`).join("")}
+        </div></td>
+      </tr>`;
+    }).join("")}
+    </tbody>
+  </table>
+  <div class="stage-cta">
+    <div class="txt"><b id="decCount">${decided}/${all}</b> creatives called. ${decided<all?'Make a call on every row to continue.':'Every creative has a call — ready to build the action list.'}</div>
+    <div class="spacer"></div>
+    <button class="btn secondary" onclick="setView(2)">← Change focus</button>
+    <button class="btn" id="lockStage3" ${decided<all?'disabled':''}>Build the action list →</button>
+  </div>`;
+  $$(".decide button").forEach(b=>b.onclick=()=>{
+    const cid=b.parentElement.dataset.cid;
+    S.workflow.decisions[cid]=b.dataset.d; S.workflow.tasks=null; save(); renderStage3();
+  });
+  const lb=$("#lockStage3"); if(lb) lb.onclick=()=>{completeStage(3);buildTasks();setView(4);toast("Calls locked — action list ready");};
+}
+
+/* ---------------- STAGE 4 ---------------- */
+function buildTasks(){
+  const f=S.workflow.focus;
+  const s=allStats().find(x=>x.p.id===f.productId)||allStats()[0];
+  const tasks=[];
+  s.list.forEach(c=>{
+    const d=S.workflow.decisions[c.id];if(!d)return;
+    if(d==="scale") tasks.push({id:uid(),k:"scale",t:`Raise budget on “${c.name}” — currently ${money(c.spend)} at ${c.roas.toFixed(2)} ROAS`,done:false});
+    if(d==="cut") tasks.push({id:uid(),k:"cut",t:`Turn off “${c.name}” — ${money(c.spend)} at ${c.roas.toFixed(2)} ROAS`,done:false});
+    if(d==="iterate") tasks.push({id:uid(),k:"iterate",t:`Brief 2 new variations of “${c.name}” (new hook / new edit)`,done:false});
+  });
+  const iterCount=Object.values(S.workflow.decisions).filter(x=>x==="iterate").length;
+  if(f.play==="more") tasks.unshift({id:uid(),k:"more",t:`Brief 3 fresh angles for ${f.product} to widen the winner base`,done:false});
+  if(iterCount===0 && f.play!=="more") tasks.push({id:uid(),k:"iterate",t:`Brief 1 net-new angle for ${f.product} to keep the pipeline full`,done:false});
+  S.workflow.tasks=tasks; save();
+}
+function renderStage4(){
+  if(!S.workflow.tasks) buildTasks();
+  const T=S.workflow.tasks;
+  const done=T.filter(t=>t.done).length;
+  const K={scale:["tag-scale","Scale"],cut:["tag-cut","Cut"],iterate:["tag-iterate","Iterate"],more:["tag-more","Test"]};
+  canvas.innerHTML=`
+  <div class="stage-head">
+    <div class="eyebrow">Stage 4 · Execute</div>
+    <h2>This week's action list</h2>
+    <p>Your calls, turned into concrete moves. Check them off as you go — briefs written, budgets changed, losers killed. This is the work that actually moves the goal.</p>
+  </div>
+  <div class="tasklist">
+    ${T.length?T.map(t=>`<label class="taskrow ${t.done?'done':''}">
+      <input type="checkbox" data-tid="${t.id}" ${t.done?'checked':''}/>
+      <span class="tt">${esc(t.t)}</span>
+      <span class="tk ${K[t.k][0]}">${K[t.k][1]}</span>
+    </label>`).join(""):'<p style="color:var(--ink-3)">No actions generated — revisit your calls in Stage 3.</p>'}
+  </div>
+  <div class="stage-cta">
+    <div class="txt"><b>${done}/${T.length}</b> actions done. You don't have to finish them here — commit the plan and track it through the week.</div>
+    <div class="spacer"></div>
+    <button class="btn secondary" onclick="setView(3)">← Back to calls</button>
+    <button class="btn" id="lockStage4">Commit the week →</button>
+  </div>`;
+  $$(".taskrow input").forEach(cb=>cb.onchange=()=>{
+    const t=S.workflow.tasks.find(x=>x.id===cb.dataset.tid);t.done=cb.checked;save();renderStage4();
+  });
+  $("#lockStage4").onclick=()=>{completeStage(4);setView(5);toast("Plan committed — track the impact");};
+}
+
+/* ---------------- STAGE 5 ---------------- */
+function renderStage5(){
+  const roll=accountRollup();
+  const f=S.workflow.focus;
+  const T=S.workflow.tasks||[];
+  const dec=S.workflow.decisions;
+  const cut=Object.entries(dec).filter(([,v])=>v==="cut");
+  const s=allStats().find(x=>x.p.id===f.productId)||allStats()[0];
+  const freed=s.list.filter(c=>dec[c.id]==="cut").reduce((a,c)=>a+c.spend,0)/days();
+  const projected=roll.profitableDaily+freed*0.7; // rough redeploy assumption
+  S.workflow.committed=true;save();
+  canvas.innerHTML=`
+  <div class="stage-head">
+    <div class="eyebrow">Stage 5 · Commit</div>
+    <h2>The week is set</h2>
+    <p>One product, one play, every creative called, actions on the board. Come back next week, refresh the numbers, and watch the goal line move.</p>
+  </div>
+  <div class="summary">
+    <div class="sumcard"><div class="k">This week's focus</div><div class="v" style="font-size:19px;font-family:'Archivo'">${esc(f.product)}</div><div class="n">${PLAY[f.play].label}</div></div>
+    <div class="sumcard"><div class="k">Profitable spend now</div><div class="v">${money(roll.profitableDaily)}<span style="font-size:14px;color:var(--ink-3)">/day</span></div><div class="n">${Math.round(roll.profitablePct*100)}% of the $5K goal</div></div>
+    <div class="sumcard"><div class="k">Budget freed by cuts</div><div class="v" style="color:var(--good-2)">${money(freed)}<span style="font-size:14px;color:var(--ink-3)">/day</span></div><div class="n">${cut.length} creative${cut.length===1?"":"s"} turned off, ready to redeploy</div></div>
+    <div class="sumcard"><div class="k">Actions on the board</div><div class="v">${T.length}</div><div class="n">${T.filter(t=>t.done).length} done · ${T.filter(t=>!t.done).length} open</div></div>
+  </div>
+  <div class="stage-cta">
+    <div class="txt">If every cut redeploys into winners, you're aiming at <b>~${money(projected)}/day</b> profitable next week. Refresh the numbers and run it again.</div>
+    <div class="spacer"></div>
+    <button class="btn secondary" onclick="setView(1)">Review the board</button>
+    <button class="btn" id="startNew">Start next week ↻</button>
+  </div>`;
+  $("#startNew").onclick=()=>newWeek();
+}
+
+/* ---------------- shared bits ---------------- */
+function sampleBanner(){
+  return `<div class="sample-banner">
+    <span>📊</span><span><b>Sample data.</b> These products &amp; creatives are examples so you can see the tool working. Swap in your real Facebook numbers.</span>
+    <button class="btn secondary" id="editSample" style="padding:7px 12px;font-size:12.5px">Edit my products →</button>
+  </div>`;
+}
+function bindSampleBanner(){const b=$("#editSample");if(b)b.onclick=openDrawer;}
+function completeStage(n){if(!S.workflow.completed.includes(n))S.workflow.completed.push(n);save();}
+const esc=(s)=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+/* ============================================================
+   DATA DRAWER (edit products / creatives for active timeframe)
+   ============================================================ */
+let draft=null;
+function openDrawer(){
+  draft=JSON.parse(JSON.stringify(S.products));
+  renderDrawer();
+  $("#scrim").classList.add("open");$("#drawer").classList.add("open");$("#drawer").setAttribute("aria-hidden","false");
+}
+function closeDrawer(){$("#scrim").classList.remove("open");$("#drawer").classList.remove("open");$("#drawer").setAttribute("aria-hidden","true");}
+function renderDrawer(){
+  const body=$("#drawerBody");const t=tf();
+  body.innerHTML=`<p style="font-size:12.5px;color:var(--ink-3);margin:0">Editing <b style="color:var(--ink)">${TF_LABEL[t]}</b> numbers — switch the timeframe up top to edit other windows. Spend in $, ROAS as a multiple (e.g. 2.4).</p>`+
+  draft.map((p,pi)=>`
+    <div class="prod-edit">
+      <div class="pe-head">
+        <input type="text" value="${esc(p.name)}" data-pi="${pi}" class="pname-input" style="font-weight:600"/>
+        <button class="xbtn" data-delp="${pi}" title="Remove product">🗑</button>
+      </div>
+      <div class="cr-row"><span class="mini">Creative</span><span class="mini">Spend ($)</span><span class="mini">ROAS</span><span></span></div>
+      ${p.creatives.map((c,ci)=>`<div class="cr-row">
+        <input type="text" value="${esc(c.name)}" data-pi="${pi}" data-ci="${ci}" data-f="name"/>
+        <input type="number" class="mono" value="${Math.round(c.windows[t].spend)}" data-pi="${pi}" data-ci="${ci}" data-f="spend" min="0" step="50"/>
+        <input type="number" class="mono" value="${(+c.windows[t].roas).toFixed(2)}" data-pi="${pi}" data-ci="${ci}" data-f="roas" min="0" step="0.1"/>
+        <button class="xbtn" data-delc="${pi}.${ci}" title="Remove">✕</button>
+      </div>`).join("")}
+      <button class="addlink" data-addc="${pi}">+ Add creative</button>
+    </div>`).join("");
+  // bind
+  $$(".pname-input").forEach(i=>i.oninput=()=>draft[+i.dataset.pi].name=i.value);
+  $$('.cr-row input[data-f]').forEach(i=>i.oninput=()=>{
+    const p=draft[+i.dataset.pi],c=p.creatives[+i.dataset.ci],f=i.dataset.f;
+    if(f==="name")c.name=i.value; else c.windows[t][f]=Math.max(0,+i.value||0);
+  });
+  $$("[data-delp]").forEach(b=>b.onclick=()=>{draft.splice(+b.dataset.delp,1);renderDrawer();});
+  $$("[data-delc]").forEach(b=>b.onclick=()=>{const[pi,ci]=b.dataset.delc.split(".").map(Number);draft[pi].creatives.splice(ci,1);renderDrawer();});
+  $$("[data-addc]").forEach(b=>b.onclick=()=>{
+    const pi=+b.dataset.addc;
+    draft[pi].creatives.push({id:uid(),name:"New creative",windows:{"1":{spend:0,roas:0},"7":{spend:0,roas:0},"30":{spend:0,roas:0}}});
+    renderDrawer();
+  });
+}
+$("#addProduct").onclick=()=>{if(!draft)draft=[];draft.push({id:uid(),name:"New product",creatives:[{id:uid(),name:"New creative",windows:{"1":{spend:0,roas:0},"7":{spend:0,roas:0},"30":{spend:0,roas:0}}}]});renderDrawer();};
+$("#saveData").onclick=()=>{
+  S.products=draft; S.isSample=false;
+  // prune decisions/focus that no longer exist
+  save();closeDrawer();render();toast("Data saved");
+};
+$("#openData").onclick=openDrawer;
+$("#closeDrawer").onclick=closeDrawer;
+$("#scrim").onclick=closeDrawer;
+
+/* ============================================================
+   CONTROLS
+   ============================================================ */
+$$("#tfSeg button").forEach(b=>b.onclick=()=>{S.timeframe=b.dataset.tf;save();render();});
+function newWeek(){
+  S.workflow=freshWorkflow();S.view=1;save();render();toast("New week started — back to the board");
+}
+$("#newWeek").onclick=()=>{if(confirm("Start a fresh week? Your products & numbers stay; your focus, calls and action list reset."))newWeek();};
+
+/* theme */
+function applyTheme(){
+  const r=document.documentElement;
+  if(S.theme==="system")r.removeAttribute("data-theme");else r.setAttribute("data-theme",S.theme);
+}
+$("#themeBtn").onclick=()=>{
+  const order=["system","light","dark"];const cur=order.indexOf(S.theme);
+  S.theme=order[(cur+1)%3];save();applyTheme();toast("Theme: "+S.theme);
+};
+
+/* toast */
+let toastT;
+function toast(msg){const el=$("#toast");el.textContent=msg;el.classList.add("show");clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove("show"),2200);}
+
+/* boot */
+applyTheme();
+if(!stageUnlocked(S.view))S.view=1;
+render();
+</script>
+</body>
+</html>
