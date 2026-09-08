@@ -477,6 +477,24 @@ input:focus,button:focus-visible,.stage-item:focus-visible,.focus-opt:focus-visi
 .empty{text-align:center;color:var(--ink-3);padding:38px 24px;border:1px dashed var(--border-strong);border-radius:14px;font-size:13.5px;line-height:1.5}
 @media (max-width:720px){.bstep{grid-template-columns:1fr;gap:12px}}
 
+/* strategy card + thumbnail */
+.strat-card{display:flex;align-items:center;gap:14px;background:var(--panel);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:14px;box-shadow:var(--shadow);padding:14px 18px;margin-bottom:16px}
+.strat-icon{font-size:21px;width:42px;height:42px;border-radius:10px;background:var(--accent-soft);display:grid;place-items:center;flex:none}
+.strat-main{flex:1;min-width:0}
+.strat-t{font-family:"Archivo",sans-serif;font-weight:700;font-size:15px}
+.strat-s{font-size:12px;color:var(--ink-3);margin-top:2px}
+.strat-actions{display:flex;gap:8px;align-items:center;flex:none}
+.strat-paste{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:16px}
+.strat-paste textarea{width:100%;min-height:150px;resize:vertical;font-family:inherit;font-size:13px;color:var(--ink);background:var(--inset);border:1px solid var(--border);border-radius:8px;padding:10px}
+.strat-paste textarea:focus{outline:2px solid var(--accent);outline-offset:1px}
+.thumb-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.thumb-drop{display:inline-flex;align-items:center;gap:8px;border:1px dashed var(--border-strong);border-radius:10px;padding:10px 14px;font-size:12.5px;font-weight:600;color:var(--ink-2);cursor:pointer}
+.thumb-drop:hover{border-color:var(--accent);color:var(--accent)}
+.thumb-prev{display:flex;align-items:center;gap:12px}
+.thumb-prev img{width:74px;height:74px;object-fit:cover;border-radius:10px;border:1px solid var(--border)}
+.brief-thumb{width:118px;height:118px;object-fit:cover;border-radius:10px;border:1px solid var(--border);float:right;margin:0 0 10px 16px}
+.adrow .ar-thumb{width:42px;height:42px;object-fit:cover;border-radius:8px;border:1px solid var(--border);flex:none}
+
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -612,36 +630,32 @@ function freshWorkflow(){ return {weekOf:new Date().toISOString(), completed:[]}
 
 /* ---- creative research bank (tab 2) ---- */
 function freshDraft(carry){
-  return Object.assign({productId:null,brandId:null,creativeUrl:"",concept:"",angle:null,
-    audience:null,personaId:null,editor:null,mediaType:null,lander:null,hook:"",
+  return Object.assign({productId:null,brandId:null,creativeUrl:"",concept:"",thumb:null,angle:null,
+    audience:null,personaId:null,lander:null,editor:null,mediaType:null,hook:"",
     dateCode:liveDateCode(),editingId:null}, carry||{});
 }
-function seedPersonas(products){
-  const byName={
-    "Pink Protocol":["Busy mom 35–45","Bride-to-be","Perimenopausal skin","Skincare newbie 25–30"],
-    "PDRN Booster":["Aging-concerned 40+","Acne-scar sufferer","K-beauty enthusiast","Sensitive skin"],
-    "Retinew":["Retinol-curious beginner","Wrinkle-focused 45+","Sensitive-skin skeptic","Ingredient nerd"],
-    "LuxeSkin":["Affluent 40+","Luxury-beauty shopper","Gift buyer","Results-over-price"],
-    "NAD9 Kit":["Biohacker","Longevity enthusiast 45+","Low-energy professional","Wellness optimizer"],
-    "Ancestica Solid Bar":["Eco-conscious 25–40","Zero-waste convert","Frequent traveler","Sensitive-scalp switcher"],
-  };
-  const out={};
-  products.forEach(p=>{ out[p.id]=(byName[p.name]||["Core customer","Skeptic","Repeat buyer"]).map(n=>({id:uid(),name:n})); });
-  return out;
+// personas & angles are GLOBAL banks (loaded from the strategy doc), not fixed per product.
+function defaultPersonasFlat(){
+  return ["Busy mom 35–45","Perimenopausal skin","Skincare newbie","Aging-concerned 40+",
+    "K-beauty enthusiast","Sensitive skin","Retinol-curious beginner","Affluent 40+",
+    "Biohacker","Longevity enthusiast","Eco-conscious 25–40"].map(n=>({id:uid(),name:n}));
 }
+function defaultLanders(){ return ["Quiz","Advertorial","Listicle","Product Page","VSL"]; }
 function defaultCreative(products){
+  const landers={}; products.forEach(p=>landers[p.id]=defaultLanders());
   return {
     weeklyTarget:30,
+    strategy:{fileName:null,uploadedAt:null,angles:0,personas:0},
     brands:[
       {id:uid(),name:"Glow Recipe",url:""},{id:uid(),name:"The Ordinary",url:""},
       {id:uid(),name:"Medik8",url:""},{id:uid(),name:"Bubble",url:""},
     ],
-    editors:["Yotam"],
-    landers:["Quiz","Advertorial","Listicle","Product Page","VSL"],
+    editors:["Lucas","Shahaf"],
+    landers,
     angles:["Problem-Aware","Insecurity","Time-Saving","Science / Mechanism","Social Proof",
       "Cost-Per-Use","Ingredient Hero","Routine / Ritual","Anti-Aging Fear","Clean / Natural",
       "Authority / Expert","Transformation","Myth-Busting","FOMO / Trend"],
-    personas:seedPersonas(products),
+    personas:defaultPersonasFlat(),
     ads:[],
     draft:freshDraft(),
   };
@@ -669,9 +683,28 @@ function migrate(s){
   if(!s.workflow) s.workflow=freshWorkflow();
   if(!Array.isArray(s.workflow.completed)) s.workflow.completed=[];
   if(!s.creative) s.creative=defaultCreative(s.products);
-  if(!s.creative.draft) s.creative.draft=freshDraft();
-  if(!s.creative.personas) s.creative.personas=seedPersonas(s.products);
-  s.products.forEach(p=>{ if(!s.creative.personas[p.id]) s.creative.personas[p.id]=seedPersonas([p])[p.id]; });
+  const cr=s.creative;
+  if(!cr.draft) cr.draft=freshDraft();
+  if(!("thumb" in cr.draft)) cr.draft.thumb=null;
+  if(!cr.strategy) cr.strategy={fileName:null,uploadedAt:null,angles:0,personas:0};
+  // Yotam is not an editor; ensure Lucas & Shahaf
+  cr.editors=(Array.isArray(cr.editors)?cr.editors:[]).filter(e=>String(e).toLowerCase()!=="yotam");
+  ["Shahaf","Lucas"].forEach(e=>{ if(!cr.editors.includes(e)) cr.editors.unshift(e); });
+  if(cr.draft.editor && !cr.editors.includes(cr.draft.editor)) cr.draft.editor=null;
+  // personas: per-product object -> global flat array
+  if(cr.personas && !Array.isArray(cr.personas)){
+    const flat=[], seen=new Set();
+    Object.values(cr.personas).forEach(list=>(list||[]).forEach(p=>{ if(p&&!seen.has(p.name)){seen.add(p.name);flat.push({id:p.id||uid(),name:p.name});} }));
+    cr.personas=flat;
+  }
+  if(!Array.isArray(cr.personas)||!cr.personas.length) cr.personas=defaultPersonasFlat();
+  if(cr.draft.personaId && !cr.personas.find(p=>p.id===cr.draft.personaId)) cr.draft.personaId=null;
+  // landers: global array -> per-product object
+  if(Array.isArray(cr.landers)){
+    const def=cr.landers.slice(); const obj={}; s.products.forEach(p=>obj[p.id]=def.slice()); cr.landers=obj;
+  }
+  if(!cr.landers||typeof cr.landers!=="object") cr.landers={};
+  s.products.forEach(p=>{ if(!Array.isArray(cr.landers[p.id])||!cr.landers[p.id].length) cr.landers[p.id]=defaultLanders(); });
   if(typeof s.view!=="number"||s.view<1||s.view>STAGES.length) s.view=1;
 }
 function save(){try{localStorage.setItem(STORE_KEY,JSON.stringify(S));}catch(e){}}
@@ -951,21 +984,22 @@ function liveDateCode(dt=new Date()){
 }
 const C=()=>S.creative;
 const brandById=(id)=>C().brands.find(b=>b.id===id);
-const personasFor=(pid)=>C().personas[pid]||[];
-const personaById=(pid,id)=>personasFor(pid).find(p=>p.id===id);
+const personaById=(id)=>C().personas.find(p=>p.id===id);
 const productById=(id)=>S.products.find(p=>p.id===id);
+const landersFor=(pid)=>C().landers[pid]||[];
 const adById=(id)=>C().ads.find(a=>a.id===id);
 const audByCode=(c)=>AUDIENCES.find(a=>a.code===c);
 function usedAnglesFor(pid){return new Set(C().ads.filter(a=>a.productId===pid && a.id!==C().draft.editingId).map(a=>a.angle));}
-function draftComplete(d){return !!(d.productId&&d.brandId&&d.creativeUrl&&d.angle&&d.audience&&d.personaId&&d.editor&&d.mediaType&&d.lander&&d.hook&&d.dateCode);}
+function draftComplete(d){return !!(d.productId&&d.brandId&&d.creativeUrl&&d.angle&&d.audience&&d.personaId&&d.lander&&d.editor&&d.mediaType&&d.hook&&d.dateCode);}
 
 function namingFor(d){
+  const br=brandById(d.brandId), pe=personaById(d.personaId);
   return [
     pascal(d.editor)||"Editor",
     d.mediaType||"Media",
-    pascal(brandById(d.brandId)&&brandById(d.brandId).name)||"Brand",
+    pascal(br&&br.name)||"Brand",
     pascal(d.angle)||"Angle",
-    pascal(personaById(d.productId,d.personaId)&&personaById(d.productId,d.personaId).name)||"Persona",
+    pascal(pe&&pe.name)||"Persona",
     d.audience||"Audience",
     pascal(d.lander)||"Lander",
     pascal(d.hook)||"Hook",
@@ -975,7 +1009,7 @@ function namingFor(d){
 function briefText(d){
   const prod=(productById(d.productId)||{}).name||"—";
   const brand=(brandById(d.brandId)||{}).name||"—";
-  const persona=(personaById(d.productId,d.personaId)||{}).name||"—";
+  const persona=(personaById(d.personaId)||{}).name||"—";
   const aud=audByCode(d.audience);
   return [
     `PRODUCT: ${prod}`,
@@ -985,9 +1019,9 @@ function briefText(d){
     `ANGLE: ${d.angle||"—"}`,
     `AUDIENCE: ${aud?aud.label+" ("+aud.code+")":"—"}`,
     `HERO PERSONA: ${persona}`,
+    `LANDER: ${d.lander||"—"}`,
     `FORMAT: ${d.mediaType||"—"}`,
     `EDITOR: ${d.editor||"—"}`,
-    `LANDER: ${d.lander||"—"}`,
     `HOOK: ${d.hook||"—"}`,
     `NAMING: ${namingFor(d)}`,
   ].filter(Boolean).join("\n");
@@ -998,6 +1032,58 @@ function copyText(t){
   else fallbackCopy(t,done);
 }
 function fallbackCopy(t,done){const ta=document.createElement("textarea");ta.value=t;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.focus();ta.select();try{document.execCommand("copy");done();}catch(e){}ta.remove();}
+
+/* ---- strategy doc: extract angles & personas ---- */
+function uniqCI(a){const s=new Set(),o=[];a.forEach(x=>{const k=String(x).toLowerCase();if(x&&!s.has(k)){s.add(k);o.push(x);}});return o;}
+function toArr(v){return Array.isArray(v)?v.map(x=>typeof x==="string"?x:(x&&x.name)||"").filter(Boolean):[];}
+function headFor(l){
+  const s=l.toLowerCase().replace(/[:#*_>\-]/g,"").trim();
+  if(/^(angles?|creative angles?|messaging angles?|marketing angles?)$/.test(s)) return "angles";
+  if(/^(personas?|hero personas?|avatars?|customer avatars?|target personas?|characters?)$/.test(s)) return "personas";
+  return null;
+}
+function parseStrategy(text){
+  text=String(text||"");
+  try{const j=JSON.parse(text); if(j&&(j.angles||j.personas)) return {angles:uniqCI(toArr(j.angles)),personas:uniqCI(toArr(j.personas))};}catch(e){}
+  const out={angles:[],personas:[]}; let mode=null;
+  text.split(/\r?\n/).forEach(raw=>{
+    const l=raw.trim(); if(!l) return;
+    const inline=l.match(/^([#>*\-\s]*)([A-Za-z][A-Za-z \/]{2,32}?)\s*:\s*(.+)$/);
+    if(inline){ const h=headFor(inline[2]); if(h){ inline[3].split(/[,;]|\s\|\s/).map(x=>x.replace(/^[-*•\d.)\]\s]+/,"").trim()).filter(Boolean).forEach(v=>{if(v.length<=60)out[h].push(v);}); mode=h; return; } }
+    const h=headFor(l);
+    if(h){ mode=h; return; }
+    if(mode){ const item=l.replace(/^[-*•\d.)\]\s]+/,"").trim(); if(item&&item.length<=60) out[mode].push(item); }
+  });
+  return {angles:uniqCI(out.angles),personas:uniqCI(out.personas)};
+}
+function applyStrategy(name,parsed){
+  const cr=C();
+  if(!parsed.angles.length && !parsed.personas.length){ toast("No angles or personas found — check the doc format"); return; }
+  if(parsed.angles.length) cr.angles=parsed.angles.slice();
+  if(parsed.personas.length) cr.personas=parsed.personas.map(n=>({id:uid(),name:n}));
+  cr.strategy={fileName:name||"strategy",uploadedAt:new Date().toISOString(),angles:cr.angles.length,personas:cr.personas.length};
+  if(cr.draft.angle && !cr.angles.includes(cr.draft.angle)) cr.draft.angle=null;
+  if(cr.draft.personaId && !cr.personas.find(p=>p.id===cr.draft.personaId)) cr.draft.personaId=null;
+  save(); renderResearch(); toast(`Strategy loaded — ${cr.angles.length} angles · ${cr.personas.length} personas`);
+}
+function stratStatus(){
+  const st=C().strategy;
+  if(st&&st.fileName) return `Loaded from <b>${esc(st.fileName)}</b> — ${st.angles} angles · ${st.personas} personas. Re-upload to replace.`;
+  return `No strategy loaded — the angles &amp; personas below are samples. Upload the strategy doc to replace them.`;
+}
+
+/* ---- creative thumbnail (downscaled to a small data URL) ---- */
+function fileToThumb(file,cb){
+  if(!file){cb(null);return;}
+  const r=new FileReader();
+  r.onload=()=>{ const img=new Image();
+    img.onload=()=>{ const max=260; let w=img.width,h=img.height; const sc=Math.min(1,max/Math.max(w,h));
+      w=Math.max(1,Math.round(w*sc)); h=Math.max(1,Math.round(h*sc));
+      const c=document.createElement("canvas"); c.width=w; c.height=h; c.getContext("2d").drawImage(img,0,0,w,h);
+      try{ cb(c.toDataURL("image/jpeg",0.72)); }catch(e){ cb(null); } };
+    img.onerror=()=>cb(null); img.src=r.result; };
+  r.onerror=()=>cb(null); r.readAsDataURL(file);
+}
 
 function bstep(num,t,s,body,locked){
   return `<div class="bstep ${locked?'locked':''}">
@@ -1017,13 +1103,33 @@ function renderResearch(){
   <div class="stage-head">
     <div class="eyebrow">Stage 2 · Create</div>
     <h2>Build this week's ads</h2>
-    <p>Every ad starts the same way: steal a proven concept, put a fresh angle on it, aim it at one audience, and cast one hero persona. Lock those in and Altitude writes the script brief and the Facebook naming for you — then build the next one. Stack as many as the week needs.</p>
+    <p>Load the strategy so the angles and hero personas come from your own playbook, then build each ad: steal a proven concept, put a fresh angle on it, aim it at one audience, cast one hero, and pick the lander. Altitude writes the script brief and the Facebook naming — then build the next one.</p>
+  </div>
+
+  <div class="strat-card">
+    <div class="strat-icon">📄</div>
+    <div class="strat-main">
+      <div class="strat-t">Upload Yoni's strategy</div>
+      <div class="strat-s" id="stratStatus">${stratStatus()}</div>
+    </div>
+    <div class="strat-actions">
+      <input type="file" id="stratFile" accept=".txt,.md,.markdown,.csv,.json,.text" hidden/>
+      <button class="copybtn" id="stratPasteBtn">Paste text</button>
+      <button class="btn" id="stratPickBtn" style="padding:9px 15px">Choose file</button>
+    </div>
+  </div>
+  <div class="strat-paste" id="stratPasteBox" hidden>
+    <textarea id="stratText" placeholder="Paste the strategy here. List angles under an 'Angles' heading and personas under a 'Personas' heading — bullets, numbered, or comma-separated both work."></textarea>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
+      <button class="btn secondary" id="stratCancel">Cancel</button>
+      <button class="btn" id="stratExtract">Extract angles &amp; personas</button>
+    </div>
   </div>
 
   <div class="research-top">
     <div class="rt-figure"><span class="k">Target this week</span><input class="mono" id="wkTarget" type="number" min="1" value="${target}"/></div>
     <div class="rt-figure"><span class="k">Built</span><span class="v">${built}</span></div>
-    <div class="rt-figure"><span class="k">Ready for script</span><span class="v" style="color:var(--good-2)">${built}</span></div>
+    <div class="rt-figure"><span class="k">Queued for script</span><span class="v" style="color:var(--good-2)">${built}</span></div>
     <div class="rt-prog">
       <div class="bar"><i style="width:${prog}%"></i></div>
       <div class="lab">${built} of ${target} ads built · ${prog}%</div>
@@ -1033,12 +1139,12 @@ function renderResearch(){
   <section class="builder">
     <div class="builder-h"><h3>${d.editingId?'Editing ad':'New ad recipe'}</h3><div class="spacer"></div>${d.editingId?'<button class="copybtn" id="cancelEdit">Cancel edit</button>':''}</div>
 
-    ${bstep("01","Product","Which product is this ad for? Sets the angle &amp; persona banks below.",`
+    ${bstep("01","Product","Which product is this ad for? Sets the lander options below.",`
       <div class="chiprow">
         ${S.products.map(p=>`<button class="chip ${d.productId===p.id?'on':''}" data-pick="product" data-v="${p.id}">${esc(p.name)}</button>`).join("")}
       </div>`)}
 
-    ${bstep("02","Inspiration","Pick the brand you're modelling, open it in GetHookd, then paste the exact creative you're copying.",`
+    ${bstep("02","Inspiration","Pick the brand you're modelling, open it in GetHookd, paste the creative you're copying, and add its thumbnail.",`
       <div class="insp-row">
         <div class="chiprow">
           ${cr.brands.map(b=>`<button class="chip ${d.brandId===b.id?'on':''}" data-pick="brand" data-v="${b.id}">${esc(b.name)}</button>`).join("")}
@@ -1050,6 +1156,11 @@ function renderResearch(){
         </div>
         <input type="text" id="creativeUrl" placeholder="Paste the GetHookd creative link…" value="${esc(d.creativeUrl||'')}"/>
         <input type="text" id="concept" placeholder="Optional: concept / winning-format note (e.g. 3-reasons UGC, split-screen demo)" value="${esc(d.concept||'')}"/>
+        <div class="thumb-row">
+          ${d.thumb
+            ? `<div class="thumb-prev"><img src="${d.thumb}" alt="creative thumbnail"/><button class="copybtn" id="thumbRemove">Remove thumbnail</button></div>`
+            : `<label class="thumb-drop"><input type="file" id="thumbFile" accept="image/*" hidden/>＋ Add creative thumbnail</label><span style="font-size:11.5px;color:var(--ink-3)">shown in the brief · auto-pulled from the link once hosted</span>`}
+        </div>
       </div>`, lockP)}
 
     ${bstep("03","Angle","Choose an angle you haven't run yet on this product — used ones are marked.",`
@@ -1067,15 +1178,20 @@ function renderResearch(){
 
     ${bstep("05","Hero persona","Which customer are we casting as the hero of this ad?",`
       <div class="chiprow">
-        ${personasFor(d.productId).map(p=>`<button class="chip ${d.personaId===p.id?'on':''}" data-pick="persona" data-v="${p.id}">${esc(p.name)}</button>`).join("")}
-        ${d.productId?addChip("persona"):'<span style="font-size:12.5px;color:var(--ink-3)">Pick a product first</span>'}
+        ${cr.personas.map(p=>`<button class="chip ${d.personaId===p.id?'on':''}" data-pick="persona" data-v="${p.id}">${esc(p.name)}</button>`).join("")}
+        ${addChip("persona")}
       </div>`, lockP)}
 
-    ${bstep("06","Naming details","The last pieces the Facebook naming convention needs.",`
+    ${bstep("06","Lander","Which landing page does this ad send to? Real landers for this product.",`
+      <div class="chiprow">
+        ${landersFor(d.productId).map(l=>`<button class="chip ${d.lander===l?'on':''}" data-pick="lander" data-v="${esc(l)}">${esc(l)}</button>`).join("")}
+        ${d.productId?addChip("lander"):'<span style="font-size:12.5px;color:var(--ink-3)">Pick a product first</span>'}
+      </div>`, lockP)}
+
+    ${bstep("07","Naming details","The last pieces the naming convention needs.",`
       <div class="detail-grid">
         <div class="field"><label>Editor</label><div class="chiprow">${cr.editors.map(e=>`<button class="chip ${d.editor===e?'on':''}" data-pick="editor" data-v="${esc(e)}">${esc(e)}</button>`).join("")}${addChip("editor")}</div></div>
         <div class="field"><label>Format</label><div class="chiprow">${MEDIA.map(m=>`<button class="chip ${d.mediaType===m?'on':''}" data-pick="mediaType" data-v="${m}">${m}</button>`).join("")}</div></div>
-        <div class="field"><label>Lander used</label><div class="chiprow">${cr.landers.map(l=>`<button class="chip ${d.lander===l?'on':''}" data-pick="lander" data-v="${esc(l)}">${esc(l)}</button>`).join("")}${addChip("lander")}</div></div>
       </div>
       <div class="detail-grid" style="margin-top:14px">
         <div class="field"><label>Hook (short label for naming)</label><input type="text" id="hook" placeholder="e.g. Scroll-stopper, POV, Big-claim" value="${esc(d.hook||'')}"/></div>
@@ -1089,6 +1205,7 @@ function renderResearch(){
           <div class="no-v" id="nameOut"></div>
         </div>
         <div class="brief-out">
+          ${d.thumb?`<img class="brief-thumb" src="${d.thumb}" alt="creative thumbnail"/>`:''}
           <div class="no-k" style="margin-bottom:10px">Ready-for-script brief <button class="copybtn" id="copyBrief" style="margin-left:auto">Copy brief</button></div>
           <dl id="briefOut"></dl>
         </div>
@@ -1103,17 +1220,28 @@ function renderResearch(){
     </div>
   </section>
 
-  <div class="sec-title"><h3>This week's ads</h3><div class="hint"><b>${built}</b> built · all ready to script</div></div>
-  <div class="built-list">${built?cr.ads.map(adRow).join(""):'<div class="empty">No ads yet. Build your first recipe above — pick a product, steal a concept, choose an angle, audience and hero persona, and it lands here ready for the Script Studio.</div>'}</div>
+  <div class="sec-title"><h3>This week's ads</h3><div class="hint"><b>${built}</b> built · queued for Script Studio</div></div>
+  <div class="built-list">${built?cr.ads.map(adRow).join(""):'<div class="empty">No ads yet. Build your first recipe above — pick a product, steal a concept, choose an angle, audience, hero persona and lander, and it lands here queued for the Script Studio.</div>'}</div>
   `;
 
   updatePreview();
 
+  // strategy card
+  $("#stratPickBtn").onclick=()=>$("#stratFile").click();
+  $("#stratFile").onchange=(e)=>{const f=e.target.files[0]; if(!f)return; const r=new FileReader(); r.onload=()=>applyStrategy(f.name,parseStrategy(r.result)); r.onerror=()=>toast("Couldn't read that file"); r.readAsText(f);};
+  $("#stratPasteBtn").onclick=()=>{const b=$("#stratPasteBox"); b.hidden=!b.hidden; if(!b.hidden){const t=$("#stratText"); if(t) t.focus();}};
+  const scn=$("#stratCancel"); if(scn) scn.onclick=()=>{$("#stratPasteBox").hidden=true;};
+  const sex=$("#stratExtract"); if(sex) sex.onclick=()=>{applyStrategy("pasted text",parseStrategy($("#stratText").value));};
+
+  // thumbnail
+  const tfl=$("#thumbFile"); if(tfl) tfl.onchange=(e)=>{fileToThumb(e.target.files[0],(url)=>{ if(url){C().draft.thumb=url;save();renderResearch();} else toast("Couldn't read that image"); });};
+  const trm=$("#thumbRemove"); if(trm) trm.onclick=()=>{C().draft.thumb=null;save();renderResearch();};
+
+  // picks
   $$("[data-pick]").forEach(b=>b.onclick=()=>{
     const f=b.dataset.pick, v=b.dataset.v;
-    if(f==="product"){ if(d.productId!==v){ d.productId=v; d.personaId=null; } }
+    if(f==="product"){ if(d.productId!==v){ d.productId=v; d.lander=null; } }
     else if(f==="brand"){ d.brandId=(d.brandId===v?null:v); }
-    else if(f==="persona"){ d.personaId=v; }
     else d[f]=v;
     save(); renderResearch();
   });
@@ -1149,7 +1277,7 @@ function updatePreview(){
 }
 function prettyNaming(d){
   const seg=(v,ph)=>v?`<span>${esc(v)}</span>`:`<span class="miss">${ph}</span>`;
-  const br=brandById(d.brandId), pe=personaById(d.productId,d.personaId);
+  const br=brandById(d.brandId), pe=personaById(d.personaId);
   return [
     seg(pascal(d.editor),"Editor"),
     seg(d.mediaType,"Video/Image"),
@@ -1165,7 +1293,7 @@ function prettyNaming(d){
 function briefRows(d){
   const row=(k,v)=>`<dt>${k}</dt><dd>${v?esc(v):'<span style="color:var(--ink-3)">—</span>'}</dd>`;
   const prod=(productById(d.productId)||{}).name, brand=(brandById(d.brandId)||{}).name;
-  const persona=(personaById(d.productId,d.personaId)||{}).name, aud=audByCode(d.audience);
+  const persona=(personaById(d.personaId)||{}).name, aud=audByCode(d.audience);
   return [
     row("Product",prod),
     row("Inspiration",brand),
@@ -1174,9 +1302,9 @@ function briefRows(d){
     row("Angle",d.angle),
     row("Audience",aud?`${aud.label} (${aud.code})`:""),
     row("Hero persona",persona),
+    row("Lander",d.lander),
     row("Format",d.mediaType),
     row("Editor",d.editor),
-    row("Lander",d.lander),
     row("Hook",d.hook),
   ].join("");
 }
@@ -1184,31 +1312,31 @@ function addToBank(kind,val){
   const cr=C(), d=cr.draft;
   if(kind==="brand"){const id=uid();cr.brands.push({id,name:val,url:""});d.brandId=id;}
   else if(kind==="angle"){if(!cr.angles.includes(val))cr.angles.push(val);d.angle=val;}
-  else if(kind==="persona"){if(!d.productId)return;(cr.personas[d.productId]=cr.personas[d.productId]||[]).push({id:uid(),name:val});d.personaId=cr.personas[d.productId][cr.personas[d.productId].length-1].id;}
+  else if(kind==="persona"){cr.personas.push({id:uid(),name:val});d.personaId=cr.personas[cr.personas.length-1].id;}
+  else if(kind==="lander"){if(!d.productId)return;(cr.landers[d.productId]=cr.landers[d.productId]||[]);if(!cr.landers[d.productId].includes(val))cr.landers[d.productId].push(val);d.lander=val;}
   else if(kind==="editor"){if(!cr.editors.includes(val))cr.editors.push(val);d.editor=val;}
-  else if(kind==="lander"){if(!cr.landers.includes(val))cr.landers.push(val);d.lander=val;}
   save();renderResearch();
 }
 function commitAd(){
   const cr=C(), d=cr.draft;
   if(!draftComplete(d)){toast("Fill every step first");return;}
   const ad={
-    id:d.editingId||uid(), productId:d.productId, brandId:d.brandId, creativeUrl:d.creativeUrl, concept:d.concept,
-    angle:d.angle, audience:d.audience, personaId:d.personaId, editor:d.editor, mediaType:d.mediaType,
-    lander:d.lander, hook:d.hook, dateCode:d.dateCode,
-    naming:namingFor(d), brief:briefText(d), createdAt:new Date().toISOString(),
+    id:d.editingId||uid(), productId:d.productId, brandId:d.brandId, creativeUrl:d.creativeUrl, concept:d.concept, thumb:d.thumb,
+    angle:d.angle, audience:d.audience, personaId:d.personaId, lander:d.lander, editor:d.editor, mediaType:d.mediaType,
+    hook:d.hook, dateCode:d.dateCode, naming:namingFor(d), brief:briefText(d), createdAt:new Date().toISOString(),
   };
   if(d.editingId){const i=cr.ads.findIndex(a=>a.id===d.editingId);if(i>=0)cr.ads[i]=ad;toast("Ad updated");}
-  else{cr.ads.push(ad);toast("Ad added — build the next one");}
-  cr.draft=freshDraft({productId:d.productId,editor:d.editor,mediaType:d.mediaType,lander:d.lander,dateCode:d.dateCode});
+  else{cr.ads.push(ad);toast("Ad added — queued for Script Studio");}
+  cr.draft=freshDraft({productId:d.productId,lander:d.lander,editor:d.editor,mediaType:d.mediaType,dateCode:d.dateCode});
   save();renderResearch();
 }
 function adRow(a){
   const prod=(productById(a.productId)||{}).name||"—";
-  const persona=(personaById(a.productId,a.personaId)||{}).name||"—";
+  const persona=(personaById(a.personaId)||{}).name||"—";
   const aud=audByCode(a.audience), brand=(brandById(a.brandId)||{}).name||"—";
   return `<div class="adrow">
     <div class="ar-top">
+      ${a.thumb?`<img class="ar-thumb" src="${a.thumb}" alt="creative"/>`:''}
       <div class="ar-name">${esc(a.naming)}</div>
       <button class="copybtn" data-adcopy="name" data-id="${a.id}">Copy name</button>
     </div>
@@ -1217,6 +1345,7 @@ function adRow(a){
       <span class="minichip">${esc(a.angle)}</span>
       <span class="minichip">${aud?aud.code:''}</span>
       <span class="minichip">${esc(persona)}</span>
+      <span class="minichip">${esc(a.lander||'—')}</span>
       <span class="minichip">${esc(a.mediaType)}</span>
       <span class="minichip">↳ ${esc(brand)}</span>
     </div>
@@ -1238,7 +1367,7 @@ function renderScriptLocked(){
   canvas.innerHTML=`<div class="locked-panel">
     <div class="lk">🔒</div>
     <h2>Script Studio</h2>
-    <p>The ${ready} ad${ready===1?'':'s'} you build in Creative Research land here as ready-for-script briefs. This is where each recipe becomes a full script — coming in the next build.</p>
+    <p>${ready} ad${ready===1?'':'s'} queued from Creative Research, each as a ready-for-script brief. This is where every recipe becomes a full script — coming in the next build.</p>
     <button class="btn secondary" onclick="setView(2)">← Back to Creative Research</button>
   </div>`;
 }
