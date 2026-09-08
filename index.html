@@ -474,7 +474,7 @@ input:focus,button:focus-visible,.stage-item:focus-visible,.focus-opt:focus-visi
 /* ============================================================
    STATE
    ============================================================ */
-const STORE_KEY = "altitude.v1";
+const STORE_KEY = "altitude.v2";
 const TF_DAYS = {"1":1,"7":7,"30":30};
 const TF_LABEL = {"1":"today","7":"last 7 days","30":"last 30 days"};
 const uid = () => Math.random().toString(36).slice(2,9);
@@ -501,28 +501,44 @@ function buildSeed(){
     }};
   }
   return [
-    P("Hydra-Glow Serum",[
-      ["UGC — Testimonial (Maya)",4200,2.8],
-      ["Founder story — 45s",3100,2.3],
-      ["Before / After split",1800,3.4],
-      ["Problem-agitate hook",2600,1.6],
-      ["Static offer carousel",900,1.1],
-      ["Ingredient explainer",1400,1.9],
+    P("Pink Protocol",[
+      ["UGC — Testimonial (Noa)",3800,2.9],
+      ["Founder story — 45s",2600,2.4],
+      ["Before / After split",1500,3.6],
+      ["Problem-agitate hook",2100,1.7],
+      ["Static offer carousel",700,1.2],
     ]),
-    P("Daily Collagen",[
-      ["Morning routine UGC",2200,2.1],
-      ["Podcast clip cut-down",1600,1.4],
-      ["Meme hook — 15s",1200,0.9],
-      ["Us-vs-them comparison",2000,1.7],
-      ["Testimonial montage",1500,2.6],
-      ["Founder rant",800,1.8],
+    P("PDRN Booster",[
+      ["Science explainer",2400,2.2],
+      ["UGC — glow routine",1800,1.5],
+      ["Derm authority",1300,2.7],
+      ["Trend hook — 15s",1600,1.1],
+      ["Us-vs-them comparison",1900,1.8],
     ]),
-    P("Reset Gut Complex",[
-      ["Educational — how it works",1900,1.5],
-      ["UGC unboxing",1300,2.2],
-      ["Symptom hook",2100,1.3],
-      ["Doctor authority",1000,1.9],
-      ["Offer stack static",700,1.2],
+    P("Retinew",[
+      ["How-to-use educational",2000,1.4],
+      ["UGC — results at 8 weeks",1400,2.1],
+      ["Sensitive-skin angle",1700,1.3],
+      ["Ingredient explainer",1100,1.9],
+    ]),
+    P("LuxeSkin",[
+      ["Lifestyle aesthetic",2900,2.5],
+      ["Testimonial montage",1600,2.8],
+      ["Unboxing UGC",1200,2.0],
+      ["Price-justify hook",1500,1.6],
+    ]),
+    P("NAD9 Kit",[
+      ["Longevity angle — edu",2200,1.5],
+      ["Podcast clip cut-down",1700,1.3],
+      ["Founder rant",900,2.3],
+      ["Routine UGC",1400,1.8],
+      ["Doctor authority",1200,1.2],
+    ]),
+    P("Ancestica Solid Bar",[
+      ["Sustainability hook",1500,1.6],
+      ["ASMR bar demo",1300,2.2],
+      ["Zero-waste UGC",1100,1.4],
+      ["Comparison vs. bottle",900,1.7],
     ]),
   ];
 }
@@ -962,8 +978,8 @@ function renderStage5(){
 /* ---------------- shared bits ---------------- */
 function sampleBanner(){
   return `<div class="sample-banner">
-    <span>📊</span><span><b>Sample data.</b> These products &amp; creatives are examples so you can see the tool working. Swap in your real Facebook numbers.</span>
-    <button class="btn secondary" id="editSample" style="padding:7px 12px;font-size:12.5px">Edit my products →</button>
+    <span>📊</span><span><b>Your products are loaded.</b> The spend &amp; ROAS below are placeholder numbers so the board visualizes — connect Facebook (coming soon) or edit them to make the picture real.</span>
+    <button class="btn secondary" id="editSample" style="padding:7px 12px;font-size:12.5px">Edit numbers →</button>
   </div>`;
 }
 function bindSampleBanner(){const b=$("#editSample");if(b)b.onclick=openDrawer;}
