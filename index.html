@@ -595,7 +595,11 @@ input:focus,button:focus-visible,.stage-item:focus-visible,.focus-opt:focus-visi
 .score-badge.s-bad{background:var(--bad-soft);color:var(--bad-2)}
 @media (max-width:600px){.scorecard{grid-template-columns:1fr}}
 
-@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+.need-pill{display:inline-block;font-family:"Archivo",sans-serif;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--warn-2);background:var(--warn-soft);padding:2px 6px;border-radius:999px;vertical-align:middle;margin-left:7px}
+.bstep.flash{animation:needflash 1.5s ease}
+@keyframes needflash{0%,100%{background:transparent}20%,55%{background:var(--warn-soft)}}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
 </style>
 </head>
 <body>
@@ -1388,11 +1392,46 @@ function fileToThumb(file,cb){
   r.onerror=()=>cb(null); r.readAsDataURL(file);
 }
 
-function bstep(num,t,s,body,locked){
-  return `<div class="bstep ${locked?'locked':''}">
-    <div class="bs-label"><div class="bs-num">${num}</div><div class="bs-t">${t}</div><div class="bs-s">${s}</div></div>
+function bstep(num,t,s,body,locked,need){
+  const flag = need && !locked;
+  return `<div class="bstep ${locked?'locked':''}" ${flag?'data-need="1"':''}>
+    <div class="bs-label"><div class="bs-num">${num}</div><div class="bs-t">${t}${flag?' <span class="need-pill">needed</span>':''}</div><div class="bs-s">${s}</div></div>
     <div class="bs-body">${body}</div>
   </div>`;
+}
+function missingFields(d){
+  const m=[];
+  if(!d.productId) m.push("product");
+  if(!d.brandId) m.push("inspiration brand");
+  if(!d.creativeUrl) m.push("creative link");
+  if(!d.angle) m.push("angle");
+  if(!d.audience) m.push("audience");
+  if(!d.personaId) m.push("hero persona");
+  if(!d.lander) m.push("lander");
+  if(!d.editor) m.push("editor");
+  if(!d.mediaType) m.push("format");
+  if(!d.hook) m.push("hook");
+  if(!d.dateCode) m.push("date code");
+  return m;
+}
+function flashNeeds(){
+  const els=$$('.bstep[data-need="1"]');
+  if(els[0]) els[0].scrollIntoView({behavior:'smooth',block:'center'});
+  els.forEach(e=>{ e.classList.remove('flash'); void e.offsetWidth; e.classList.add('flash'); setTimeout(()=>e.classList.remove('flash'),1500); });
+}
+// keep the per-step "needed" pills in sync without a full re-render (text inputs don't re-render)
+function refreshNeeds(){
+  const d=C().draft;
+  const flags=[!d.productId, (!d.brandId||!d.creativeUrl), !d.angle, !d.audience, !d.personaId, !d.lander, (!d.editor||!d.mediaType||!d.hook)];
+  const steps=$$(".builder .bstep");
+  for(let i=0;i<7 && i<steps.length;i++){
+    const st=steps[i]; const needIt=flags[i] && !st.classList.contains("locked");
+    st.setAttribute("data-need", needIt?"1":"");
+    const t=st.querySelector(".bs-t"); if(!t) continue;
+    let pill=t.querySelector(".need-pill");
+    if(needIt && !pill){ pill=document.createElement("span"); pill.className="need-pill"; pill.textContent="needed"; t.appendChild(pill); }
+    else if(!needIt && pill){ pill.remove(); }
+  }
 }
 const addChip=(kind)=>`<input class="chip-add" type="text" placeholder="+ add" data-addinput="${kind}" aria-label="Add ${kind}" />`;
 
@@ -1402,6 +1441,7 @@ function renderResearch(){
   const prog=Math.min(100,Math.round(built/target*100));
   const used=d.productId?usedAnglesFor(d.productId):new Set();
   const lockP=!d.productId;
+  const need={p:!d.productId, insp:(!d.brandId||!d.creativeUrl), angle:!d.angle, aud:!d.audience, persona:!d.personaId, lander:!d.lander, naming:(!d.editor||!d.mediaType||!d.hook)};
   canvas.innerHTML=`
   <div class="stage-head">
     <div class="eyebrow">Stage 2 · Create</div>
@@ -1427,7 +1467,7 @@ function renderResearch(){
     ${bstep("01","Product","Which product is this ad for? Sets the lander options below.",`
       <div class="chiprow">
         ${S.products.map(p=>`<button class="chip ${d.productId===p.id?'on':''}" data-pick="product" data-v="${p.id}">${esc(p.name)}</button>`).join("")}
-      </div>`)}
+      </div>`, false, need.p)}
 
     ${bstep("02","Inspiration","Pick the brand you're modelling, open it in GetHookd, paste the creative you're copying, and add its thumbnail.",`
       <div class="insp-row">
@@ -1446,7 +1486,7 @@ function renderResearch(){
             ? `<div class="thumb-prev"><img src="${d.thumb}" alt="creative thumbnail"/><button class="copybtn" id="thumbRemove">Remove thumbnail</button></div>`
             : `<label class="thumb-drop"><input type="file" id="thumbFile" accept="image/*" hidden/>＋ Add creative thumbnail</label><span style="font-size:11.5px;color:var(--ink-3)">shown in the brief · auto-pulled from the link once hosted</span>`}
         </div>
-      </div>`, lockP)}
+      </div>`, lockP, need.insp)}
 
     ${bstep("03","Angle","From this product's strategy — each shows its real status. Chase fresh or proven, avoid proven losers.",`
       <div class="chiprow">
@@ -1454,26 +1494,26 @@ function renderResearch(){
           return `<button class="chip ${d.angle===a?'on':''}" data-pick="angle" data-v="${esc(a)}">${esc(a)}<span class="u astat-dot ${m.cls}" title="${m.label}">${m.sig}</span></button>`;}).join("")}
         ${addChip("angle")}
       </div>
-      <div class="angle-key">${["winning","untested","testing","losing"].map(k=>`<span class="astat-dot ${ANGLE_STATUS[k].cls}">${ANGLE_STATUS[k].sig}</span>${ANGLE_STATUS[k].label}`).join('<span class="sep">·</span>')}</div>`, lockP)}
+      <div class="angle-key">${["winning","untested","testing","losing"].map(k=>`<span class="astat-dot ${ANGLE_STATUS[k].cls}">${ANGLE_STATUS[k].sig}</span>${ANGLE_STATUS[k].label}`).join('<span class="sep">·</span>')}</div>`, lockP, need.angle)}
 
     ${bstep("04","Audience","Who is this ad talking to?",`
       <div class="aud-grid">
         ${AUDIENCES.map(a=>`<button class="aud-card ${d.audience===a.code?'on':''}" data-pick="audience" data-v="${a.code}">
           <span class="ac-code">${a.code}</span><span class="ac-t">${a.label}</span><span class="ac-s">${a.sub}</span>
         </button>`).join("")}
-      </div>`, lockP)}
+      </div>`, lockP, need.aud)}
 
     ${bstep("05","Hero persona","From this product's strategy — who are we casting as the hero of this ad?",`
       <div class="chiprow">
         ${personasForProduct(d.productId).map(p=>`<button class="chip ${d.personaId===p.id?'on':''}" data-pick="persona" data-v="${p.id}">${esc(p.name)}</button>`).join("")}
         ${addChip("persona")}
-      </div>`, lockP)}
+      </div>`, lockP, need.persona)}
 
     ${bstep("06","Lander","Which landing page does this ad send to? Real landers for this product.",`
       <div class="chiprow">
         ${landersFor(d.productId).map(l=>`<button class="chip ${d.lander===l?'on':''}" data-pick="lander" data-v="${esc(l)}">${esc(l)}</button>`).join("")}
         ${d.productId?addChip("lander"):'<span style="font-size:12.5px;color:var(--ink-3)">Pick a product first</span>'}
-      </div>`, lockP)}
+      </div>`, lockP, need.lander)}
 
     ${bstep("07","Naming details","The last pieces the naming convention needs.",`
       <div class="detail-grid">
@@ -1483,7 +1523,7 @@ function renderResearch(){
       <div class="detail-grid" style="margin-top:14px">
         <div class="field"><label>Hook (short label for naming)</label><input type="text" id="hook" placeholder="e.g. Scroll-stopper, POV, Big-claim" value="${esc(d.hook||'')}"/></div>
         <div class="field"><label>Date code (month / week / year)</label><input type="text" id="dateCode" class="mono" value="${esc(d.dateCode||liveDateCode())}"/></div>
-      </div>`, lockP)}
+      </div>`, lockP, need.naming)}
 
     <div class="bstep" style="grid-template-columns:1fr">
       <div class="bs-body">
@@ -1622,8 +1662,12 @@ function updatePreview(){
   const so=$("#scoreOut"); if(so) so.innerHTML=scorePanel(d);
   const no=$("#nameOut"); if(no) no.innerHTML=prettyNaming(d);
   const bo=$("#briefOut"); if(bo) bo.innerHTML=briefRows(d);
-  const add=$("#addAd"); if(add) add.disabled=!draftComplete(d);
-  const hint=$("#builderHint"); if(hint) hint.textContent=draftComplete(d)?"All set — add it to the week.":"Fill every step to generate the naming and brief.";
+  const add=$("#addAd"); if(add) add.disabled=false; // always clickable — tells you what's missing on click
+  const hint=$("#builderHint");
+  if(hint){ const m=missingFields(d);
+    hint.innerHTML = m.length ? `<b style="color:var(--warn-2)">Still needed:</b> ${esc(m.join(", "))}` : "All set — add it to the week.";
+  }
+  refreshNeeds();
 }
 function prettyNaming(d){
   const seg=(v,ph)=>v?`<span>${esc(v)}</span>`:`<span class="miss">${ph}</span>`;
@@ -1669,7 +1713,7 @@ function addToBank(kind,val){
 }
 function commitAd(){
   const cr=C(), d=cr.draft;
-  if(!draftComplete(d)){toast("Fill every step first");return;}
+  if(!draftComplete(d)){ const m=missingFields(d); toast("Still needed: "+m.join(", ")); flashNeeds(); return; }
   // close the loop: an angle used in a brief is now "in play" on the Big Picture (Testing until Facebook fills the numbers)
   if(!S.angleData[d.productId]) S.angleData[d.productId]={};
   if(!S.angleData[d.productId][d.angle]) S.angleData[d.productId][d.angle]={spend:0,roas:0,fromBrief:true};
