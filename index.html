@@ -1530,6 +1530,7 @@ function renderResearch(){
         if(d.personaId && st && !(st.personas||[]).find(p=>p.id===d.personaId)) d.personaId=null;
       } }
     else if(f==="brand"){ d.brandId=(d.brandId===v?null:v); }
+    else if(f==="persona"){ d.personaId=v; }
     else d[f]=v;
     save(); renderResearch();
   });
