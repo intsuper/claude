@@ -410,6 +410,73 @@ input:focus,button:focus-visible,.stage-item:focus-visible,.focus-opt:focus-visi
   .goal-stats{grid-template-columns:1fr;gap:14px}
   .goal-stats .gs{padding:0;border-left:none}
 }
+/* ---------- creative research (tab 2) ---------- */
+.research-top{display:flex;align-items:center;gap:24px;flex-wrap:wrap;background:var(--panel);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);padding:16px 22px;margin-bottom:22px}
+.rt-figure{display:flex;flex-direction:column;gap:3px}
+.rt-figure .k{font-size:10.5px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.05em;font-weight:700;font-family:"Archivo"}
+.rt-figure .v{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:22px;letter-spacing:-.01em}
+.rt-figure input{width:70px;text-align:center;font-size:17px;font-weight:600;padding:5px 6px}
+.rt-prog{flex:1;min-width:190px}
+.rt-prog .bar{height:10px;border-radius:99px;background:var(--inset);border:1px solid var(--border);overflow:hidden}
+.rt-prog .bar i{display:block;height:100%;background:linear-gradient(90deg,color-mix(in srgb,var(--accent) 80%,#000 6%),var(--accent));border-radius:99px;transition:width .4s cubic-bezier(.2,.7,.2,1)}
+.rt-prog .lab{font-size:11.5px;color:var(--ink-3);margin-top:7px}
+
+.builder{background:var(--panel);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);overflow:hidden;margin-bottom:28px}
+.builder-h{display:flex;align-items:center;gap:12px;padding:15px 22px;border-bottom:1px solid var(--border);background:var(--surface-2)}
+.builder-h h3{font-size:15px;font-weight:800}
+.builder-h .spacer{flex:1}
+.bstep{padding:19px 22px;border-bottom:1px solid var(--border);display:grid;grid-template-columns:140px 1fr;gap:20px}
+.bstep .bs-num{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--accent);font-weight:600}
+.bstep .bs-t{font-family:"Archivo",sans-serif;font-weight:700;font-size:14px;margin-top:4px;line-height:1.2}
+.bstep .bs-s{font-size:11.5px;color:var(--ink-3);margin-top:4px;line-height:1.35}
+.bstep .bs-body{min-width:0}
+.bstep.locked{opacity:.45;pointer-events:none;filter:grayscale(.3)}
+.chiprow{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.chip{border:1px solid var(--border-strong);background:var(--surface);color:var(--ink-2);border-radius:999px;padding:7px 13px;font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:7px;line-height:1.1}
+.chip:hover{background:var(--surface-2);color:var(--ink)}
+.chip.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);box-shadow:0 6px 14px -8px var(--accent)}
+.chip.used{opacity:.5}
+.chip .u{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:var(--ink-3);border:1px solid var(--border);border-radius:5px;padding:1px 4px}
+.chip.on .u{color:var(--accent-ink);border-color:currentColor;opacity:.8}
+.chip-add{border:1px dashed var(--border-strong);background:transparent;color:var(--ink-2);border-radius:999px;padding:7px 13px;font-size:12.5px;width:108px}
+.chip-add::placeholder{color:var(--ink-3)}
+.chip-add:focus{border-style:solid;border-color:var(--accent);outline:none}
+.aud-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:10px}
+.aud-card{text-align:left;border:1.5px solid var(--border);background:var(--surface);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:4px;cursor:pointer}
+.aud-card:hover{border-color:var(--border-strong)}
+.aud-card.on{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.aud-card .ac-code{font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:600;color:var(--accent)}
+.aud-card .ac-t{font-weight:700;font-size:13.5px;font-family:"Archivo",sans-serif}
+.aud-card .ac-s{font-size:11.5px;color:var(--ink-3)}
+.insp-row{display:flex;flex-direction:column;gap:12px}
+.insp-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.linklike{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:var(--accent);text-decoration:none;border:1px solid var(--border-strong);border-radius:9px;padding:7px 12px}
+.linklike:hover{background:var(--accent-soft)}
+.detail-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:16px}
+.name-out{background:var(--inset);border:1px solid var(--border);border-radius:12px;padding:15px 18px}
+.name-out .no-k,.brief-out .no-k{font-family:"Archivo",sans-serif;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3);display:flex;align-items:center;gap:8px}
+.name-out .no-v{font-family:"IBM Plex Mono",monospace;font-size:15px;font-weight:600;margin-top:10px;word-break:break-word;line-height:1.6;color:var(--ink)}
+.name-out .no-v .miss{color:var(--bad-2);background:var(--bad-soft);padding:1px 7px;border-radius:5px;font-size:12px;font-weight:600}
+.brief-out{background:var(--surface);border:1px dashed var(--border-strong);border-radius:12px;padding:15px 18px;margin-top:12px}
+.brief-out dl{display:grid;grid-template-columns:120px 1fr;gap:8px 16px;margin:0}
+.brief-out dt{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-3);font-family:"Archivo",sans-serif;padding-top:1px}
+.brief-out dd{margin:0;font-size:13.5px;color:var(--ink);word-break:break-word}
+.builder-foot{display:flex;align-items:center;gap:12px;padding:16px 22px;background:var(--surface-2);border-top:1px solid var(--border)}
+.builder-foot .spacer{flex:1}
+.copybtn{border:1px solid var(--border-strong);background:var(--surface);color:var(--ink-2);border-radius:8px;padding:6px 11px;font-size:12px;font-weight:600}
+.copybtn:hover{background:var(--surface-2);color:var(--ink)}
+.built-list{display:flex;flex-direction:column;gap:12px}
+.adrow{background:var(--panel);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);padding:15px 18px;display:flex;flex-direction:column;gap:11px}
+.adrow .ar-top{display:flex;align-items:center;gap:12px}
+.adrow .ar-name{font-family:"IBM Plex Mono",monospace;font-size:13px;font-weight:600;word-break:break-word;flex:1;min-width:0}
+.adrow .ar-chips{display:flex;flex-wrap:wrap;gap:6px}
+.minichip{font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px;background:var(--inset);border:1px solid var(--border);color:var(--ink-2)}
+.minichip.prod{background:var(--accent-soft);color:var(--accent);border-color:transparent}
+.adrow .ar-foot{display:flex;align-items:center;gap:8px;flex-wrap:wrap;border-top:1px solid var(--border);padding-top:11px}
+.adrow .ar-foot .spacer{flex:1}
+.empty{text-align:center;color:var(--ink-3);padding:38px 24px;border:1px dashed var(--border-strong);border-radius:14px;font-size:13.5px;line-height:1.5}
+@media (max-width:720px){.bstep{grid-template-columns:1fr;gap:12px}}
+
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -480,11 +547,9 @@ const TF_LABEL = {"1":"today","7":"last 7 days","30":"last 30 days"};
 const uid = () => Math.random().toString(36).slice(2,9);
 
 const STAGES = [
-  {n:1,t:"The Big Picture",s:"See winners, losers &amp; the goal"},
-  {n:2,t:"Pick the Battle",s:"Choose one product, one play"},
-  {n:3,t:"Call Every Creative",s:"Scale, cut, iterate or keep"},
-  {n:4,t:"Build the Action List",s:"Turn calls into tasks"},
-  {n:5,t:"Commit the Week",s:"Lock the plan &amp; the impact"},
+  {n:1,t:"The Big Picture",s:"Winners, losers &amp; the goal"},
+  {n:2,t:"Creative Research",s:"Build this week's ads"},
+  {n:3,t:"Script Studio",s:"Turn briefs into scripts"},
 ];
 
 /* ---- seed (SAMPLE data — clearly labelled in UI) ---- */
@@ -543,24 +608,71 @@ function buildSeed(){
   ];
 }
 
-function freshWorkflow(){
-  return {weekOf:new Date().toISOString(), completed:[], focus:null, decisions:{}, tasks:null, committed:false};
+function freshWorkflow(){ return {weekOf:new Date().toISOString(), completed:[]}; }
+
+/* ---- creative research bank (tab 2) ---- */
+function freshDraft(carry){
+  return Object.assign({productId:null,brandId:null,creativeUrl:"",concept:"",angle:null,
+    audience:null,personaId:null,editor:null,mediaType:null,lander:null,hook:"",
+    dateCode:liveDateCode(),editingId:null}, carry||{});
+}
+function seedPersonas(products){
+  const byName={
+    "Pink Protocol":["Busy mom 35–45","Bride-to-be","Perimenopausal skin","Skincare newbie 25–30"],
+    "PDRN Booster":["Aging-concerned 40+","Acne-scar sufferer","K-beauty enthusiast","Sensitive skin"],
+    "Retinew":["Retinol-curious beginner","Wrinkle-focused 45+","Sensitive-skin skeptic","Ingredient nerd"],
+    "LuxeSkin":["Affluent 40+","Luxury-beauty shopper","Gift buyer","Results-over-price"],
+    "NAD9 Kit":["Biohacker","Longevity enthusiast 45+","Low-energy professional","Wellness optimizer"],
+    "Ancestica Solid Bar":["Eco-conscious 25–40","Zero-waste convert","Frequent traveler","Sensitive-scalp switcher"],
+  };
+  const out={};
+  products.forEach(p=>{ out[p.id]=(byName[p.name]||["Core customer","Skeptic","Repeat buyer"]).map(n=>({id:uid(),name:n})); });
+  return out;
+}
+function defaultCreative(products){
+  return {
+    weeklyTarget:30,
+    brands:[
+      {id:uid(),name:"Glow Recipe",url:""},{id:uid(),name:"The Ordinary",url:""},
+      {id:uid(),name:"Medik8",url:""},{id:uid(),name:"Bubble",url:""},
+    ],
+    editors:["Yotam"],
+    landers:["Quiz","Advertorial","Listicle","Product Page","VSL"],
+    angles:["Problem-Aware","Insecurity","Time-Saving","Science / Mechanism","Social Proof",
+      "Cost-Per-Use","Ingredient Hero","Routine / Ritual","Anti-Aging Fear","Clean / Natural",
+      "Authority / Expert","Transformation","Myth-Busting","FOMO / Trend"],
+    personas:seedPersonas(products),
+    ads:[],
+    draft:freshDraft(),
+  };
 }
 function defaultState(){
+  const products=buildSeed();
   return {
     goal:{dailyTarget:5000, roasThreshold:2.0},
     timeframe:"7",
     theme:"system",
     isSample:true,
-    products:buildSeed(),
+    products,
     workflow:freshWorkflow(),
+    creative:defaultCreative(products),
     view:1,
   };
 }
 let S = load();
 function load(){
-  try{const r=JSON.parse(localStorage.getItem(STORE_KEY));if(r&&r.products)return r;}catch(e){}
-  return defaultState();
+  let r=null; try{r=JSON.parse(localStorage.getItem(STORE_KEY));}catch(e){}
+  if(!r||!r.products) return defaultState();
+  migrate(r); return r;
+}
+function migrate(s){
+  if(!s.workflow) s.workflow=freshWorkflow();
+  if(!Array.isArray(s.workflow.completed)) s.workflow.completed=[];
+  if(!s.creative) s.creative=defaultCreative(s.products);
+  if(!s.creative.draft) s.creative.draft=freshDraft();
+  if(!s.creative.personas) s.creative.personas=seedPersonas(s.products);
+  s.products.forEach(p=>{ if(!s.creative.personas[p.id]) s.creative.personas[p.id]=seedPersonas([p])[p.id]; });
+  if(typeof s.view!=="number"||s.view<1||s.view>STAGES.length) s.view=1;
 }
 function save(){try{localStorage.setItem(STORE_KEY,JSON.stringify(S));}catch(e){}}
 
@@ -659,7 +771,7 @@ const PLAY=({cut:{cls:"cut",label:"Cut losers"},scale:{cls:"scale",label:"Scale 
 const $=(s,r=document)=>r.querySelector(s);
 const canvas=$("#canvas");
 
-function stageUnlocked(n){return n===1 || S.workflow.completed.includes(n-1);}
+function stageUnlocked(n){ if(n===1)return true; if(n===2)return S.workflow.completed.includes(1); return false; }
 function setView(n){ if(!stageUnlocked(n)) return; S.view=n; save(); render(); }
 
 function renderRail(){
@@ -687,8 +799,9 @@ function render(){
   const st=STAGES[S.view-1];
   $("#crumbIdx").textContent="Stage "+st.n;
   $("#crumbName").innerHTML=st.t;
+  $("#tfSeg").hidden = S.view!==1;
   $$("#tfSeg button").forEach(b=>b.classList.toggle("on",b.dataset.tf===S.timeframe));
-  ({1:renderStage1,2:renderStage2,3:renderStage3,4:renderStage4,5:renderStage5})[S.view]();
+  ({1:renderStage1,2:renderResearch,3:renderScriptLocked})[S.view]();
 }
 const $$=(s,r=document)=>[...r.querySelectorAll(s)];
 
@@ -764,9 +877,9 @@ function renderStage1(){
   <div class="recs">${recs.map(recCard).join("")}</div>
 
   <div class="stage-cta">
-    <div class="txt">Seen the full board? <b>Lock in this week's picture</b> to unlock Stage 2, where you pick the one product and play to attack.</div>
+    <div class="txt">Seen the full board? <b>Lock in this week's picture</b> to unlock Creative Research and start building this week's ads.</div>
     <div class="spacer"></div>
-    <button class="btn" id="lockStage1">Lock in &amp; pick the battle →</button>
+    <button class="btn" id="lockStage1">Lock in the week &amp; start creating →</button>
   </div>`;
 
   // pillar heights (shared scale across all products)
@@ -774,7 +887,7 @@ function renderStage1(){
   $$(".pillar .col").forEach(col=>{
     const c=+col.dataset.count; col.style.height=(22+ (c/maxCount)*(108-22))+"px";
   });
-  $("#lockStage1").onclick=()=>{completeStage(1);setView(2);toast("Stage 1 locked — now pick your battle");};
+  $("#lockStage1").onclick=()=>{completeStage(1);setView(2);toast("Week locked — let's build");};
   bindSampleBanner();
 }
 
@@ -820,159 +933,315 @@ function recCard(o,i){
   </div>`;
 }
 
-/* ---------------- STAGE 2 ---------------- */
-function renderStage2(){
-  const recs=buildRecommendations();
-  const sel=S.workflow.focus;
+/* ============================================================
+   TAB 2 · CREATIVE RESEARCH — build this week's ad recipes
+   ============================================================ */
+const AUDIENCES=[
+  {code:"COLD",label:"Never saw us, never bought",sub:"Cold prospecting — a brand-new audience"},
+  {code:"FTC",label:"First-time customers",sub:"In their first purchase window"},
+  {code:"WARM",label:"Saw our ads, never bought",sub:"Warm, engaged non-buyers to convert"},
+  {code:"REPEAT",label:"Bought before — target again",sub:"Existing buyers to win back / resell"},
+];
+const MEDIA=["Video","Image"];
+const pascal=(s)=>String(s||"").split(/[^A-Za-z0-9]+/).filter(Boolean).map(w=>w[0].toUpperCase()+w.slice(1)).join("");
+function liveDateCode(dt=new Date()){
+  const m=String(dt.getMonth()+1).padStart(2,"0");
+  const w=String(Math.ceil(dt.getDate()/7)).padStart(2,"0");
+  const y=String(dt.getFullYear()%100).padStart(2,"0");
+  return `M${m}W${w}Y${y}`;
+}
+const C=()=>S.creative;
+const brandById=(id)=>C().brands.find(b=>b.id===id);
+const personasFor=(pid)=>C().personas[pid]||[];
+const personaById=(pid,id)=>personasFor(pid).find(p=>p.id===id);
+const productById=(id)=>S.products.find(p=>p.id===id);
+const adById=(id)=>C().ads.find(a=>a.id===id);
+const audByCode=(c)=>AUDIENCES.find(a=>a.code===c);
+function usedAnglesFor(pid){return new Set(C().ads.filter(a=>a.productId===pid && a.id!==C().draft.editingId).map(a=>a.angle));}
+function draftComplete(d){return !!(d.productId&&d.brandId&&d.creativeUrl&&d.angle&&d.audience&&d.personaId&&d.editor&&d.mediaType&&d.lander&&d.hook&&d.dateCode);}
+
+function namingFor(d){
+  return [
+    pascal(d.editor)||"Editor",
+    d.mediaType||"Media",
+    pascal(brandById(d.brandId)&&brandById(d.brandId).name)||"Brand",
+    pascal(d.angle)||"Angle",
+    pascal(personaById(d.productId,d.personaId)&&personaById(d.productId,d.personaId).name)||"Persona",
+    d.audience||"Audience",
+    pascal(d.lander)||"Lander",
+    pascal(d.hook)||"Hook",
+    d.dateCode||liveDateCode(),
+  ].join("_");
+}
+function briefText(d){
+  const prod=(productById(d.productId)||{}).name||"—";
+  const brand=(brandById(d.brandId)||{}).name||"—";
+  const persona=(personaById(d.productId,d.personaId)||{}).name||"—";
+  const aud=audByCode(d.audience);
+  return [
+    `PRODUCT: ${prod}`,
+    `INSPIRATION BRAND: ${brand}`,
+    `INSPIRATION CREATIVE: ${d.creativeUrl||"—"}`,
+    d.concept?`CONCEPT / FORMAT NOTE: ${d.concept}`:null,
+    `ANGLE: ${d.angle||"—"}`,
+    `AUDIENCE: ${aud?aud.label+" ("+aud.code+")":"—"}`,
+    `HERO PERSONA: ${persona}`,
+    `FORMAT: ${d.mediaType||"—"}`,
+    `EDITOR: ${d.editor||"—"}`,
+    `LANDER: ${d.lander||"—"}`,
+    `HOOK: ${d.hook||"—"}`,
+    `NAMING: ${namingFor(d)}`,
+  ].filter(Boolean).join("\n");
+}
+function copyText(t){
+  const done=()=>toast("Copied to clipboard");
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(done).catch(()=>fallbackCopy(t,done));}
+  else fallbackCopy(t,done);
+}
+function fallbackCopy(t,done){const ta=document.createElement("textarea");ta.value=t;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.focus();ta.select();try{document.execCommand("copy");done();}catch(e){}ta.remove();}
+
+function bstep(num,t,s,body,locked){
+  return `<div class="bstep ${locked?'locked':''}">
+    <div class="bs-label"><div class="bs-num">${num}</div><div class="bs-t">${t}</div><div class="bs-s">${s}</div></div>
+    <div class="bs-body">${body}</div>
+  </div>`;
+}
+const addChip=(kind)=>`<input class="chip-add" type="text" placeholder="+ add" data-addinput="${kind}" aria-label="Add ${kind}" />`;
+
+function renderResearch(){
+  const cr=C(), d=cr.draft;
+  const built=cr.ads.length, target=cr.weeklyTarget||30;
+  const prog=Math.min(100,Math.round(built/target*100));
+  const used=d.productId?usedAnglesFor(d.productId):new Set();
+  const lockP=!d.productId;
   canvas.innerHTML=`
   <div class="stage-head">
-    <div class="eyebrow">Stage 2 · Prioritize</div>
-    <h2>Pick one product. Pick one play.</h2>
-    <p>You can't scale everything at once — that's how focus dies. Choose the single move from Stage 1 that best closes the gap to $5K/day. Everything downstream this week serves this one choice.</p>
+    <div class="eyebrow">Stage 2 · Create</div>
+    <h2>Build this week's ads</h2>
+    <p>Every ad starts the same way: steal a proven concept, put a fresh angle on it, aim it at one audience, and cast one hero persona. Lock those in and Altitude writes the script brief and the Facebook naming for you — then build the next one. Stack as many as the week needs.</p>
   </div>
-  <div class="focus-grid">
-    ${recs.map((o)=>{
-      const meta=PLAY[o.play];const on=sel&&sel.productId===o.productId&&sel.play===o.play;
-      return `<button class="focus-opt ${on?'sel':''}" data-pid="${o.productId}" data-play="${o.play}">
-        <div class="fo-top"><span class="rtag tag-${meta.cls}">${meta.label}</span>${on?'<span class="mono" style="color:var(--accent);font-weight:600">● chosen</span>':''}</div>
-        <div class="fo-prod">${esc(o.product)}</div>
-        <div class="fo-title">${esc(o.title.replace(' on '+o.product,'').replace(o.product,'').trim())||meta.label}</div>
-        <div class="fo-why">${o.why}</div>
-      </button>`;
-    }).join("")}
+
+  <div class="research-top">
+    <div class="rt-figure"><span class="k">Target this week</span><input class="mono" id="wkTarget" type="number" min="1" value="${target}"/></div>
+    <div class="rt-figure"><span class="k">Built</span><span class="v">${built}</span></div>
+    <div class="rt-figure"><span class="k">Ready for script</span><span class="v" style="color:var(--good-2)">${built}</span></div>
+    <div class="rt-prog">
+      <div class="bar"><i style="width:${prog}%"></i></div>
+      <div class="lab">${built} of ${target} ads built · ${prog}%</div>
+    </div>
   </div>
-  <div class="stage-cta">
-    <div class="txt" id="focusTxt">${sel?`Locked on <b>${esc(sel.product)}</b> — ${PLAY[sel.play].label.toLowerCase()}.`:'Select the play that best moves the goal.'}</div>
-    <div class="spacer"></div>
-    <button class="btn secondary" onclick="setView(1)">← Back to the board</button>
-    <button class="btn" id="lockStage2" ${sel?'':'disabled'}>Confirm focus →</button>
-  </div>`;
-  $$(".focus-opt").forEach(b=>b.onclick=()=>{
-    const o=recs.find(r=>r.productId===b.dataset.pid&&r.play===b.dataset.play);
-    S.workflow.focus={productId:o.productId,product:o.product,play:o.play};save();renderStage2();renderRail();
+
+  <section class="builder">
+    <div class="builder-h"><h3>${d.editingId?'Editing ad':'New ad recipe'}</h3><div class="spacer"></div>${d.editingId?'<button class="copybtn" id="cancelEdit">Cancel edit</button>':''}</div>
+
+    ${bstep("01","Product","Which product is this ad for? Sets the angle &amp; persona banks below.",`
+      <div class="chiprow">
+        ${S.products.map(p=>`<button class="chip ${d.productId===p.id?'on':''}" data-pick="product" data-v="${p.id}">${esc(p.name)}</button>`).join("")}
+      </div>`)}
+
+    ${bstep("02","Inspiration","Pick the brand you're modelling, open it in GetHookd, then paste the exact creative you're copying.",`
+      <div class="insp-row">
+        <div class="chiprow">
+          ${cr.brands.map(b=>`<button class="chip ${d.brandId===b.id?'on':''}" data-pick="brand" data-v="${b.id}">${esc(b.name)}</button>`).join("")}
+          ${addChip("brand")}
+        </div>
+        <div class="insp-actions">
+          <a class="linklike" href="${d.brandId&&brandById(d.brandId).url?esc(brandById(d.brandId).url):'https://app.gethookd.com'}" target="_blank" rel="noopener">Open ${d.brandId?esc(brandById(d.brandId).name):'GetHookd'} ↗</a>
+          <span style="font-size:11.5px;color:var(--ink-3)">then copy that creative's link</span>
+        </div>
+        <input type="text" id="creativeUrl" placeholder="Paste the GetHookd creative link…" value="${esc(d.creativeUrl||'')}"/>
+        <input type="text" id="concept" placeholder="Optional: concept / winning-format note (e.g. 3-reasons UGC, split-screen demo)" value="${esc(d.concept||'')}"/>
+      </div>`, lockP)}
+
+    ${bstep("03","Angle","Choose an angle you haven't run yet on this product — used ones are marked.",`
+      <div class="chiprow">
+        ${cr.angles.map(a=>`<button class="chip ${d.angle===a?'on':''} ${used.has(a)&&d.angle!==a?'used':''}" data-pick="angle" data-v="${esc(a)}">${esc(a)}${used.has(a)&&d.angle!==a?'<span class="u">used</span>':''}</button>`).join("")}
+        ${addChip("angle")}
+      </div>`, lockP)}
+
+    ${bstep("04","Audience","Who is this ad talking to?",`
+      <div class="aud-grid">
+        ${AUDIENCES.map(a=>`<button class="aud-card ${d.audience===a.code?'on':''}" data-pick="audience" data-v="${a.code}">
+          <span class="ac-code">${a.code}</span><span class="ac-t">${a.label}</span><span class="ac-s">${a.sub}</span>
+        </button>`).join("")}
+      </div>`, lockP)}
+
+    ${bstep("05","Hero persona","Which customer are we casting as the hero of this ad?",`
+      <div class="chiprow">
+        ${personasFor(d.productId).map(p=>`<button class="chip ${d.personaId===p.id?'on':''}" data-pick="persona" data-v="${p.id}">${esc(p.name)}</button>`).join("")}
+        ${d.productId?addChip("persona"):'<span style="font-size:12.5px;color:var(--ink-3)">Pick a product first</span>'}
+      </div>`, lockP)}
+
+    ${bstep("06","Naming details","The last pieces the Facebook naming convention needs.",`
+      <div class="detail-grid">
+        <div class="field"><label>Editor</label><div class="chiprow">${cr.editors.map(e=>`<button class="chip ${d.editor===e?'on':''}" data-pick="editor" data-v="${esc(e)}">${esc(e)}</button>`).join("")}${addChip("editor")}</div></div>
+        <div class="field"><label>Format</label><div class="chiprow">${MEDIA.map(m=>`<button class="chip ${d.mediaType===m?'on':''}" data-pick="mediaType" data-v="${m}">${m}</button>`).join("")}</div></div>
+        <div class="field"><label>Lander used</label><div class="chiprow">${cr.landers.map(l=>`<button class="chip ${d.lander===l?'on':''}" data-pick="lander" data-v="${esc(l)}">${esc(l)}</button>`).join("")}${addChip("lander")}</div></div>
+      </div>
+      <div class="detail-grid" style="margin-top:14px">
+        <div class="field"><label>Hook (short label for naming)</label><input type="text" id="hook" placeholder="e.g. Scroll-stopper, POV, Big-claim" value="${esc(d.hook||'')}"/></div>
+        <div class="field"><label>Date code (month / week / year)</label><input type="text" id="dateCode" class="mono" value="${esc(d.dateCode||liveDateCode())}"/></div>
+      </div>`, lockP)}
+
+    <div class="bstep" style="grid-template-columns:1fr">
+      <div class="bs-body">
+        <div class="name-out">
+          <div class="no-k">Facebook naming convention <button class="copybtn" id="copyName" style="margin-left:auto">Copy</button></div>
+          <div class="no-v" id="nameOut"></div>
+        </div>
+        <div class="brief-out">
+          <div class="no-k" style="margin-bottom:10px">Ready-for-script brief <button class="copybtn" id="copyBrief" style="margin-left:auto">Copy brief</button></div>
+          <dl id="briefOut"></dl>
+        </div>
+      </div>
+    </div>
+
+    <div class="builder-foot">
+      <span style="font-size:12.5px;color:var(--ink-3)" id="builderHint"></span>
+      <div class="spacer"></div>
+      <button class="btn secondary" id="resetDraft">Clear</button>
+      <button class="btn" id="addAd">${d.editingId?'Save changes':'Add to this week →'}</button>
+    </div>
+  </section>
+
+  <div class="sec-title"><h3>This week's ads</h3><div class="hint"><b>${built}</b> built · all ready to script</div></div>
+  <div class="built-list">${built?cr.ads.map(adRow).join(""):'<div class="empty">No ads yet. Build your first recipe above — pick a product, steal a concept, choose an angle, audience and hero persona, and it lands here ready for the Script Studio.</div>'}</div>
+  `;
+
+  updatePreview();
+
+  $$("[data-pick]").forEach(b=>b.onclick=()=>{
+    const f=b.dataset.pick, v=b.dataset.v;
+    if(f==="product"){ if(d.productId!==v){ d.productId=v; d.personaId=null; } }
+    else if(f==="brand"){ d.brandId=(d.brandId===v?null:v); }
+    else if(f==="persona"){ d.personaId=v; }
+    else d[f]=v;
+    save(); renderResearch();
   });
-  const lb=$("#lockStage2"); if(lb) lb.onclick=()=>{completeStage(2);setView(3);toast("Focus set — now call every creative");};
+  bindText("creativeUrl","creativeUrl"); bindText("concept","concept"); bindText("hook","hook"); bindText("dateCode","dateCode");
+  const wt=$("#wkTarget"); if(wt) wt.oninput=()=>{
+    cr.weeklyTarget=Math.max(1,+wt.value||1); save();
+    const b=cr.ads.length,t=cr.weeklyTarget,pg=Math.min(100,Math.round(b/t*100));
+    const bar=$(".rt-prog .bar i"); if(bar) bar.style.width=pg+"%";
+    const lab=$(".rt-prog .lab"); if(lab) lab.textContent=`${b} of ${t} ads built · ${pg}%`;
+  };
+  $$("[data-addinput]").forEach(inp=>inp.onkeydown=(e)=>{
+    if(e.key!=="Enter")return; e.preventDefault();
+    const val=inp.value.trim(); if(!val)return; addToBank(inp.dataset.addinput,val);
+  });
+  $("#copyName").onclick=()=>copyText(namingFor(d));
+  $("#copyBrief").onclick=()=>copyText(briefText(d));
+  $("#resetDraft").onclick=()=>{cr.draft=freshDraft();save();renderResearch();};
+  const ce=$("#cancelEdit"); if(ce) ce.onclick=()=>{cr.draft=freshDraft();save();renderResearch();};
+  $("#addAd").onclick=commitAd;
+  $$("[data-adcopy]").forEach(b=>b.onclick=()=>{const a=adById(b.dataset.id);copyText(b.dataset.adcopy==="name"?a.naming:a.brief);});
+  $$("[data-adedit]").forEach(b=>b.onclick=()=>{const a=adById(b.dataset.adedit);cr.draft=Object.assign(freshDraft(),a,{editingId:a.id});save();renderResearch();window.scrollTo({top:0,behavior:'smooth'});});
+  $$("[data-addel]").forEach(b=>b.onclick=()=>{if(confirm("Delete this ad?")){cr.ads=cr.ads.filter(a=>a.id!==b.dataset.addel);if(cr.draft.editingId===b.dataset.addel)cr.draft=freshDraft();save();renderResearch();}});
 }
 
-/* ---------------- STAGE 3 ---------------- */
-function renderStage3(){
-  const f=S.workflow.focus;
-  const s=allStats().find(x=>x.p.id===f.productId) || allStats()[0];
-  const decided=s.list.filter(c=>S.workflow.decisions[c.id]).length;
-  const all=s.list.length;
-  canvas.innerHTML=`
-  <div class="stage-head">
-    <div class="eyebrow">Stage 3 · Decide · ${esc(s.p.name)}</div>
-    <h2>Make the call on every creative</h2>
-    <p>Focus play: <b>${PLAY[f.play].label}</b> on ${esc(f.product)}. Go line by line — no creative gets to sit in limbo. Scale what wins, cut what bleeds, iterate what's close, keep what's steady.</p>
-  </div>
-  <table class="dtable">
-    <thead><tr><th>Creative</th><th class="num">Spend</th><th class="num">ROAS</th><th>Status</th><th>This week's call</th></tr></thead>
-    <tbody>
-    ${s.list.sort((a,b)=>b.spend-a.spend).map(c=>{
-      const d=S.workflow.decisions[c.id]||"";
-      const suggest=c.isWin?(c.roas>=thr()+0.5?"scale":"keep"):(c.roas>=thr()-0.4?"iterate":"cut");
-      return `<tr>
-        <td>${esc(c.name)}</td>
-        <td class="num mono">${money(c.spend)}</td>
-        <td class="num"><span class="roas-pill ${c.isWin?'w':'l'}">${c.roas.toFixed(2)}</span></td>
-        <td>${c.isWin?'<span style="color:var(--good-2);font-weight:600">Winner</span>':'<span style="color:var(--bad-2);font-weight:600">Loser</span>'}</td>
-        <td><div class="decide" data-cid="${c.id}">
-          ${["scale","iterate","keep","cut"].map(x=>`<button data-d="${x}" class="${d===x?'on':(!d&&suggest===x?'':'')}">${x[0].toUpperCase()+x.slice(1)}</button>`).join("")}
-        </div></td>
-      </tr>`;
-    }).join("")}
-    </tbody>
-  </table>
-  <div class="stage-cta">
-    <div class="txt"><b id="decCount">${decided}/${all}</b> creatives called. ${decided<all?'Make a call on every row to continue.':'Every creative has a call — ready to build the action list.'}</div>
-    <div class="spacer"></div>
-    <button class="btn secondary" onclick="setView(2)">← Change focus</button>
-    <button class="btn" id="lockStage3" ${decided<all?'disabled':''}>Build the action list →</button>
+function bindText(id,field){const el=$("#"+id);if(!el)return;el.oninput=()=>{C().draft[field]=el.value;save();updatePreview();};}
+
+function updatePreview(){
+  const d=C().draft;
+  const no=$("#nameOut"); if(no) no.innerHTML=prettyNaming(d);
+  const bo=$("#briefOut"); if(bo) bo.innerHTML=briefRows(d);
+  const add=$("#addAd"); if(add) add.disabled=!draftComplete(d);
+  const hint=$("#builderHint"); if(hint) hint.textContent=draftComplete(d)?"All set — add it to the week.":"Fill every step to generate the naming and brief.";
+}
+function prettyNaming(d){
+  const seg=(v,ph)=>v?`<span>${esc(v)}</span>`:`<span class="miss">${ph}</span>`;
+  const br=brandById(d.brandId), pe=personaById(d.productId,d.personaId);
+  return [
+    seg(pascal(d.editor),"Editor"),
+    seg(d.mediaType,"Video/Image"),
+    seg(pascal(br&&br.name),"Brand"),
+    seg(pascal(d.angle),"Angle"),
+    seg(pascal(pe&&pe.name),"Persona"),
+    seg(d.audience,"Audience"),
+    seg(pascal(d.lander),"Lander"),
+    seg(pascal(d.hook),"Hook"),
+    seg(d.dateCode,"Date"),
+  ].join('<span style="color:var(--ink-3)">_</span>');
+}
+function briefRows(d){
+  const row=(k,v)=>`<dt>${k}</dt><dd>${v?esc(v):'<span style="color:var(--ink-3)">—</span>'}</dd>`;
+  const prod=(productById(d.productId)||{}).name, brand=(brandById(d.brandId)||{}).name;
+  const persona=(personaById(d.productId,d.personaId)||{}).name, aud=audByCode(d.audience);
+  return [
+    row("Product",prod),
+    row("Inspiration",brand),
+    row("Creative link",d.creativeUrl),
+    d.concept?row("Concept",d.concept):"",
+    row("Angle",d.angle),
+    row("Audience",aud?`${aud.label} (${aud.code})`:""),
+    row("Hero persona",persona),
+    row("Format",d.mediaType),
+    row("Editor",d.editor),
+    row("Lander",d.lander),
+    row("Hook",d.hook),
+  ].join("");
+}
+function addToBank(kind,val){
+  const cr=C(), d=cr.draft;
+  if(kind==="brand"){const id=uid();cr.brands.push({id,name:val,url:""});d.brandId=id;}
+  else if(kind==="angle"){if(!cr.angles.includes(val))cr.angles.push(val);d.angle=val;}
+  else if(kind==="persona"){if(!d.productId)return;(cr.personas[d.productId]=cr.personas[d.productId]||[]).push({id:uid(),name:val});d.personaId=cr.personas[d.productId][cr.personas[d.productId].length-1].id;}
+  else if(kind==="editor"){if(!cr.editors.includes(val))cr.editors.push(val);d.editor=val;}
+  else if(kind==="lander"){if(!cr.landers.includes(val))cr.landers.push(val);d.lander=val;}
+  save();renderResearch();
+}
+function commitAd(){
+  const cr=C(), d=cr.draft;
+  if(!draftComplete(d)){toast("Fill every step first");return;}
+  const ad={
+    id:d.editingId||uid(), productId:d.productId, brandId:d.brandId, creativeUrl:d.creativeUrl, concept:d.concept,
+    angle:d.angle, audience:d.audience, personaId:d.personaId, editor:d.editor, mediaType:d.mediaType,
+    lander:d.lander, hook:d.hook, dateCode:d.dateCode,
+    naming:namingFor(d), brief:briefText(d), createdAt:new Date().toISOString(),
+  };
+  if(d.editingId){const i=cr.ads.findIndex(a=>a.id===d.editingId);if(i>=0)cr.ads[i]=ad;toast("Ad updated");}
+  else{cr.ads.push(ad);toast("Ad added — build the next one");}
+  cr.draft=freshDraft({productId:d.productId,editor:d.editor,mediaType:d.mediaType,lander:d.lander,dateCode:d.dateCode});
+  save();renderResearch();
+}
+function adRow(a){
+  const prod=(productById(a.productId)||{}).name||"—";
+  const persona=(personaById(a.productId,a.personaId)||{}).name||"—";
+  const aud=audByCode(a.audience), brand=(brandById(a.brandId)||{}).name||"—";
+  return `<div class="adrow">
+    <div class="ar-top">
+      <div class="ar-name">${esc(a.naming)}</div>
+      <button class="copybtn" data-adcopy="name" data-id="${a.id}">Copy name</button>
+    </div>
+    <div class="ar-chips">
+      <span class="minichip prod">${esc(prod)}</span>
+      <span class="minichip">${esc(a.angle)}</span>
+      <span class="minichip">${aud?aud.code:''}</span>
+      <span class="minichip">${esc(persona)}</span>
+      <span class="minichip">${esc(a.mediaType)}</span>
+      <span class="minichip">↳ ${esc(brand)}</span>
+    </div>
+    <div class="ar-foot">
+      ${a.creativeUrl?`<a class="linklike" href="${esc(a.creativeUrl)}" target="_blank" rel="noopener" style="padding:5px 10px;font-size:12px">Inspiration creative ↗</a>`:''}
+      <div class="spacer"></div>
+      <button class="copybtn" data-adcopy="brief" data-id="${a.id}">Copy brief</button>
+      <button class="copybtn" data-adedit="${a.id}">Edit</button>
+      <button class="copybtn" data-addel="${a.id}" style="color:var(--bad-2)">Delete</button>
+    </div>
   </div>`;
-  $$(".decide button").forEach(b=>b.onclick=()=>{
-    const cid=b.parentElement.dataset.cid;
-    S.workflow.decisions[cid]=b.dataset.d; S.workflow.tasks=null; save(); renderStage3();
-  });
-  const lb=$("#lockStage3"); if(lb) lb.onclick=()=>{completeStage(3);buildTasks();setView(4);toast("Calls locked — action list ready");};
 }
 
-/* ---------------- STAGE 4 ---------------- */
-function buildTasks(){
-  const f=S.workflow.focus;
-  const s=allStats().find(x=>x.p.id===f.productId)||allStats()[0];
-  const tasks=[];
-  s.list.forEach(c=>{
-    const d=S.workflow.decisions[c.id];if(!d)return;
-    if(d==="scale") tasks.push({id:uid(),k:"scale",t:`Raise budget on “${c.name}” — currently ${money(c.spend)} at ${c.roas.toFixed(2)} ROAS`,done:false});
-    if(d==="cut") tasks.push({id:uid(),k:"cut",t:`Turn off “${c.name}” — ${money(c.spend)} at ${c.roas.toFixed(2)} ROAS`,done:false});
-    if(d==="iterate") tasks.push({id:uid(),k:"iterate",t:`Brief 2 new variations of “${c.name}” (new hook / new edit)`,done:false});
-  });
-  const iterCount=Object.values(S.workflow.decisions).filter(x=>x==="iterate").length;
-  if(f.play==="more") tasks.unshift({id:uid(),k:"more",t:`Brief 3 fresh angles for ${f.product} to widen the winner base`,done:false});
-  if(iterCount===0 && f.play!=="more") tasks.push({id:uid(),k:"iterate",t:`Brief 1 net-new angle for ${f.product} to keep the pipeline full`,done:false});
-  S.workflow.tasks=tasks; save();
-}
-function renderStage4(){
-  if(!S.workflow.tasks) buildTasks();
-  const T=S.workflow.tasks;
-  const done=T.filter(t=>t.done).length;
-  const K={scale:["tag-scale","Scale"],cut:["tag-cut","Cut"],iterate:["tag-iterate","Iterate"],more:["tag-more","Test"]};
-  canvas.innerHTML=`
-  <div class="stage-head">
-    <div class="eyebrow">Stage 4 · Execute</div>
-    <h2>This week's action list</h2>
-    <p>Your calls, turned into concrete moves. Check them off as you go — briefs written, budgets changed, losers killed. This is the work that actually moves the goal.</p>
-  </div>
-  <div class="tasklist">
-    ${T.length?T.map(t=>`<label class="taskrow ${t.done?'done':''}">
-      <input type="checkbox" data-tid="${t.id}" ${t.done?'checked':''}/>
-      <span class="tt">${esc(t.t)}</span>
-      <span class="tk ${K[t.k][0]}">${K[t.k][1]}</span>
-    </label>`).join(""):'<p style="color:var(--ink-3)">No actions generated — revisit your calls in Stage 3.</p>'}
-  </div>
-  <div class="stage-cta">
-    <div class="txt"><b>${done}/${T.length}</b> actions done. You don't have to finish them here — commit the plan and track it through the week.</div>
-    <div class="spacer"></div>
-    <button class="btn secondary" onclick="setView(3)">← Back to calls</button>
-    <button class="btn" id="lockStage4">Commit the week →</button>
+/* ============================================================
+   TAB 3 · SCRIPT STUDIO (locked — next build)
+   ============================================================ */
+function renderScriptLocked(){
+  const ready=C().ads.length;
+  canvas.innerHTML=`<div class="locked-panel">
+    <div class="lk">🔒</div>
+    <h2>Script Studio</h2>
+    <p>The ${ready} ad${ready===1?'':'s'} you build in Creative Research land here as ready-for-script briefs. This is where each recipe becomes a full script — coming in the next build.</p>
+    <button class="btn secondary" onclick="setView(2)">← Back to Creative Research</button>
   </div>`;
-  $$(".taskrow input").forEach(cb=>cb.onchange=()=>{
-    const t=S.workflow.tasks.find(x=>x.id===cb.dataset.tid);t.done=cb.checked;save();renderStage4();
-  });
-  $("#lockStage4").onclick=()=>{completeStage(4);setView(5);toast("Plan committed — track the impact");};
-}
-
-/* ---------------- STAGE 5 ---------------- */
-function renderStage5(){
-  const roll=accountRollup();
-  const f=S.workflow.focus;
-  const T=S.workflow.tasks||[];
-  const dec=S.workflow.decisions;
-  const cut=Object.entries(dec).filter(([,v])=>v==="cut");
-  const s=allStats().find(x=>x.p.id===f.productId)||allStats()[0];
-  const freed=s.list.filter(c=>dec[c.id]==="cut").reduce((a,c)=>a+c.spend,0)/days();
-  const projected=roll.profitableDaily+freed*0.7; // rough redeploy assumption
-  S.workflow.committed=true;save();
-  canvas.innerHTML=`
-  <div class="stage-head">
-    <div class="eyebrow">Stage 5 · Commit</div>
-    <h2>The week is set</h2>
-    <p>One product, one play, every creative called, actions on the board. Come back next week, refresh the numbers, and watch the goal line move.</p>
-  </div>
-  <div class="summary">
-    <div class="sumcard"><div class="k">This week's focus</div><div class="v" style="font-size:19px;font-family:'Archivo'">${esc(f.product)}</div><div class="n">${PLAY[f.play].label}</div></div>
-    <div class="sumcard"><div class="k">Profitable spend now</div><div class="v">${money(roll.profitableDaily)}<span style="font-size:14px;color:var(--ink-3)">/day</span></div><div class="n">${Math.round(roll.profitablePct*100)}% of the $5K goal</div></div>
-    <div class="sumcard"><div class="k">Budget freed by cuts</div><div class="v" style="color:var(--good-2)">${money(freed)}<span style="font-size:14px;color:var(--ink-3)">/day</span></div><div class="n">${cut.length} creative${cut.length===1?"":"s"} turned off, ready to redeploy</div></div>
-    <div class="sumcard"><div class="k">Actions on the board</div><div class="v">${T.length}</div><div class="n">${T.filter(t=>t.done).length} done · ${T.filter(t=>!t.done).length} open</div></div>
-  </div>
-  <div class="stage-cta">
-    <div class="txt">If every cut redeploys into winners, you're aiming at <b>~${money(projected)}/day</b> profitable next week. Refresh the numbers and run it again.</div>
-    <div class="spacer"></div>
-    <button class="btn secondary" onclick="setView(1)">Review the board</button>
-    <button class="btn" id="startNew">Start next week ↻</button>
-  </div>`;
-  $("#startNew").onclick=()=>newWeek();
 }
 
 /* ---------------- shared bits ---------------- */
@@ -1043,9 +1312,11 @@ $("#scrim").onclick=closeDrawer;
    ============================================================ */
 $$("#tfSeg button").forEach(b=>b.onclick=()=>{S.timeframe=b.dataset.tf;save();render();});
 function newWeek(){
-  S.workflow=freshWorkflow();S.view=1;save();render();toast("New week started — back to the board");
+  S.workflow=freshWorkflow();
+  S.creative.ads=[]; S.creative.draft=freshDraft();
+  S.view=1;save();render();toast("New week — board relocked, ad list cleared");
 }
-$("#newWeek").onclick=()=>{if(confirm("Start a fresh week? Your products & numbers stay; your focus, calls and action list reset."))newWeek();};
+$("#newWeek").onclick=()=>{if(confirm("Start a fresh week? Your products, numbers and banks (brands, angles, personas) stay. The board relocks and this week's ad list is cleared."))newWeek();};
 
 /* theme */
 function applyTheme(){
