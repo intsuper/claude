@@ -659,7 +659,32 @@ input:focus,button:focus-visible,.stage-item:focus-visible,.focus-opt:focus-visi
 .frame-done{font-size:13.5px;color:var(--ink)}
 .frame-done a{color:var(--accent);font-weight:600}
 .script-pre{white-space:pre-wrap;word-break:break-word;font-family:"IBM Plex Mono",monospace;font-size:12.5px;line-height:1.6;background:var(--inset);border:1px solid var(--border);border-radius:10px;padding:16px;max-height:60vh;overflow:auto;color:var(--ink)}
-@media (max-width:680px){.sc-grid{grid-template-columns:1fr}}
+/* hooks + ad copy */
+.hook-list{display:flex;flex-direction:column;gap:7px}
+.hook-row{display:grid;grid-template-columns:22px 150px 1fr;gap:8px;align-items:center}
+.hook-n{font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:600;color:var(--ink-3);text-align:center}
+.hook-type,.hook-text{font-family:inherit;font-size:13px;color:var(--ink);background:var(--inset);border:1px solid var(--border);border-radius:8px;padding:7px 10px}
+.hook-type{font-weight:600}
+.hook-type:focus,.hook-text:focus,.sc-adcopy:focus{outline:2px solid var(--accent);outline-offset:1px}
+.sc-adcopy{width:100%;min-height:96px;resize:vertical;font-family:inherit;font-size:13.5px;line-height:1.55;color:var(--ink);background:var(--inset);border:1px solid var(--border);border-radius:8px;padding:11px 12px}
+.itzik-btn{background:var(--good);border-color:var(--good);box-shadow:0 8px 20px -12px var(--good)}
+.itzik-btn:hover{filter:brightness(1.05)}
+.itzik-done{color:var(--good-2);font-weight:700}
+@media (max-width:680px){.sc-grid{grid-template-columns:1fr}.hook-row{grid-template-columns:18px 110px 1fr}}
+
+/* confirm modal */
+.confirm-modal{position:fixed;z-index:73;top:50%;left:50%;transform:translate(-50%,-48%) scale(.98);opacity:0;pointer-events:none;
+  width:min(440px,92vw);background:var(--surface);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow-lift);
+  padding:26px 26px 22px;text-align:center;transition:opacity .18s,transform .18s}
+.confirm-modal.open{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1)}
+.cm-icon{font-size:32px;margin-bottom:8px}
+.confirm-modal h3{font-size:19px;font-weight:800}
+.confirm-modal p{color:var(--ink-2);font-size:13.5px;margin:10px 0 20px;line-height:1.5}
+.cm-actions{display:flex;gap:10px;justify-content:center}
+.cm-yes{background:var(--good);border-color:var(--good)}
+.cm-yes.armed{background:var(--bad);border-color:var(--bad);animation:cmpulse 1s ease infinite}
+@keyframes cmpulse{0%,100%{box-shadow:0 0 0 0 var(--bad-soft)}50%{box-shadow:0 0 0 6px var(--bad-soft)}}
+#cmScrim{z-index:72}
 
 .need-pill{display:inline-block;font-family:"Archivo",sans-serif;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--warn-2);background:var(--warn-soft);padding:2px 6px;border-radius:999px;vertical-align:middle;margin-left:7px}
 .bstep.flash{animation:needflash 1.5s ease}
@@ -729,6 +754,26 @@ input:focus,button:focus-visible,.stage-item:focus-visible,.focus-opt:focus-visi
   <button class="pm-close" id="pmClose" aria-label="Close">✕</button>
   <div class="pm-body" id="pmBody"></div>
 </div>
+
+<!-- ============ CONFIRM MODAL (double-confirm) ============ -->
+<div class="pm-scrim" id="cmScrim"></div>
+<div class="confirm-modal" id="confirmModal" aria-hidden="true" role="alertdialog">
+  <div class="cm-icon">⚠️</div>
+  <h3 id="cmTitle">Are you sure?</h3>
+  <p id="cmMsg"></p>
+  <div class="cm-actions">
+    <button class="btn secondary" id="cmCancel">Cancel</button>
+    <button class="btn cm-yes" id="cmYes">Yes</button>
+  </div>
+</div>
+
+<!-- hook-type quick-pick suggestions -->
+<datalist id="hookTypes">
+  <option>Scarcity</option><option>Urgency</option><option>Question</option><option>Curiosity</option>
+  <option>Social Proof</option><option>Fear / Pain</option><option>Bold Claim</option><option>Problem</option>
+  <option>Callout</option><option>Statistic</option><option>Story</option><option>Contrarian</option>
+  <option>Relatable</option><option>How-to</option>
+</datalist>
 
 <div class="toast" id="toast"></div>
 
@@ -878,7 +923,8 @@ function defaultState(){
     view:1,
   };
 }
-function freshProduction(){ return {scriptText:"",scriptFile:null,visualsLink:"",instructions:"",sentToEditor:false,frameLink:"",finishedAt:null}; }
+function freshHooks(){ return [0,0,0,0,0,0].map(()=>({type:"",text:""})); }
+function freshProduction(){ return {scriptText:"",scriptFile:null,visualsLink:"",instructions:"",hooks:freshHooks(),adCopy:"",sentToEditor:false,frameLink:"",finishedAt:null,pushedToItzik:null}; }
 let S = load();
 function load(){
   let r=null; try{r=JSON.parse(localStorage.getItem(STORE_KEY));}catch(e){}
@@ -930,7 +976,12 @@ function migrate(s){
   if(!cr.landers||typeof cr.landers!=="object") cr.landers={};
   s.products.forEach(p=>{ if(!Array.isArray(cr.landers[p.id])||!cr.landers[p.id].length) cr.landers[p.id]=defaultLanders(); });
   // Stage 3: every brief gets a production record + a filter store
-  (cr.ads||[]).forEach(a=>{ if(!a.production) a.production=freshProduction(); });
+  (cr.ads||[]).forEach(a=>{ if(!a.production) a.production=freshProduction();
+    const pr=a.production;
+    if(!Array.isArray(pr.hooks)||pr.hooks.length!==6){ const old=Array.isArray(pr.hooks)?pr.hooks:[]; pr.hooks=[]; for(let i=0;i<6;i++) pr.hooks[i]={type:(old[i]&&old[i].type)||"",text:(old[i]&&old[i].text)||""}; }
+    if(typeof pr.adCopy!=="string") pr.adCopy="";
+    if(!("pushedToItzik" in pr)) pr.pushedToItzik=null;
+  });
   if(!s.scriptFilter||typeof s.scriptFilter!=="object") s.scriptFilter={editor:"all",product:"all",status:"all"};
   if(typeof s.view!=="number"||s.view<1||s.view>STAGES.length) s.view=1;
 }
@@ -1929,6 +1980,22 @@ function scriptCard(ad){
       </div>
     </div>
 
+    <div class="sc-field sc-hooks">
+      <label>Hooks <span class="ss-sub">6 variations · hook type + the hook</span></label>
+      <div class="hook-list">
+        ${p.hooks.map((hk,i)=>`<div class="hook-row">
+          <span class="hook-n">${i+1}</span>
+          <input class="hook-type" list="hookTypes" data-hooktype="${ad.id}" data-hi="${i}" placeholder="Type (e.g. Scarcity)" value="${esc(hk.type||'')}"/>
+          <input class="hook-text" data-hooktext="${ad.id}" data-hi="${i}" placeholder="Write the hook…" value="${esc(hk.text||'')}"/>
+        </div>`).join("")}
+      </div>
+    </div>
+
+    <div class="sc-field">
+      <label>Ad copy <span class="ss-sub">Facebook primary text — what launches with the ad</span></label>
+      <textarea class="sc-adcopy" data-adcopy="${ad.id}" placeholder="The ad copy that appears as text on the Facebook ad…">${esc(p.adCopy||'')}</textarea>
+    </div>
+
     <details class="sc-visuals" ${(p.visualsLink||p.instructions)?'open':''}>
       <summary>＋ Visuals &amp; instructions for the editor (optional)</summary>
       <div class="sc-vgrid">
@@ -1944,10 +2011,66 @@ function scriptCard(ad){
           ? `<div class="frame-row"><label>Final video — Frame link</label><input type="text" data-scframe="${ad.id}" placeholder="Paste the Frame.io link…" value="${esc(p.frameLink||'')}"/></div>
              <button class="btn secondary" data-scback="${ad.id}">↩ Back to brief</button>
              <button class="btn" data-scfinish="${ad.id}">Finish → Ready for Launch</button>`
-          : `<div class="frame-done">✅ <a href="${esc(p.frameLink)}" target="_blank" rel="noopener">Final video ↗</a> · edited by <b>${esc(ad.editor)}</b></div><div class="spacer"></div><button class="btn secondary" data-screopen="${ad.id}">Reopen</button>`}
+          : `<div class="frame-done">✅ <a href="${esc(p.frameLink)}" target="_blank" rel="noopener">Final video ↗</a> · edited by <b>${esc(ad.editor)}</b>${p.pushedToItzik?' · <span class="itzik-done">pushed to Itzik ✓</span>':''}</div>
+             <div class="spacer"></div>
+             <button class="btn secondary" data-screopen="${ad.id}">Reopen</button>
+             ${p.pushedToItzik?`<button class="btn secondary" data-scitzikview="${ad.id}">View message</button>`:''}
+             <button class="btn itzik-btn" data-scitzik="${ad.id}">${p.pushedToItzik?'Re-push to Itzik':'Push to Itzik →'}</button>`}
     </div>
   </article>`;
 }
+
+function buildItzikMessage(ad){
+  const p=ad.production||{};
+  const prod=(productById(ad.productId)||{}).name||"—";
+  const persona=(personaById(ad.personaId)||{}).name||"—";
+  const brand=(brandById(ad.brandId)||{}).name||"—";
+  const aud=audByCode(ad.audience);
+  const hooks=(p.hooks||[]).filter(h=>h.text&&h.text.trim()).map((h,i)=>`${i+1}. ${h.type?('['+h.type+'] '):''}${h.text}`).join("\n");
+  return [
+    `🚀 READY TO LAUNCH — ${prod}`,
+    ``,
+    `📛 Naming: ${ad.naming}`,
+    `🎯 Audience: ${aud?aud.label+" ("+aud.code+")":"—"}`,
+    `🎬 Final creative: ${p.frameLink||"—"}`,
+    ``,
+    `✍️ Ad copy (Facebook primary text):`,
+    `${p.adCopy||"—"}`,
+    hooks?``:null, hooks?`🪝 Hooks:`:null, hooks?hooks:null,
+    ``,
+    `📋 Brief`,
+    `• Product: ${prod}`,
+    `• Inspiration: ${brand}${ad.creativeUrl?" — "+ad.creativeUrl:""}`,
+    `• Angle: ${ad.angle}`,
+    `• Persona: ${persona}`,
+    `• Lander: ${ad.lander}`,
+    `• Format: ${ad.mediaType}`,
+    `• Editor: ${ad.editor}`,
+  ].filter(x=>x!==null).join("\n");
+}
+function pushToItzik(adId){
+  const ad=adById(adId); const p=ad.production;
+  p.pushedToItzik=new Date().toISOString(); save(); renderScript();
+  showItzikMessage(ad); toast("Pushed to Itzik 🚀");
+}
+function showItzikMessage(ad){
+  const msg=buildItzikMessage(ad);
+  $("#pmBody").innerHTML=`<div class="pm-hero"><div><div class="pm-name">Pushed to Itzik</div><div class="pm-sub">The exact Slack message Itzik receives to launch this ad</div></div></div>
+    <pre class="script-pre">${esc(msg)}</pre>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px"><button class="btn secondary" id="itzikCopy">Copy message</button></div>`;
+  $("#pmScrim").classList.add("open"); $("#pmodal").classList.add("open"); $("#pmodal").setAttribute("aria-hidden","false");
+  const c=$("#itzikCopy"); if(c) c.onclick=()=>copyText(msg);
+}
+
+/* ---- guarded confirm modal (deliberate double-confirm) ---- */
+let _confirmYes=null, _cmArmed=false;
+function confirmAction(title, msg, label, onYes){
+  $("#cmTitle").textContent=title; $("#cmMsg").textContent=msg;
+  _confirmYes=onYes; _cmArmed=false;
+  const y=$("#cmYes"); y.textContent=label; y.classList.remove("armed");
+  $("#cmScrim").classList.add("open"); $("#confirmModal").classList.add("open"); $("#confirmModal").setAttribute("aria-hidden","false");
+}
+function closeConfirm(){ $("#cmScrim").classList.remove("open"); $("#confirmModal").classList.remove("open"); $("#confirmModal").setAttribute("aria-hidden","true"); _confirmYes=null; _cmArmed=false; }
 
 function viewScript(adId){
   const ad=adById(adId); const p=ad.production||{};
@@ -1981,6 +2104,16 @@ function bindScript(){
   $$("[data-scback]").forEach(b=>b.onclick=()=>{ P(b.dataset.scback).production.sentToEditor=false; save(); renderScript(); });
   $$("[data-screopen]").forEach(b=>b.onclick=()=>{ P(b.dataset.screopen).production.finishedAt=null; save(); renderScript(); });
   $$("[data-scopy]").forEach(b=>b.onclick=()=>copyText(adById(b.dataset.scopy).brief));
+  // hooks (6) + ad copy — save on input, no re-render (keep focus)
+  $$("[data-hooktype]").forEach(i=>i.oninput=()=>{ P(i.dataset.hooktype).production.hooks[+i.dataset.hi].type=i.value; save(); });
+  $$("[data-hooktext]").forEach(i=>i.oninput=()=>{ P(i.dataset.hooktext).production.hooks[+i.dataset.hi].text=i.value; save(); });
+  $$("[data-adcopy]").forEach(i=>i.oninput=()=>{ P(i.dataset.adcopy).production.adCopy=i.value; save(); });
+  // Push to Itzik — guarded double-confirm
+  $$("[data-scitzik]").forEach(b=>b.onclick=()=>{ const a=P(b.dataset.scitzik);
+    if(!a.production.adCopy||!a.production.adCopy.trim()){ toast("Add the ad copy before pushing to Itzik"); return; }
+    confirmAction("Push to Itzik?","This sends the full brief, final creative, ad copy and audience to Itzik on Slack to launch on Facebook. Make sure everything is final.","Yes, push to Itzik",()=>pushToItzik(a.id));
+  });
+  $$("[data-scitzikview]").forEach(b=>b.onclick=()=>showItzikMessage(adById(b.dataset.scitzikview)));
 }
 
 /* ---------------- shared bits ---------------- */
@@ -2047,7 +2180,13 @@ $("#closeDrawer").onclick=closeDrawer;
 $("#scrim").onclick=closeDrawer;
 $("#pmClose").onclick=closeProductDetail;
 $("#pmScrim").onclick=closeProductDetail;
-document.addEventListener("keydown",(e)=>{ if(e.key==="Escape"){closeProductDetail();closeDrawer();} });
+$("#cmCancel").onclick=closeConfirm;
+$("#cmScrim").onclick=closeConfirm;
+$("#cmYes").onclick=()=>{
+  if(!_cmArmed){ _cmArmed=true; const y=$("#cmYes"); y.classList.add("armed"); y.textContent="Click again to confirm"; return; }
+  const f=_confirmYes; closeConfirm(); if(f) f();
+};
+document.addEventListener("keydown",(e)=>{ if(e.key==="Escape"){closeProductDetail();closeDrawer();closeConfirm();} });
 
 /* ============================================================
    CONTROLS
