@@ -595,6 +595,30 @@ input:focus,button:focus-visible,.stage-item:focus-visible,.focus-opt:focus-visi
 .score-badge.s-bad{background:var(--bad-soft);color:var(--bad-2)}
 @media (max-width:600px){.scorecard{grid-template-columns:1fr}}
 
+/* ---------- editor scoreboard (tab 1) ---------- */
+.score-months{display:inline-flex;gap:4px;background:var(--inset);border:1px solid var(--border);border-radius:10px;padding:3px;margin-bottom:14px}
+.wotm{background:var(--warn-soft);border:1px solid color-mix(in srgb,var(--warn) 30%,transparent);border-radius:11px;padding:11px 15px;font-size:13px;color:var(--ink);margin-bottom:14px}
+.score-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:16px}
+.score-card{background:var(--panel);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);padding:18px;display:flex;flex-direction:column;gap:15px}
+.score-card.lead{border-color:color-mix(in srgb,var(--accent) 42%,transparent);box-shadow:0 0 0 2px var(--accent-soft),var(--shadow)}
+.sc-name-row{display:flex;align-items:center;gap:11px}
+.sc-avatar{width:36px;height:36px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-family:"Archivo",sans-serif;font-weight:800;font-size:16px;flex:none}
+.sc-ename{font-family:"Archivo",sans-serif;font-weight:800;font-size:16.5px}
+.sc-crown{margin-left:auto;font-family:"Archivo",sans-serif;font-size:11px;font-weight:700;color:var(--accent);background:var(--accent-soft);padding:4px 10px;border-radius:999px}
+.sc-metrics{display:flex;gap:24px;align-items:flex-end}
+.sc-metric{display:flex;flex-direction:column}
+.sc-metric .v{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:26px;line-height:1;letter-spacing:-.01em}
+.sc-metric.big .v{font-size:42px;color:var(--accent)}
+.sc-metric .k{font-size:10.5px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.05em;font-weight:700;font-family:"Archivo",sans-serif;margin-top:5px}
+.sc-metric .sc-trend{margin-left:0}
+.sc-trend{display:flex;align-items:flex-end;gap:4px;height:40px;margin-left:auto}
+.sc-trend .tb{width:13px;background:var(--accent-soft);border-radius:3px 3px 0 0;align-self:flex-end}
+.score-card.lead .sc-trend .tb{background:color-mix(in srgb,var(--accent) 45%,transparent)}
+.sc-live{border-top:1px solid var(--border);padding-top:13px}
+.sl-row{display:flex;align-items:center;gap:7px;font-size:10.5px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.05em;font-weight:700;font-family:"Archivo",sans-serif}
+.sl-figs{font-size:14.5px;margin-top:6px;color:var(--ink-2)}
+.sl-figs b{color:var(--ink)}
+
 /* ---------- Script Studio (tab 3) ---------- */
 .ss-summary{display:flex;align-items:center;gap:26px;flex-wrap:wrap;background:var(--panel);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);padding:16px 22px;margin-bottom:18px}
 .ss-fig{display:flex;flex-direction:column;gap:3px}
@@ -920,6 +944,8 @@ function defaultState(){
     workflow:freshWorkflow(),
     creative:defaultCreative(products),
     scriptFilter:{editor:"all",product:"all",status:"all"},
+    wins:seedWins(products),
+    scoreMonth:monthKey(),
     view:1,
   };
 }
@@ -983,6 +1009,8 @@ function migrate(s){
     if(!("pushedToItzik" in pr)) pr.pushedToItzik=null;
   });
   if(!s.scriptFilter||typeof s.scriptFilter!=="object") s.scriptFilter={editor:"all",product:"all",status:"all"};
+  if(!Array.isArray(s.wins)) s.wins=seedWins(s.products);
+  if(typeof s.scoreMonth!=="string") s.scoreMonth=monthKey();
   if(typeof s.view!=="number"||s.view<1||s.view>STAGES.length) s.view=1;
 }
 function save(){try{localStorage.setItem(STORE_KEY,JSON.stringify(S));}catch(e){}}
@@ -1050,6 +1078,36 @@ function angleBreakdown(pid){
     .sort((x,y)=> (rank[x.key]-rank[y.key]) || (y.spend-x.spend));
 }
 function productAcq(p){ const n=typeof p.newPct==="number"?p.newPct:0.5; return {newPct:n, retPct:1-n}; }
+
+/* ---- editor scoreboard: monthly new-wins (resets) + live book (durable) ---- */
+function monthKey(d){ d=d||new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`; }
+function monthLabel(mk){ const [y,m]=mk.split("-").map(Number); return new Date(y,m-1,1).toLocaleDateString("en-US",{month:"short",year:"2-digit"}); }
+// a win's tier by the peak profitable spend/day it reached — quality beats quantity
+function winTier(dp){ if(dp>=1000)return {name:"Hero",pts:50}; if(dp>=500)return {name:"Scaled",pts:25}; if(dp>=100)return {name:"Win",pts:10}; return {name:"Test",pts:0}; }
+function scoreMonths(){ return [...new Set((S.wins||[]).map(w=>w.bornMonth))].sort().reverse(); }
+function scoreFor(editor, month){
+  const wins=(S.wins||[]).filter(w=>w.editor===editor);
+  const born=wins.filter(w=>w.bornMonth===month);      // credited to birth month only (resets)
+  const live=wins.filter(w=>w.stillWinning);           // durable book (never resets)
+  const recent=scoreMonths().slice(0,4).reverse();
+  return {
+    editor,
+    newWins:born.length,
+    points:born.reduce((a,w)=>a+winTier(w.peakDaily||w.dailyProfit).pts,0),
+    liveWinners:live.length,
+    liveDaily:live.reduce((a,w)=>a+w.dailyProfit,0),
+    trend:recent.map(mk=>wins.filter(w=>w.bornMonth===mk).length),
+  };
+}
+function seedWins(products){
+  const now=new Date(); const mk=(off)=>monthKey(new Date(now.getFullYear(),now.getMonth()-off,1));
+  const pid=(i)=>products[i%products.length].id;
+  const W=(editor,off,still,daily,peak,pi)=>({id:uid(),editor,productId:pid(pi),bornMonth:mk(off),stillWinning:still,dailyProfit:still?daily:0,peakDaily:peak});
+  return [
+    W("Lucas",0,true,650,820,3), W("Lucas",0,true,180,210,0), W("Lucas",1,true,1400,1650,3), W("Lucas",1,false,0,340,1), W("Lucas",2,false,0,520,4),
+    W("Shahaf",0,true,1100,1250,4), W("Shahaf",0,true,150,170,1), W("Shahaf",0,false,0,220,2), W("Shahaf",2,true,700,900,5), W("Shahaf",1,true,300,400,0),
+  ];
+}
 
 /* ---- recommendation engine: score plays, tie to product ---- */
 function buildRecommendations(){
@@ -1205,6 +1263,8 @@ function renderStage1(){
   </div>
   <div class="recs">${recs.map(recCard).join("")}</div>
 
+  ${renderScoreboard()}
+
   <div class="stage-cta">
     <div class="txt">Seen the full board? <b>Lock in this week's picture</b> to unlock Creative Research and start building this week's ads.</div>
     <div class="spacer"></div>
@@ -1222,7 +1282,43 @@ function renderStage1(){
     c.onclick=open;
     c.onkeydown=(e)=>{ if(e.key==="Enter"||e.key===" "){e.preventDefault();open();} };
   });
+  $$("[data-scoremonth]").forEach(b=>b.onclick=()=>{ S.scoreMonth=b.dataset.scoremonth; save(); renderStage1(); });
   bindSampleBanner();
+}
+
+/* ---- editor scoreboard section ---- */
+function renderScoreboard(){
+  if(!S.wins||!S.wins.length) return "";
+  const month=S.scoreMonth||monthKey();
+  const months=scoreMonths();
+  const editors=[...new Set(S.wins.map(w=>w.editor))];
+  const scores=editors.map(e=>scoreFor(e,month));
+  const maxNew=Math.max(0,...scores.map(s=>s.newWins));
+  const leaders=scores.filter(s=>s.newWins===maxNew&&maxNew>0).map(s=>s.editor);
+  const leader=leaders.length===1?leaders[0]:null;
+  const maxT=Math.max(1,...scores.flatMap(s=>s.trend));
+  const wotm=S.wins.filter(w=>w.bornMonth===month).sort((a,b)=>(b.peakDaily||b.dailyProfit)-(a.peakDaily||a.dailyProfit))[0];
+  const card=(s)=>{ const lead=leader===s.editor;
+    return `<div class="score-card ${lead?'lead':''}">
+      <div class="sc-name-row"><span class="sc-avatar">${esc(s.editor[0])}</span><span class="sc-ename">${esc(s.editor)}</span>${lead?'<span class="sc-crown">🏆 leading</span>':''}</div>
+      <div class="sc-metrics">
+        <div class="sc-metric big"><span class="v">${s.newWins}</span><span class="k">new wins</span></div>
+        <div class="sc-metric"><span class="v">${s.points}</span><span class="k">points</span></div>
+        <div class="sc-trend" title="new wins, last ${s.trend.length} months">${s.trend.map(n=>`<span class="tb" style="height:${8+(n/maxT)*30}px"></span>`).join("")}</div>
+      </div>
+      <div class="sc-live">
+        <div class="sl-row"><span class="dot good"></span>Still winning — live book</div>
+        <div class="sl-figs"><b>${s.liveWinners}</b> winner${s.liveWinners===1?'':'s'} live · <b style="color:var(--good-2)">${money(s.liveDaily)}/day</b> profitable</div>
+      </div>
+    </div>`;
+  };
+  return `
+  <div class="sec-title"><h3>Editor scoreboard</h3>
+    <div class="hint">New wins <b>reset monthly</b> · the live book never resets · <span style="color:var(--ink-3)">FB · sample</span></div>
+  </div>
+  <div class="score-months">${months.slice(0,6).map(mk=>`<button class="seg2b ${mk===month?'on':''}" data-scoremonth="${mk}">${esc(monthLabel(mk))}${mk===monthKey()?' · now':''}</button>`).join("")}</div>
+  ${wotm?`<div class="wotm">🥇 <b>Win of the month:</b> ${esc(wotm.editor)} — ${wotm.productId?esc((productById(wotm.productId)||{}).name||'a creative'):'a creative'} peaked at <b>${money(wotm.peakDaily||wotm.dailyProfit)}/day</b> profitable</div>`:''}
+  <div class="score-cards">${scores.map(card).join("")}</div>`;
 }
 
 /* ---- product detail modal: angle scoreboard + acquisition split ---- */
