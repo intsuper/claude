@@ -2026,7 +2026,6 @@ function buildItzikMessage(ad){
   const persona=(personaById(ad.personaId)||{}).name||"—";
   const brand=(brandById(ad.brandId)||{}).name||"—";
   const aud=audByCode(ad.audience);
-  const hooks=(p.hooks||[]).filter(h=>h.text&&h.text.trim()).map((h,i)=>`${i+1}. ${h.type?('['+h.type+'] '):''}${h.text}`).join("\n");
   return [
     `🚀 READY TO LAUNCH — ${prod}`,
     ``,
@@ -2036,7 +2035,6 @@ function buildItzikMessage(ad){
     ``,
     `✍️ Ad copy (Facebook primary text):`,
     `${p.adCopy||"—"}`,
-    hooks?``:null, hooks?`🪝 Hooks:`:null, hooks?hooks:null,
     ``,
     `📋 Brief`,
     `• Product: ${prod}`,
