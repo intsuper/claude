@@ -619,6 +619,20 @@ input:focus,button:focus-visible,.stage-item:focus-visible,.focus-opt:focus-visi
 .sl-figs{font-size:14.5px;margin-top:6px;color:var(--ink-2)}
 .sl-figs b{color:var(--ink)}
 
+/* ---------- Script Studio: week navigator ---------- */
+.week-nav{display:flex;align-items:center;gap:10px;background:var(--panel);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);padding:10px 14px;margin-bottom:16px;flex-wrap:wrap}
+.wn-arrow{width:38px;height:38px;border-radius:10px;border:1px solid var(--border-strong);background:var(--surface);color:var(--ink);font-size:18px;font-weight:700;display:grid;place-items:center;flex:none}
+.wn-arrow:hover:not(:disabled){background:var(--surface-2);border-color:var(--accent);color:var(--accent)}
+.wn-arrow:disabled{opacity:.4;cursor:not-allowed}
+.wn-center{min-width:150px;text-align:center;padding:0 6px}
+.wn-center.now .wn-range{color:var(--accent)}
+.wn-range{font-family:"Archivo",sans-serif;font-weight:800;font-size:17px;letter-spacing:-.01em}
+.wn-sub{font-size:11.5px;color:var(--ink-3);margin-top:2px}
+.wn-spacer{flex:1;min-width:8px}
+.wn-pill{border:1px solid var(--border-strong);background:var(--surface);color:var(--ink-2);border-radius:9px;padding:8px 13px;font-size:12.5px;font-weight:600;flex:none}
+.wn-pill:hover{background:var(--surface-2);color:var(--ink)}
+.wn-pill.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+
 /* ---------- Script Studio: collapsible brief lines ---------- */
 .ss-listhead{display:flex;align-items:center;gap:12px;margin-bottom:10px;font-size:12px;color:var(--ink-3)}
 .ss-listhead .spacer{flex:1}
@@ -962,7 +976,8 @@ function defaultState(){
     angleData:seedAngleData(products),
     workflow:freshWorkflow(),
     creative:defaultCreative(products),
-    scriptFilter:{editor:"all",product:"all",status:"all",month:"all",week:"all"},
+    scriptFilter:{editor:"all",product:"all",status:"all"},
+    scriptWeek:thisWeekSel(),
     wins:seedWins(products),
     scoreMonth:monthKey(),
     view:1,
@@ -1027,7 +1042,8 @@ function migrate(s){
     if(typeof pr.adCopy!=="string") pr.adCopy="";
     if(!("pushedToItzik" in pr)) pr.pushedToItzik=null;
   });
-  if(!s.scriptFilter||typeof s.scriptFilter!=="object") s.scriptFilter={editor:"all",product:"all",status:"all",month:"all",week:"all"};
+  if(!s.scriptFilter||typeof s.scriptFilter!=="object") s.scriptFilter={editor:"all",product:"all",status:"all"};
+  if(!validWeekSel(s.scriptWeek)) s.scriptWeek=thisWeekSel();
   if(!Array.isArray(s.wins)) s.wins=seedWins(s.products);
   if(typeof s.scoreMonth!=="string") s.scoreMonth=monthKey();
   if(typeof s.view!=="number"||s.view<1||s.view>STAGES.length) s.view=1;
@@ -2014,22 +2030,27 @@ function weekTag(ad){
   else { const d=new Date(ad.createdAt||Date.now()); mm=d.getMonth()+1; ww=Math.max(1,Math.min(5,Math.ceil(d.getDate()/7))); yy=d.getFullYear()%100; }
   return {mm,ww,yy,label:`${monthShort(mm)}·W${ww}`};
 }
+// week navigator: a selected week is {y, m, w} (w = week-of-month), or the string "all"
+function thisWeekSel(){ const d=new Date(); return {y:d.getFullYear(), m:d.getMonth()+1, w:Math.max(1,Math.min(5,Math.ceil(d.getDate()/7)))}; }
+function daysInMonth(y,m){ return new Date(y,m,0).getDate(); }
+function weeksInMonth(y,m){ return Math.ceil(daysInMonth(y,m)/7); }
+function isThisWeek(sel){ const t=thisWeekSel(); return !!sel&&sel.y===t.y&&sel.m===t.m&&sel.w===t.w; }
+function stepWeek(sel,dir){ let {y,m,w}=sel; w+=dir; if(w<1){ m--; if(m<1){m=12;y--;} w=weeksInMonth(y,m); } else if(w>weeksInMonth(y,m)){ m++; if(m>12){m=1;y++;} w=1; } return {y,m,w}; }
+function weekRangeLabel(sel){ const s=(sel.w-1)*7+1, e=Math.min(sel.w*7, daysInMonth(sel.y,sel.m)); return `${monthShort(sel.m)} ${s} – ${e}`; }
+function validWeekSel(v){ return v==="all" || (v&&typeof v==="object"&&typeof v.w==="number"&&typeof v.m==="number"&&typeof v.y==="number"); }
 
 function renderScript(){
   const ads=C().ads; ads.forEach(a=>{ if(!a.production) a.production=freshProduction(); });
-  const f=S.scriptFilter||(S.scriptFilter={editor:"all",product:"all",status:"all",month:"all",week:"all"});
-  ["month","week"].forEach(k=>{ if(!(k in f)) f[k]="all"; });
+  const f=S.scriptFilter||(S.scriptFilter={editor:"all",product:"all",status:"all"});
+  if(!validWeekSel(S.scriptWeek)) S.scriptWeek=thisWeekSel();
+  const sel=S.scriptWeek, allW=(sel==="all");
   const editors=[...new Set(ads.map(a=>a.editor).filter(Boolean))];
   const prods=[...new Set(ads.map(a=>a.productId))].map(id=>productById(id)).filter(Boolean);
-  const months=[...new Set(ads.map(a=>weekTag(a).mm))].sort((a,b)=>b-a);
-  const weeks=[...new Set(ads.filter(a=>f.month==="all"||String(weekTag(a).mm)===f.month).map(a=>weekTag(a).ww))].sort((a,b)=>a-b);
-  // scope = period + editor + product (NOT status) — drives the summary
+  // scope = week + editor + product (NOT status) — drives the summary
   const inScope=(a)=>{
     if(f.editor!=="all" && a.editor!==f.editor) return false;
     if(f.product!=="all" && a.productId!==f.product) return false;
-    const wk=weekTag(a);
-    if(f.month!=="all" && String(wk.mm)!==f.month) return false;
-    if(f.week!=="all" && String(wk.ww)!==f.week) return false;
+    if(!allW){ const wk=weekTag(a); if(wk.mm!==sel.m||wk.ww!==sel.w||wk.yy!==(sel.y%100)) return false; }
     return true;
   };
   const scoped=ads.filter(inScope);
@@ -2040,26 +2061,34 @@ function renderScript(){
     if(f.status==="ready" && st!=="ready") return false;
     return true;
   });
-  const scopeLabel=(f.month==="all"&&f.week==="all")?"all time":(monthShort(+f.month||new Date().getMonth()+1)+(f.week!=="all"?" · W"+f.week:""));
+  const weekLabel=allW?"All weeks":weekRangeLabel(sel);
   canvas.innerHTML=`
   <div class="stage-head">
     <div class="eyebrow">Stage 3 · Ship</div>
     <h2>Script Studio</h2>
-    <p>Every brief from Creative Research lands here as a line, routed to its editor. Click one to open the full script, hooks, ad copy, visuals and final video. Filter by month &amp; week to see exactly what's done each week.</p>
+    <p>Every brief from Creative Research lands here as a line, routed to its editor. Click one to open the full script, hooks, ad copy, visuals and final video. Scroll week by week to see exactly what's done and what isn't.</p>
+  </div>
+
+  <div class="week-nav">
+    <button class="wn-arrow" data-weekstep="-1" ${allW?'disabled':''} aria-label="Previous week">‹</button>
+    <div class="wn-center ${(!allW&&isThisWeek(sel))?'now':''}">
+      <div class="wn-range">${allW?'All weeks':esc(weekRangeLabel(sel))}</div>
+      <div class="wn-sub">${allW?'every brief, all time':'Week '+sel.w+' · '+monthShort(sel.m)+' '+sel.y+(isThisWeek(sel)?' · this week':'')}</div>
+    </div>
+    <button class="wn-arrow" data-weekstep="1" ${allW?'disabled':''} aria-label="Next week">›</button>
+    <div class="wn-spacer"></div>
+    <button class="wn-pill ${!allW&&isThisWeek(sel)?'on':''}" data-weekthis>This week</button>
+    <button class="wn-pill ${allW?'on':''}" data-weekall>All weeks</button>
   </div>
 
   <div class="ss-summary">
-    <div class="ss-fig"><span class="k">Briefs ${f.month==="all"&&f.week==="all"?'':'· '+esc(scopeLabel)}</span><span class="v">${scoped.length}</span></div>
+    <div class="ss-fig"><span class="k">Briefs · ${esc(weekLabel)}</span><span class="v">${scoped.length}</span></div>
     <div class="ss-fig"><span class="k">Waiting for usage</span><span class="v" style="color:var(--warn-2)">${waitCount}</span></div>
     <div class="ss-fig"><span class="k">Ready for launch</span><span class="v" style="color:var(--good-2)">${readyCount}</span></div>
-    <div class="ss-prog"><div class="bar"><i style="width:${scoped.length?Math.round(readyCount/scoped.length*100):0}%"></i></div><div class="lab">${readyCount} of ${scoped.length} shippable · ${esc(scopeLabel)}</div></div>
+    <div class="ss-prog"><div class="bar"><i style="width:${scoped.length?Math.round(readyCount/scoped.length*100):0}%"></i></div><div class="lab">${readyCount} of ${scoped.length} shippable</div></div>
   </div>
 
   <div class="ss-filters">
-    <div class="ss-frow"><span class="ss-flabel">Period</span>
-      <div class="seg2 wrap">${ssSeg("month","all","All",f)}${months.map(mm=>ssSeg("month",String(mm),monthShort(mm),f)).join("")}</div>
-      <div class="seg2 wrap">${ssSeg("week","all","All wk",f)}${weeks.map(w=>ssSeg("week",String(w),"W"+w,f)).join("")}</div>
-    </div>
     <div class="ss-frow"><span class="ss-flabel">Editor</span><div class="seg2">${ssSeg("editor","all","All",f)}${editors.map(e=>ssSeg("editor",e,e,f)).join("")}</div></div>
     <div class="ss-frow"><span class="ss-flabel">Status</span><div class="seg2">${ssSeg("status","all","All",f)}${ssSeg("status","waiting","Waiting for usage",f)}${ssSeg("status","ready","Ready for launch",f)}</div></div>
     <div class="ss-frow"><span class="ss-flabel">Product</span><div class="seg2 wrap">${ssSeg("product","all","All",f)}${prods.map(p=>ssSeg("product",p.id,p.name,f)).join("")}</div></div>
@@ -2075,7 +2104,7 @@ function renderScript(){
   <div class="ss-cards">
     ${ads.length===0
       ? '<div class="empty">No briefs yet. Build ads in Creative Research and press “Add to this week” — they arrive here routed to their editor.</div>'
-      : (shown.length? shown.map(scriptCard).join("") : '<div class="empty">No scripts match these filters.</div>')}
+      : (shown.length? shown.map(scriptCard).join("") : `<div class="empty">No briefs ${allW?'match these filters':'in this week'} — ${allW?'try clearing a filter':'scroll to another week or hit “This week”'}.</div>`)}
   </div>`;
   bindScript();
 }
@@ -2237,6 +2266,10 @@ function bindScript(){
   });
   const ex=$("#scExpandAll"); if(ex) ex.onclick=()=>{ $$(".scard").forEach(a=>_scOpen.add(a.dataset.adid)); renderScript(); };
   const co=$("#scCollapseAll"); if(co) co.onclick=()=>{ _scOpen.clear(); renderScript(); };
+  // week navigator
+  $$("[data-weekstep]").forEach(b=>b.onclick=()=>{ if(S.scriptWeek==="all")return; S.scriptWeek=stepWeek(S.scriptWeek,+b.dataset.weekstep); save(); renderScript(); });
+  const wthis=$("[data-weekthis]"); if(wthis) wthis.onclick=()=>{ S.scriptWeek=thisWeekSel(); save(); renderScript(); };
+  const wall=$("[data-weekall]"); if(wall) wall.onclick=()=>{ S.scriptWeek=(S.scriptWeek==="all")?thisWeekSel():"all"; save(); renderScript(); };
   const P=(id)=>{ const a=adById(id); if(!a.production)a.production=freshProduction(); return a; };
   $$("[data-scfile]").forEach(inp=>inp.onchange=(e)=>{ const f=e.target.files[0]; if(!f)return; const a=P(inp.dataset.scfile);
     a.production.scriptFile={name:f.name,size:f.size,type:f.type};
