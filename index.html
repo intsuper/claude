@@ -595,6 +595,72 @@ input:focus,button:focus-visible,.stage-item:focus-visible,.focus-opt:focus-visi
 .score-badge.s-bad{background:var(--bad-soft);color:var(--bad-2)}
 @media (max-width:600px){.scorecard{grid-template-columns:1fr}}
 
+/* ---------- Script Studio (tab 3) ---------- */
+.ss-summary{display:flex;align-items:center;gap:26px;flex-wrap:wrap;background:var(--panel);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);padding:16px 22px;margin-bottom:18px}
+.ss-fig{display:flex;flex-direction:column;gap:3px}
+.ss-fig .k{font-size:10.5px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.05em;font-weight:700;font-family:"Archivo",sans-serif}
+.ss-fig .v{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:22px;letter-spacing:-.01em}
+.ss-prog{flex:1;min-width:180px}
+.ss-prog .bar{height:10px;border-radius:99px;background:var(--inset);border:1px solid var(--border);overflow:hidden}
+.ss-prog .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--good-2),var(--good));border-radius:99px;transition:width .4s cubic-bezier(.2,.7,.2,1)}
+.ss-prog .lab{font-size:11.5px;color:var(--ink-3);margin-top:7px}
+.ss-filters{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
+.ss-frow{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.ss-flabel{font-family:"Archivo",sans-serif;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-3);width:58px;flex:none}
+.seg2{display:inline-flex;flex-wrap:wrap;gap:4px;background:var(--inset);border:1px solid var(--border);border-radius:10px;padding:3px}
+.seg2.wrap{flex-wrap:wrap}
+.seg2b{border:none;background:transparent;color:var(--ink-2);font-weight:600;font-size:12.5px;padding:6px 12px;border-radius:7px}
+.seg2b:hover{color:var(--ink)}
+.seg2b.on{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
+
+.ss-cards{display:flex;flex-direction:column;gap:14px}
+.scard{background:var(--panel);border:1px solid var(--border);border-left:4px solid var(--border-strong);border-radius:16px;box-shadow:var(--shadow);padding:18px 20px;display:flex;flex-direction:column;gap:14px}
+.scard.s-brief{border-left-color:var(--warn)}
+.scard.s-editing{border-left-color:var(--accent)}
+.scard.s-ready{border-left-color:var(--good)}
+.sc-top{display:flex;align-items:flex-start;gap:14px}
+.sc-thumb{width:56px;height:56px;object-fit:cover;border-radius:10px;border:1px solid var(--border);flex:none}
+.sc-thumb.ph{display:grid;place-items:center;background:var(--inset);font-size:24px}
+.sc-head{flex:1;min-width:0}
+.sc-name{font-family:"IBM Plex Mono",monospace;font-size:13px;font-weight:600;word-break:break-word;margin-bottom:8px}
+.sc-chips{display:flex;flex-wrap:wrap;gap:6px}
+.sc-status{font-family:"Archivo",sans-serif;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:5px 11px;border-radius:999px;white-space:nowrap;flex:none;align-self:flex-start}
+.sc-status.s-brief{background:var(--warn-soft);color:var(--warn-2)}
+.sc-status.s-editing{background:var(--accent-soft);color:var(--accent)}
+.sc-status.s-ready{background:var(--good-soft);color:var(--good-2)}
+.sc-brief{display:flex;align-items:center;gap:16px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-2);background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:9px 13px}
+.sc-b b{font-weight:700;color:var(--ink-3);text-transform:uppercase;font-size:10px;letter-spacing:.04em;font-family:"Archivo",sans-serif;margin-right:6px}
+.sc-b a{color:var(--accent);font-weight:600}
+.sc-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.sc-field label{display:block;font-size:11px;color:var(--ink-3);font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px}
+.ss-ok{color:var(--good-2);text-transform:none;letter-spacing:0;font-weight:700}
+.ss-req{color:var(--warn-2);text-transform:none;letter-spacing:0;font-weight:700}
+.ss-sub{color:var(--ink-3);text-transform:none;letter-spacing:0;font-weight:500;font-size:10.5px}
+.sc-uploads{display:flex;align-items:center;gap:12px}
+.up-btn{display:inline-flex;align-items:center;gap:7px;border:1px dashed var(--border-strong);border-radius:10px;padding:9px 14px;font-size:12.5px;font-weight:600;color:var(--ink-2);cursor:pointer}
+.up-btn:hover{border-color:var(--accent);color:var(--accent)}
+.linkbtn{border:none;background:none;color:var(--accent);font-weight:600;font-size:12.5px;padding:0;cursor:pointer}
+.linkbtn:hover{text-decoration:underline}
+.sc-file{display:flex;align-items:center;gap:10px;font-size:13px;background:var(--inset);border:1px solid var(--border);border-radius:9px;padding:9px 12px}
+.sc-file .spacer{flex:1}
+.sc-paste{width:100%;min-height:120px;margin-top:8px;resize:vertical;font-family:inherit;font-size:13px;color:var(--ink);background:var(--inset);border:1px solid var(--border);border-radius:8px;padding:10px}
+.sc-visuals{border:1px solid var(--border);border-radius:12px;background:var(--surface-2)}
+.sc-visuals summary{cursor:pointer;padding:11px 15px;font-size:12.5px;font-weight:600;color:var(--ink-2);list-style:none}
+.sc-visuals summary::-webkit-details-marker{display:none}
+.sc-visuals summary:hover{color:var(--ink)}
+.sc-visuals[open] summary{border-bottom:1px solid var(--border)}
+.sc-vgrid{padding:14px 15px;display:flex;flex-direction:column;gap:10px}
+.sc-vgrid textarea{min-height:80px;resize:vertical;font-family:inherit;font-size:13px;color:var(--ink);background:var(--inset);border:1px solid var(--border);border-radius:8px;padding:10px}
+.sc-foot{display:flex;align-items:center;gap:12px;flex-wrap:wrap;border-top:1px solid var(--border);padding-top:14px}
+.sc-foot .spacer{flex:1}
+.sc-hint{font-size:12.5px;color:var(--ink-3)}
+.frame-row{flex:1;min-width:220px;display:flex;flex-direction:column;gap:5px}
+.frame-row label{font-size:10.5px;color:var(--ink-3);font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.frame-done{font-size:13.5px;color:var(--ink)}
+.frame-done a{color:var(--accent);font-weight:600}
+.script-pre{white-space:pre-wrap;word-break:break-word;font-family:"IBM Plex Mono",monospace;font-size:12.5px;line-height:1.6;background:var(--inset);border:1px solid var(--border);border-radius:10px;padding:16px;max-height:60vh;overflow:auto;color:var(--ink)}
+@media (max-width:680px){.sc-grid{grid-template-columns:1fr}}
+
 .need-pill{display:inline-block;font-family:"Archivo",sans-serif;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--warn-2);background:var(--warn-soft);padding:2px 6px;border-radius:999px;vertical-align:middle;margin-left:7px}
 .bstep.flash{animation:needflash 1.5s ease}
 @keyframes needflash{0%,100%{background:transparent}20%,55%{background:var(--warn-soft)}}
@@ -808,9 +874,11 @@ function defaultState(){
     angleData:seedAngleData(products),
     workflow:freshWorkflow(),
     creative:defaultCreative(products),
+    scriptFilter:{editor:"all",product:"all",status:"all"},
     view:1,
   };
 }
+function freshProduction(){ return {scriptText:"",scriptFile:null,visualsLink:"",instructions:"",sentToEditor:false,frameLink:"",finishedAt:null}; }
 let S = load();
 function load(){
   let r=null; try{r=JSON.parse(localStorage.getItem(STORE_KEY));}catch(e){}
@@ -861,6 +929,9 @@ function migrate(s){
   }
   if(!cr.landers||typeof cr.landers!=="object") cr.landers={};
   s.products.forEach(p=>{ if(!Array.isArray(cr.landers[p.id])||!cr.landers[p.id].length) cr.landers[p.id]=defaultLanders(); });
+  // Stage 3: every brief gets a production record + a filter store
+  (cr.ads||[]).forEach(a=>{ if(!a.production) a.production=freshProduction(); });
+  if(!s.scriptFilter||typeof s.scriptFilter!=="object") s.scriptFilter={editor:"all",product:"all",status:"all"};
   if(typeof s.view!=="number"||s.view<1||s.view>STAGES.length) s.view=1;
 }
 function save(){try{localStorage.setItem(STORE_KEY,JSON.stringify(S));}catch(e){}}
@@ -978,7 +1049,7 @@ const PLAY=({cut:{cls:"cut",label:"Cut losers"},scale:{cls:"scale",label:"Scale 
 const $=(s,r=document)=>r.querySelector(s);
 const canvas=$("#canvas");
 
-function stageUnlocked(n){ if(n===1)return true; if(n===2)return S.workflow.completed.includes(1); return false; }
+function stageUnlocked(n){ if(n===1)return true; return S.workflow.completed.includes(1); }
 function setView(n){ if(!stageUnlocked(n)) return; S.view=n; save(); render(); }
 
 function renderRail(){
@@ -1008,7 +1079,7 @@ function render(){
   $("#crumbName").innerHTML=st.t;
   $("#tfSeg").hidden = S.view!==1;
   $$("#tfSeg button").forEach(b=>b.classList.toggle("on",b.dataset.tf===S.timeframe));
-  ({1:renderStage1,2:renderResearch,3:renderScriptLocked})[S.view]();
+  ({1:renderStage1,2:renderResearch,3:renderScript})[S.view]();
 }
 const $$=(s,r=document)=>[...r.querySelectorAll(s)];
 
@@ -1718,11 +1789,13 @@ function commitAd(){
   if(!S.angleData[d.productId]) S.angleData[d.productId]={};
   if(!S.angleData[d.productId][d.angle]) S.angleData[d.productId][d.angle]={spend:0,roas:0,fromBrief:true};
   const sc=computeScore(d);
+  const existing=d.editingId?cr.ads.find(a=>a.id===d.editingId):null;
   const ad={
     id:d.editingId||uid(), productId:d.productId, brandId:d.brandId, creativeUrl:d.creativeUrl, concept:d.concept, thumb:d.thumb,
     angle:d.angle, audience:d.audience, personaId:d.personaId, lander:d.lander, editor:d.editor, mediaType:d.mediaType,
     hook:d.hook, dateCode:d.dateCode, score:sc?sc.score:null, scoreLabel:sc?sc.label:"",
-    naming:namingFor(d), brief:briefText(d), createdAt:new Date().toISOString(),
+    naming:namingFor(d), brief:briefText(d), createdAt:existing?existing.createdAt:new Date().toISOString(),
+    production: existing&&existing.production ? existing.production : freshProduction(),
   };
   if(d.editingId){const i=cr.ads.findIndex(a=>a.id===d.editingId);if(i>=0)cr.ads[i]=ad;toast("Ad updated");}
   else{cr.ads.push(ad);toast("Ad added — queued for Script Studio");}
@@ -1760,16 +1833,154 @@ function adRow(a){
 }
 
 /* ============================================================
-   TAB 3 · SCRIPT STUDIO (locked — next build)
+   TAB 3 · SCRIPT STUDIO — briefs -> scripts -> ready for launch
    ============================================================ */
-function renderScriptLocked(){
-  const ready=C().ads.length;
-  canvas.innerHTML=`<div class="locked-panel">
-    <div class="lk">🔒</div>
+const PROD_STATUS={ brief:{label:"Needs script",cls:"s-brief"}, editing:{label:"With editor",cls:"s-editing"}, ready:{label:"Ready for Launch",cls:"s-ready"} };
+function prodStatus(ad){ const p=ad.production||{}; if(p.finishedAt) return "ready"; if(p.sentToEditor) return "editing"; return "brief"; }
+function hasScript(p){ return !!(p&&((p.scriptText&&p.scriptText.trim())||p.scriptFile)); }
+function ssSeg(dim,val,label,f){ return `<button class="seg2b ${f[dim]===String(val)?'on':''}" data-filter="${dim}" data-val="${esc(String(val))}">${esc(label)}</button>`; }
+
+function renderScript(){
+  const ads=C().ads; ads.forEach(a=>{ if(!a.production) a.production=freshProduction(); });
+  const f=S.scriptFilter||(S.scriptFilter={editor:"all",product:"all",status:"all"});
+  const editors=[...new Set(ads.map(a=>a.editor).filter(Boolean))];
+  const prods=[...new Set(ads.map(a=>a.productId))].map(id=>productById(id)).filter(Boolean);
+  const readyCount=ads.filter(a=>prodStatus(a)==="ready").length;
+  const waitCount=ads.length-readyCount;
+  const shown=ads.filter(a=>{
+    if(f.editor!=="all" && a.editor!==f.editor) return false;
+    if(f.product!=="all" && a.productId!==f.product) return false;
+    const st=prodStatus(a);
+    if(f.status==="waiting" && st==="ready") return false;
+    if(f.status==="ready" && st!=="ready") return false;
+    return true;
+  });
+  canvas.innerHTML=`
+  <div class="stage-head">
+    <div class="eyebrow">Stage 3 · Ship</div>
     <h2>Script Studio</h2>
-    <p>${ready} ad${ready===1?'':'s'} queued from Creative Research, each as a ready-for-script brief. This is where every recipe becomes a full script — coming in the next build.</p>
-    <button class="btn secondary" onclick="setView(2)">← Back to Creative Research</button>
+    <p>Every brief from Creative Research lands here, routed to its editor. Attach the script and any visuals, hand it off — and when the editor drops the final Frame link, the card flips to Ready for Launch, so you always know what's shippable.</p>
+  </div>
+
+  <div class="ss-summary">
+    <div class="ss-fig"><span class="k">Briefs</span><span class="v">${ads.length}</span></div>
+    <div class="ss-fig"><span class="k">Waiting for usage</span><span class="v" style="color:var(--warn-2)">${waitCount}</span></div>
+    <div class="ss-fig"><span class="k">Ready for launch</span><span class="v" style="color:var(--good-2)">${readyCount}</span></div>
+    <div class="ss-prog"><div class="bar"><i style="width:${ads.length?Math.round(readyCount/ads.length*100):0}%"></i></div><div class="lab">${readyCount} of ${ads.length} shippable</div></div>
+  </div>
+
+  <div class="ss-filters">
+    <div class="ss-frow"><span class="ss-flabel">Editor</span><div class="seg2">${ssSeg("editor","all","All",f)}${editors.map(e=>ssSeg("editor",e,e,f)).join("")}</div></div>
+    <div class="ss-frow"><span class="ss-flabel">Status</span><div class="seg2">${ssSeg("status","all","All",f)}${ssSeg("status","waiting","Waiting for usage",f)}${ssSeg("status","ready","Ready for launch",f)}</div></div>
+    <div class="ss-frow"><span class="ss-flabel">Product</span><div class="seg2 wrap">${ssSeg("product","all","All",f)}${prods.map(p=>ssSeg("product",p.id,p.name,f)).join("")}</div></div>
+  </div>
+
+  <div class="ss-cards">
+    ${ads.length===0
+      ? '<div class="empty">No briefs yet. Build ads in Creative Research and press “Add to this week” — they arrive here routed to their editor.</div>'
+      : (shown.length? shown.map(scriptCard).join("") : '<div class="empty">No scripts match these filters.</div>')}
   </div>`;
+  bindScript();
+}
+
+function scriptCard(ad){
+  const p=ad.production||freshProduction();
+  const st=prodStatus(ad), meta=PROD_STATUS[st];
+  const prod=(productById(ad.productId)||{}).name||"—";
+  const persona=(personaById(ad.personaId)||{}).name||"—";
+  const aud=audByCode(ad.audience);
+  const scripted=hasScript(p);
+  return `<article class="scard ${meta.cls}" data-adid="${ad.id}">
+    <div class="sc-top">
+      ${ad.thumb?`<img class="sc-thumb" src="${ad.thumb}" alt="creative"/>`:'<div class="sc-thumb ph">🎬</div>'}
+      <div class="sc-head">
+        <div class="sc-name">${esc(ad.naming)}</div>
+        <div class="sc-chips">
+          <span class="minichip prod">${esc(prod)}</span>
+          <span class="minichip">${esc(ad.angle)}</span>
+          <span class="minichip">${aud?aud.code:''}</span>
+          <span class="minichip">${esc(persona)}</span>
+          <span class="minichip">${esc(ad.mediaType)}</span>
+        </div>
+      </div>
+      <span class="sc-status ${meta.cls}">${meta.label}</span>
+    </div>
+
+    <div class="sc-brief">
+      <span class="sc-b"><b>Inspiration</b> ${ad.creativeUrl?`<a href="${esc(ad.creativeUrl)}" target="_blank" rel="noopener">creative ↗</a>`:'—'}</span>
+      ${ad.concept?`<span class="sc-b"><b>Concept</b> ${esc(ad.concept)}</span>`:''}
+      <button class="copybtn" data-scopy="${ad.id}" style="margin-left:auto">Copy full brief</button>
+    </div>
+
+    <div class="sc-grid">
+      <div class="sc-field">
+        <label>Script ${scripted?'<span class="ss-ok">✓ attached</span>':'<span class="ss-req">required</span>'}</label>
+        ${scripted
+          ? `<div class="sc-file">${p.scriptFile?`📄 ${esc(p.scriptFile.name)}`:'📝 pasted script'}<span class="spacer"></span><button class="linkbtn" data-scview="${ad.id}">view</button><button class="linkbtn" data-scclear="${ad.id}">replace</button></div>`
+          : `<div class="sc-uploads">
+               <label class="up-btn"><input type="file" data-scfile="${ad.id}" accept=".txt,.md,.doc,.docx,.pdf,.rtf" hidden/>⬆ Upload script</label>
+               <button class="linkbtn" data-scpaste="${ad.id}">or paste text</button>
+             </div>
+             <textarea class="sc-paste" data-scpastetext="${ad.id}" placeholder="Paste the script here…" hidden>${esc(p.scriptText||'')}</textarea>`}
+      </div>
+      <div class="sc-field">
+        <label>Editor <span class="ss-sub">routed from Stage 2</span></label>
+        <div class="chiprow">${C().editors.map(e=>`<button class="chip ${ad.editor===e?'on':''}" data-scedit="${ad.id}" data-ed="${esc(e)}">${esc(e)}</button>`).join("")}</div>
+      </div>
+    </div>
+
+    <details class="sc-visuals" ${(p.visualsLink||p.instructions)?'open':''}>
+      <summary>＋ Visuals &amp; instructions for the editor (optional)</summary>
+      <div class="sc-vgrid">
+        <input type="text" data-scvlink="${ad.id}" placeholder="Link to visuals (Drive, Frame, etc.)" value="${esc(p.visualsLink||'')}"/>
+        <textarea data-scvinstr="${ad.id}" placeholder="Notes / instructions for the editor…">${esc(p.instructions||'')}</textarea>
+      </div>
+    </details>
+
+    <div class="sc-foot">
+      ${st==="brief"
+        ? `<span class="sc-hint">Attach a script${!ad.editor?' and tag an editor':''}, then hand it off.</span><div class="spacer"></div><button class="btn" data-scsend="${ad.id}">Send to ${esc(ad.editor||'editor')} →</button>`
+        : st==="editing"
+          ? `<div class="frame-row"><label>Final video — Frame link</label><input type="text" data-scframe="${ad.id}" placeholder="Paste the Frame.io link…" value="${esc(p.frameLink||'')}"/></div>
+             <button class="btn secondary" data-scback="${ad.id}">↩ Back to brief</button>
+             <button class="btn" data-scfinish="${ad.id}">Finish → Ready for Launch</button>`
+          : `<div class="frame-done">✅ <a href="${esc(p.frameLink)}" target="_blank" rel="noopener">Final video ↗</a> · edited by <b>${esc(ad.editor)}</b></div><div class="spacer"></div><button class="btn secondary" data-screopen="${ad.id}">Reopen</button>`}
+    </div>
+  </article>`;
+}
+
+function viewScript(adId){
+  const ad=adById(adId); const p=ad.production||{};
+  $("#pmBody").innerHTML=`<div class="pm-hero"><div><div class="pm-name">Script</div><div class="pm-sub">${esc(ad.naming)}</div></div></div>
+    <pre class="script-pre">${esc(p.scriptText || (p.scriptFile?('['+p.scriptFile.name+'] — file stored as a reference; open it in your editor'):'—'))}</pre>`;
+  $("#pmScrim").classList.add("open"); $("#pmodal").classList.add("open"); $("#pmodal").setAttribute("aria-hidden","false");
+}
+
+function bindScript(){
+  $$("[data-filter]").forEach(b=>b.onclick=()=>{ S.scriptFilter[b.dataset.filter]=b.dataset.val; save(); renderScript(); });
+  const P=(id)=>{ const a=adById(id); if(!a.production)a.production=freshProduction(); return a; };
+  $$("[data-scfile]").forEach(inp=>inp.onchange=(e)=>{ const f=e.target.files[0]; if(!f)return; const a=P(inp.dataset.scfile);
+    a.production.scriptFile={name:f.name,size:f.size,type:f.type};
+    if(/\.(txt|md|markdown|rtf)$/i.test(f.name)||/^text\//.test(f.type)){ const r=new FileReader(); r.onload=()=>{a.production.scriptText=String(r.result||"");save();renderScript();}; r.readAsText(f); }
+    else { save(); renderScript(); toast("Script attached"); } });
+  $$("[data-scpaste]").forEach(b=>b.onclick=()=>{ const t=document.querySelector('[data-scpastetext="'+b.dataset.scpaste+'"]'); if(t){ t.hidden=!t.hidden; if(!t.hidden)t.focus(); } });
+  $$("[data-scpastetext]").forEach(t=>{ t.oninput=()=>{ P(t.dataset.scpastetext).production.scriptText=t.value; save(); }; t.onblur=()=>renderScript(); });
+  $$("[data-scview]").forEach(b=>b.onclick=()=>viewScript(b.dataset.scview));
+  $$("[data-scclear]").forEach(b=>b.onclick=()=>{ const a=P(b.dataset.scclear); a.production.scriptText=""; a.production.scriptFile=null; save(); renderScript(); });
+  $$("[data-scedit]").forEach(b=>b.onclick=()=>{ const a=P(b.dataset.scedit); a.editor=b.dataset.ed; a.naming=namingFor(a); save(); renderScript(); });
+  $$("[data-scvlink]").forEach(i=>i.oninput=()=>{ P(i.dataset.scvlink).production.visualsLink=i.value; save(); });
+  $$("[data-scvinstr]").forEach(i=>i.oninput=()=>{ P(i.dataset.scvinstr).production.instructions=i.value; save(); });
+  $$("[data-scsend]").forEach(b=>b.onclick=()=>{ const a=P(b.dataset.scsend);
+    if(!hasScript(a.production)){ toast("Attach or paste a script first"); return; }
+    if(!a.editor){ toast("Tag an editor first"); return; }
+    a.production.sentToEditor=true; save(); renderScript(); toast("Sent to "+a.editor+" — ready to edit"); });
+  $$("[data-scframe]").forEach(i=>i.oninput=()=>{ P(i.dataset.scframe).production.frameLink=i.value; save(); });
+  $$("[data-scfinish]").forEach(b=>b.onclick=()=>{ const a=P(b.dataset.scfinish);
+    if(!a.production.frameLink||!a.production.frameLink.trim()){ toast("Paste the Frame link first"); return; }
+    a.production.finishedAt=new Date().toISOString(); save(); renderScript(); toast("Ready for Launch 🚀"); });
+  $$("[data-scback]").forEach(b=>b.onclick=()=>{ P(b.dataset.scback).production.sentToEditor=false; save(); renderScript(); });
+  $$("[data-screopen]").forEach(b=>b.onclick=()=>{ P(b.dataset.screopen).production.finishedAt=null; save(); renderScript(); });
+  $$("[data-scopy]").forEach(b=>b.onclick=()=>copyText(adById(b.dataset.scopy).brief));
 }
 
 /* ---------------- shared bits ---------------- */
