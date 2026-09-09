@@ -619,6 +619,25 @@ input:focus,button:focus-visible,.stage-item:focus-visible,.focus-opt:focus-visi
 .sl-figs{font-size:14.5px;margin-top:6px;color:var(--ink-2)}
 .sl-figs b{color:var(--ink)}
 
+/* ---------- Script Studio: collapsible brief lines ---------- */
+.ss-listhead{display:flex;align-items:center;gap:12px;margin-bottom:10px;font-size:12px;color:var(--ink-3)}
+.ss-listhead .spacer{flex:1}
+.ss-cards{gap:8px}
+.scard{padding:0;overflow:hidden}
+.sc-line{display:flex;align-items:center;gap:11px;padding:11px 16px;cursor:pointer;background:transparent;border:none;width:100%;text-align:left}
+.sc-line:hover{background:var(--surface-2)}
+.scard.open .sc-line{border-bottom:1px solid var(--border);background:var(--surface-2)}
+.sc-chevron{color:var(--ink-3);font-size:11px;transition:transform .15s;flex:none;width:10px}
+.scard.open .sc-chevron{transform:rotate(90deg)}
+.sc-linedot{width:9px;height:9px;border-radius:50%;flex:none}
+.sc-linedot.s-brief{background:var(--warn)}.sc-linedot.s-editing{background:var(--accent)}.sc-linedot.s-ready{background:var(--good)}
+.sc-line-name{font-family:"IBM Plex Mono",monospace;font-size:12.5px;font-weight:600;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sc-line-tags{display:flex;align-items:center;gap:6px;flex:none}
+.sc-wk{font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:600;color:var(--ink-2);background:var(--inset);border:1px solid var(--border);border-radius:6px;padding:2px 7px}
+.sc-body{padding:16px 18px 18px;display:flex;flex-direction:column;gap:14px}
+.sc-thumb.sm{width:44px;height:44px}
+@media (max-width:640px){.sc-line-tags .minichip{display:none}.sc-line-tags .sc-wk{display:inline}}
+
 /* ---------- Script Studio (tab 3) ---------- */
 .ss-summary{display:flex;align-items:center;gap:26px;flex-wrap:wrap;background:var(--panel);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);padding:16px 22px;margin-bottom:18px}
 .ss-fig{display:flex;flex-direction:column;gap:3px}
@@ -943,7 +962,7 @@ function defaultState(){
     angleData:seedAngleData(products),
     workflow:freshWorkflow(),
     creative:defaultCreative(products),
-    scriptFilter:{editor:"all",product:"all",status:"all"},
+    scriptFilter:{editor:"all",product:"all",status:"all",month:"all",week:"all"},
     wins:seedWins(products),
     scoreMonth:monthKey(),
     view:1,
@@ -1008,7 +1027,7 @@ function migrate(s){
     if(typeof pr.adCopy!=="string") pr.adCopy="";
     if(!("pushedToItzik" in pr)) pr.pushedToItzik=null;
   });
-  if(!s.scriptFilter||typeof s.scriptFilter!=="object") s.scriptFilter={editor:"all",product:"all",status:"all"};
+  if(!s.scriptFilter||typeof s.scriptFilter!=="object") s.scriptFilter={editor:"all",product:"all",status:"all",month:"all",week:"all"};
   if(!Array.isArray(s.wins)) s.wins=seedWins(s.products);
   if(typeof s.scoreMonth!=="string") s.scoreMonth=monthKey();
   if(typeof s.view!=="number"||s.view<1||s.view>STAGES.length) s.view=1;
@@ -1986,40 +2005,71 @@ const PROD_STATUS={ brief:{label:"Needs script",cls:"s-brief"}, editing:{label:"
 function prodStatus(ad){ const p=ad.production||{}; if(p.finishedAt) return "ready"; if(p.sentToEditor) return "editing"; return "brief"; }
 function hasScript(p){ return !!(p&&((p.scriptText&&p.scriptText.trim())||p.scriptFile)); }
 function ssSeg(dim,val,label,f){ return `<button class="seg2b ${f[dim]===String(val)?'on':''}" data-filter="${dim}" data-val="${esc(String(val))}">${esc(label)}</button>`; }
+const _scOpen=new Set(); // expanded brief rows (in-memory; collapsed by default)
+const monthShort=(mm)=>new Date(2000,mm-1,1).toLocaleDateString("en-US",{month:"short"});
+// which month/week a brief belongs to — from its naming date code, else its created date
+function weekTag(ad){
+  let mm,ww,yy; const m=/M(\d{2})W(\d{2})Y(\d{2})/.exec(ad.dateCode||"");
+  if(m){ mm=+m[1]; ww=+m[2]; yy=+m[3]; }
+  else { const d=new Date(ad.createdAt||Date.now()); mm=d.getMonth()+1; ww=Math.max(1,Math.min(5,Math.ceil(d.getDate()/7))); yy=d.getFullYear()%100; }
+  return {mm,ww,yy,label:`${monthShort(mm)}·W${ww}`};
+}
 
 function renderScript(){
   const ads=C().ads; ads.forEach(a=>{ if(!a.production) a.production=freshProduction(); });
-  const f=S.scriptFilter||(S.scriptFilter={editor:"all",product:"all",status:"all"});
+  const f=S.scriptFilter||(S.scriptFilter={editor:"all",product:"all",status:"all",month:"all",week:"all"});
+  ["month","week"].forEach(k=>{ if(!(k in f)) f[k]="all"; });
   const editors=[...new Set(ads.map(a=>a.editor).filter(Boolean))];
   const prods=[...new Set(ads.map(a=>a.productId))].map(id=>productById(id)).filter(Boolean);
-  const readyCount=ads.filter(a=>prodStatus(a)==="ready").length;
-  const waitCount=ads.length-readyCount;
-  const shown=ads.filter(a=>{
+  const months=[...new Set(ads.map(a=>weekTag(a).mm))].sort((a,b)=>b-a);
+  const weeks=[...new Set(ads.filter(a=>f.month==="all"||String(weekTag(a).mm)===f.month).map(a=>weekTag(a).ww))].sort((a,b)=>a-b);
+  // scope = period + editor + product (NOT status) — drives the summary
+  const inScope=(a)=>{
     if(f.editor!=="all" && a.editor!==f.editor) return false;
     if(f.product!=="all" && a.productId!==f.product) return false;
-    const st=prodStatus(a);
+    const wk=weekTag(a);
+    if(f.month!=="all" && String(wk.mm)!==f.month) return false;
+    if(f.week!=="all" && String(wk.ww)!==f.week) return false;
+    return true;
+  };
+  const scoped=ads.filter(inScope);
+  const readyCount=scoped.filter(a=>prodStatus(a)==="ready").length;
+  const waitCount=scoped.length-readyCount;
+  const shown=scoped.filter(a=>{ const st=prodStatus(a);
     if(f.status==="waiting" && st==="ready") return false;
     if(f.status==="ready" && st!=="ready") return false;
     return true;
   });
+  const scopeLabel=(f.month==="all"&&f.week==="all")?"all time":(monthShort(+f.month||new Date().getMonth()+1)+(f.week!=="all"?" · W"+f.week:""));
   canvas.innerHTML=`
   <div class="stage-head">
     <div class="eyebrow">Stage 3 · Ship</div>
     <h2>Script Studio</h2>
-    <p>Every brief from Creative Research lands here, routed to its editor. Attach the script and any visuals, hand it off — and when the editor drops the final Frame link, the card flips to Ready for Launch, so you always know what's shippable.</p>
+    <p>Every brief from Creative Research lands here as a line, routed to its editor. Click one to open the full script, hooks, ad copy, visuals and final video. Filter by month &amp; week to see exactly what's done each week.</p>
   </div>
 
   <div class="ss-summary">
-    <div class="ss-fig"><span class="k">Briefs</span><span class="v">${ads.length}</span></div>
+    <div class="ss-fig"><span class="k">Briefs ${f.month==="all"&&f.week==="all"?'':'· '+esc(scopeLabel)}</span><span class="v">${scoped.length}</span></div>
     <div class="ss-fig"><span class="k">Waiting for usage</span><span class="v" style="color:var(--warn-2)">${waitCount}</span></div>
     <div class="ss-fig"><span class="k">Ready for launch</span><span class="v" style="color:var(--good-2)">${readyCount}</span></div>
-    <div class="ss-prog"><div class="bar"><i style="width:${ads.length?Math.round(readyCount/ads.length*100):0}%"></i></div><div class="lab">${readyCount} of ${ads.length} shippable</div></div>
+    <div class="ss-prog"><div class="bar"><i style="width:${scoped.length?Math.round(readyCount/scoped.length*100):0}%"></i></div><div class="lab">${readyCount} of ${scoped.length} shippable · ${esc(scopeLabel)}</div></div>
   </div>
 
   <div class="ss-filters">
+    <div class="ss-frow"><span class="ss-flabel">Period</span>
+      <div class="seg2 wrap">${ssSeg("month","all","All",f)}${months.map(mm=>ssSeg("month",String(mm),monthShort(mm),f)).join("")}</div>
+      <div class="seg2 wrap">${ssSeg("week","all","All wk",f)}${weeks.map(w=>ssSeg("week",String(w),"W"+w,f)).join("")}</div>
+    </div>
     <div class="ss-frow"><span class="ss-flabel">Editor</span><div class="seg2">${ssSeg("editor","all","All",f)}${editors.map(e=>ssSeg("editor",e,e,f)).join("")}</div></div>
     <div class="ss-frow"><span class="ss-flabel">Status</span><div class="seg2">${ssSeg("status","all","All",f)}${ssSeg("status","waiting","Waiting for usage",f)}${ssSeg("status","ready","Ready for launch",f)}</div></div>
     <div class="ss-frow"><span class="ss-flabel">Product</span><div class="seg2 wrap">${ssSeg("product","all","All",f)}${prods.map(p=>ssSeg("product",p.id,p.name,f)).join("")}</div></div>
+  </div>
+
+  <div class="ss-listhead">
+    <span>${shown.length} brief${shown.length===1?'':'s'} shown</span>
+    <div class="spacer"></div>
+    <button class="linkbtn" id="scExpandAll">Expand all</button>
+    <button class="linkbtn" id="scCollapseAll">Collapse all</button>
   </div>
 
   <div class="ss-cards">
@@ -2037,23 +2087,25 @@ function scriptCard(ad){
   const persona=(personaById(ad.personaId)||{}).name||"—";
   const aud=audByCode(ad.audience);
   const scripted=hasScript(p);
-  return `<article class="scard ${meta.cls}" data-adid="${ad.id}">
-    <div class="sc-top">
-      ${ad.thumb?`<img class="sc-thumb" src="${ad.thumb}" alt="creative"/>`:'<div class="sc-thumb ph">🎬</div>'}
-      <div class="sc-head">
-        <div class="sc-name">${esc(ad.naming)}</div>
-        <div class="sc-chips">
-          <span class="minichip prod">${esc(prod)}</span>
-          <span class="minichip">${esc(ad.angle)}</span>
-          <span class="minichip">${aud?aud.code:''}</span>
-          <span class="minichip">${esc(persona)}</span>
-          <span class="minichip">${esc(ad.mediaType)}</span>
-        </div>
-      </div>
+  const open=_scOpen.has(ad.id); const wk=weekTag(ad);
+  return `<article class="scard ${meta.cls} ${open?'open':''}" data-adid="${ad.id}">
+    <div class="sc-line" data-toggle="${ad.id}" role="button" tabindex="0" aria-expanded="${open}">
+      <span class="sc-chevron">▸</span>
+      <span class="sc-linedot ${meta.cls}" title="${meta.label}"></span>
+      <span class="sc-line-name">${esc(ad.naming)}</span>
+      <span class="sc-line-tags">
+        <span class="minichip prod">${esc(prod)}</span>
+        <span class="minichip">${esc(ad.editor||'—')}</span>
+        <span class="sc-wk">${esc(wk.label)}</span>
+      </span>
       <span class="sc-status ${meta.cls}">${meta.label}</span>
     </div>
-
+    <div class="sc-body" ${open?'':'hidden'}>
     <div class="sc-brief">
+      ${ad.thumb?`<img class="sc-thumb sm" src="${ad.thumb}" alt="creative"/>`:''}
+      <span class="sc-b"><b>Audience</b> ${aud?esc(aud.label)+' ('+aud.code+')':'—'}</span>
+      <span class="sc-b"><b>Persona</b> ${esc(persona)}</span>
+      <span class="sc-b"><b>Angle</b> ${esc(ad.angle)}</span>
       <span class="sc-b"><b>Inspiration</b> ${ad.creativeUrl?`<a href="${esc(ad.creativeUrl)}" target="_blank" rel="noopener">creative ↗</a>`:'—'}</span>
       ${ad.concept?`<span class="sc-b"><b>Concept</b> ${esc(ad.concept)}</span>`:''}
       <button class="copybtn" data-scopy="${ad.id}" style="margin-left:auto">Copy full brief</button>
@@ -2112,6 +2164,7 @@ function scriptCard(ad){
              <button class="btn secondary" data-screopen="${ad.id}">Reopen</button>
              ${p.pushedToItzik?`<button class="btn secondary" data-scitzikview="${ad.id}">View message</button>`:''}
              <button class="btn itzik-btn" data-scitzik="${ad.id}">${p.pushedToItzik?'Re-push to Itzik':'Push to Itzik →'}</button>`}
+    </div>
     </div>
   </article>`;
 }
@@ -2174,7 +2227,16 @@ function viewScript(adId){
 }
 
 function bindScript(){
-  $$("[data-filter]").forEach(b=>b.onclick=()=>{ S.scriptFilter[b.dataset.filter]=b.dataset.val; save(); renderScript(); });
+  $$("[data-filter]").forEach(b=>b.onclick=()=>{ const d=b.dataset.filter; S.scriptFilter[d]=b.dataset.val; if(d==="month")S.scriptFilter.week="all"; save(); renderScript(); });
+  // expand / collapse a brief row without a full re-render (keeps other rows' inputs intact)
+  $$("[data-toggle]").forEach(el=>{
+    const t=()=>{ const id=el.dataset.toggle; const art=el.closest(".scard"); const body=art.querySelector(".sc-body");
+      const now=!_scOpen.has(id); if(now)_scOpen.add(id); else _scOpen.delete(id);
+      art.classList.toggle("open",now); body.hidden=!now; el.setAttribute("aria-expanded",String(now)); };
+    el.onclick=t; el.onkeydown=(e)=>{ if(e.key==="Enter"||e.key===" "){e.preventDefault();t();} };
+  });
+  const ex=$("#scExpandAll"); if(ex) ex.onclick=()=>{ $$(".scard").forEach(a=>_scOpen.add(a.dataset.adid)); renderScript(); };
+  const co=$("#scCollapseAll"); if(co) co.onclick=()=>{ _scOpen.clear(); renderScript(); };
   const P=(id)=>{ const a=adById(id); if(!a.production)a.production=freshProduction(); return a; };
   $$("[data-scfile]").forEach(inp=>inp.onchange=(e)=>{ const f=e.target.files[0]; if(!f)return; const a=P(inp.dataset.scfile);
     a.production.scriptFile={name:f.name,size:f.size,type:f.type};
